@@ -1,0 +1,2082 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+import { SPOT_DIFFERENCE_PUZZLES } from '../data/spotDifferenceData';
+
+const title = 'Spot the Difference Free Online Game – Find Differences in Pictures | PuzzleFeels';
+const description = 'Play our free Spot the Difference Free Online Game! Compare beautiful picture pairs, find all differences, use deductive hints, and beat your best time. Free in your browser!';
+
+const faqs = [
+  {
+    question: 'What is Spot the Difference?',
+    answer: 'Spot the Difference is a visual perception puzzle where players compare two nearly identical pictures side by side to find subtle intentional differences hidden between them, such as missing objects, color changes, or shifted details.'
+  },
+  {
+    question: 'How do you play this online Spot the Difference game?',
+    answer: 'Choose a difficulty level and level stage, then inspect both pictures. Click or tap directly on any difference you spot on either image. Discovered differences are marked with synchronized numbered circles on both pictures. Find all differences to clear the stage and record your completion time!'
+  },
+  {
+    question: 'Can I click or tap on either image to find differences?',
+    answer: 'Yes. Our detection system is bi-directional. You can tap or click on Picture A (original) or Picture B (modified). Correct spots are instantly highlighted on both images simultaneously.'
+  },
+  {
+    question: 'How does the hint feature work?',
+    answer: 'If you get stuck, click the amber "Hint" button in the toolbar. A pulsing radar circle will appear over an undiscovered difference on both images, and a brief clue describing what to look for will appear in the notification bar.'
+  },
+  {
+    question: 'Is this Spot the Difference game free to play?',
+    answer: 'Yes, 100% free with no registration, downloads, paywalls, or subscriptions. You can play directly in any modern desktop, tablet, or smartphone browser.'
+  },
+  {
+    question: 'What is the difference between Easy, Medium, and Hard levels?',
+    answer: 'Easy puzzles contain 5 prominent differences suitable for beginners or quick relaxation. Medium puzzles feature 7 differences across more detailed scenes. Hard puzzles challenge you with 10 intricate, fine differences requiring patient observation.'
+  },
+  {
+    question: 'How do the zoom controls work?',
+    answer: 'Click the Zoom icon in the toolbar to open the zoom popover. You can zoom in (+) up to 150%, zoom out (−), or click "Fit to Screen" (100%) to reset. Zooming scales only the playable pictures without enlarging navigation or text.'
+  },
+  {
+    question: 'Can I play this game on a mobile phone or tablet?',
+    answer: 'Yes! The game is fully responsive for touchscreens. On smaller screens, use the mobile view toggle ("Both", "Pic A", "Pic B") in the toolbar to switch between stacked images or focus on one picture at a time.'
+  },
+  {
+    question: 'Does the game save my progress and best completion times?',
+    answer: 'Yes. Your completed puzzles, best completion times, and sound settings are saved in your browser’s local storage so you can return anytime to improve your scores.'
+  },
+  {
+    question: 'What happens if I click an incorrect spot?',
+    answer: 'An incorrect click displays a gentle fading ripple and increments your mistake counter. There is no time deduction or game-over penalty, so you can enjoy the puzzle at your own pace.'
+  },
+  {
+    question: 'How are star ratings calculated at the end of each level?',
+    answer: 'Your star rating (1 to 3 stars) is based on your hints used and mistakes made. Finding all differences with 2 or fewer hints and 5 or fewer mistakes earns you a high star score on your victory card.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Spot the Difference Free Online Game',
+  url: 'https://puzzlefeels.com/spot-the-difference-game/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Puzzle game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Spot the Difference Free Online Game', item: 'https://puzzlefeels.com/spot-the-difference-game/' }
+  ]
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+---
+
+<Base {title} {description} path="/spot-the-difference-game/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="spot-page">
+    <nav class="wrap spot-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Spot the Difference Free Online Game</span>
+    </nav>
+
+    <section class="wrap spot-intro">
+      <span class="eyebrow">Visual Attention & Concentration Puzzle</span>
+      <h1>Spot the Difference Free Online Game</h1>
+      <p class="muted">Compare two pictures side by side, find every hidden difference, and tap to mark your discoveries before time runs out.</p>
+    </section>
+
+    <!-- Main Game Shell -->
+    <section class="wrap spot-shell card" data-spot-game aria-label="Interactive Spot the Difference puzzle game">
+      <!-- Difficulty Tabs -->
+      <div class="spot-diff-bar" role="group" aria-label="Choose difficulty level">
+        <button type="button" class="spot-tab-btn is-active" data-difficulty="easy" aria-pressed="true">
+          <span class="diff-dot easy"></span>
+          <span>Easy (5 Diffs)</span>
+        </button>
+        <button type="button" class="spot-tab-btn" data-difficulty="medium" aria-pressed="false">
+          <span class="diff-dot medium"></span>
+          <span>Medium (7 Diffs)</span>
+        </button>
+        <button type="button" class="spot-tab-btn" data-difficulty="hard" aria-pressed="false">
+          <span class="diff-dot hard"></span>
+          <span>Hard (10 Diffs)</span>
+        </button>
+      </div>
+
+      <!-- Level Selector & Status Bar -->
+      <div class="spot-status-bar">
+        <div class="spot-level-nav">
+          <button type="button" class="level-arrow-btn" id="btn-prev-level" aria-label="Previous level" title="Previous Puzzle">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <div class="level-info">
+            <span class="level-badge" id="spot-level-badge">Level 1</span>
+            <strong class="puzzle-title" id="spot-puzzle-title">Alpine Mountain Camp</strong>
+            <span class="puzzle-category" id="spot-puzzle-cat">Nature & Landscapes</span>
+          </div>
+          <button type="button" class="level-arrow-btn" id="btn-next-level" aria-label="Next level" title="Next Puzzle">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+
+        <div class="spot-metrics">
+          <div class="metric-chip" title="Differences found out of total">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span class="metric-label">Found:</span>
+            <strong class="metric-val" id="metric-found">0 / 5</strong>
+          </div>
+          <div class="metric-chip" title="Timer">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 15"></polyline></svg>
+            <span class="metric-label">Time:</span>
+            <strong class="metric-val" id="metric-timer">00:00</strong>
+          </div>
+          <div class="metric-chip" title="Hints used this level">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line></svg>
+            <span class="metric-label">Hints:</span>
+            <strong class="metric-val" id="metric-hints">0</strong>
+          </div>
+          <div class="metric-chip" title="Mistakes made">
+            <span class="metric-label">Mistakes:</span>
+            <strong class="metric-val" id="metric-mistakes">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action & Utility Toolbar -->
+      <div class="spot-toolbar">
+        <div class="toolbar-left">
+          <button type="button" class="tool-btn primary" id="btn-hint" title="Reveal an undiscovered difference">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <span>Hint</span>
+          </button>
+          <button type="button" class="tool-btn" id="btn-restart" title="Restart this puzzle">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            <span>Restart</span>
+          </button>
+          <button type="button" class="tool-btn" id="btn-pause" title="Pause or resume timer">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            <span id="pause-text">Pause</span>
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <!-- Mobile View Switcher (Visible on mobile screens) -->
+          <div class="mobile-view-toggle" role="group" aria-label="Mobile view switcher">
+            <button type="button" class="view-btn is-active" data-view="both" title="Side by side">Both</button>
+            <button type="button" class="view-btn" data-view="a" title="Picture A">Pic A</button>
+            <button type="button" class="view-btn" data-view="b" title="Picture B">Pic B</button>
+          </div>
+
+          <!-- Sound Toggle -->
+          <button type="button" class="tool-btn icon-only" id="btn-sound" title="Toggle Sound Effects" aria-label="Toggle Sound">
+            <svg class="sound-on-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            <svg class="sound-off-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+          </button>
+
+          <!-- Norinori-Style Zoom Control Component -->
+          <ZoomControl
+            id="spot-zoom"
+            label="Picture Zoom"
+            targetSelector="#spot-comparison-board"
+            zoomVar="--zoom-scale"
+          />
+        </div>
+      </div>
+
+      <!-- Hint Banner Toast -->
+      <div id="spot-hint-banner" class="spot-hint-banner" role="status" aria-live="polite" hidden>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <span id="hint-text">Hint message</span>
+      </div>
+
+      <!-- Playable Comparison Container -->
+      <div class="spot-comparison-wrapper" id="spot-comparison-container">
+        <!-- Scale target for ZoomControl -->
+        <div class="spot-comparison-board" id="spot-comparison-board">
+          
+          <!-- Image Card A -->
+          <div class="image-card" id="card-image-a" data-image-role="a">
+            <div class="image-card-header">
+              <span class="image-label">Image A · Original</span>
+              <span class="image-hint-tag">Tap to spot</span>
+            </div>
+            <div class="image-canvas-box" id="box-image-a">
+              <img id="img-a" src={SPOT_DIFFERENCE_PUZZLES[0].imageA} alt="Spot the Difference Image A" draggable="false" />
+              <!-- Marker Overlay Layer -->
+              <div class="markers-layer" id="markers-layer-a"></div>
+              <!-- Ripple Overlay Layer -->
+              <div class="feedback-layer" id="feedback-layer-a"></div>
+            </div>
+          </div>
+
+          <!-- Image Card B -->
+          <div class="image-card" id="card-image-b" data-image-role="b">
+            <div class="image-card-header">
+              <span class="image-label">Image B · Modified</span>
+              <span class="image-hint-tag">Tap to spot</span>
+            </div>
+            <div class="image-canvas-box" id="box-image-b">
+              <img id="img-b" src={SPOT_DIFFERENCE_PUZZLES[0].imageB} alt="Spot the Difference Image B" draggable="false" />
+              <!-- Marker Overlay Layer -->
+              <div class="markers-layer" id="markers-layer-b"></div>
+              <!-- Ripple Overlay Layer -->
+              <div class="feedback-layer" id="feedback-layer-b"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Pause Overlay Cover -->
+        <div class="spot-pause-overlay" id="spot-pause-overlay" hidden>
+          <div class="pause-card">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line></svg>
+            <h2>Game Paused</h2>
+            <p>Take a breath! Images are obscured while paused to keep the challenge fair.</p>
+            <button type="button" class="btn" id="btn-resume">Resume Playing</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Found Differences Progress Dots -->
+      <div class="spot-progress-row" aria-label="Level progress tracker">
+        <span class="progress-label">Differences Discovered:</span>
+        <div class="progress-dots" id="spot-progress-dots"></div>
+      </div>
+    </section>
+
+    <!-- Victory Modal -->
+    <div class="spot-modal-backdrop" id="victory-modal" hidden>
+      <div class="spot-victory-card card" role="dialog" aria-labelledby="victory-title" aria-modal="true">
+        <div class="victory-confetti" aria-hidden="true">🎉 ✨ 🏆 ✨ 🎉</div>
+        <h2 id="victory-title">Puzzle Complete!</h2>
+        <p class="victory-subtitle" id="victory-subtitle">You spotted every single difference with keen eagle eyes!</p>
+        
+        <div class="victory-stars" id="victory-stars">
+          <span>★</span><span>★</span><span>★</span>
+        </div>
+
+        <div class="victory-stats-grid">
+          <div class="vstat-box">
+            <span class="vstat-label">Completion Time</span>
+            <strong class="vstat-val" id="vstat-time">00:00</strong>
+          </div>
+          <div class="vstat-box">
+            <span class="vstat-label">Hints Used</span>
+            <strong class="vstat-val" id="vstat-hints">0</strong>
+          </div>
+          <div class="vstat-box">
+            <span class="vstat-label">Mistakes</span>
+            <strong class="vstat-val" id="vstat-mistakes">0</strong>
+          </div>
+          <div class="vstat-box">
+            <span class="vstat-label">Difficulty</span>
+            <strong class="vstat-val" id="vstat-diff">Easy</strong>
+          </div>
+        </div>
+
+        <div class="victory-actions">
+          <button type="button" class="btn" id="btn-next-puzzle">Next Puzzle</button>
+          <button type="button" class="btn secondary" id="btn-replay-puzzle">Replay</button>
+          <button type="button" class="btn secondary" id="btn-share-result">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+            <span>Share Result</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comprehensive In-Depth Game Guide & Player Manual -->
+    <article class="wrap game-article-content spot-guide-section" aria-label="Spot the Difference Game Guide and Rules">
+      <h2>What Is Spot the Difference?</h2>
+      <p>Spot the Difference is a classic visual perception puzzle where players compare two nearly identical pictures side by side to uncover subtle alterations made to one of them. While the overall scene, characters, and background look identical at first glance, several small elements have been intentionally tweaked—such as an item missing from a shelf, a color shifting from blue to yellow, or a tree branch pointing in a different direction.</p>
+      <p>In this digital version, you do not need paper or a pen. The game provides interactive touch-and-click detection, automatic marker highlights across both images simultaneously, real-time progress indicators, and helpful hints whenever you get stuck. Whether you have two minutes for a quick mental break or want to master complex Hard-level scenes, the game provides a calm, satisfying test of visual attention.</p>
+
+      <h2>How to Play Step by Step</h2>
+      <p>Getting started is quick and straightforward on desktop, tablet, or mobile:</p>
+      <ol>
+        <li><strong>Choose a Difficulty Level:</strong> Use the tabs at the top of the game board to select <em>Easy</em> (5 differences), <em>Medium</em> (7 differences), or <em>Hard</em> (10 differences). Beginners can start with Easy to get accustomed to the mechanics before advancing to richer, more detailed illustrations.</li>
+        <li><strong>Study Picture A and Picture B Side by Side:</strong> Image A displays the original reference artwork, while Image B features subtle deliberate variations. Both images share identical dimensions, composition, and colors across the vast majority of the frame.</li>
+        <li><strong>Click or Tap Directly on Any Difference:</strong> You can click on either picture. When your cursor or finger touches an actual difference, the game locks a numbered green circle marker onto that exact coordinate on both pictures at the same time and plays a cheerful confirmation chime.</li>
+        <li><strong>Track Your Discovered Differences:</strong> The metrics bar at the top displays your current count (such as 3 / 5), while the progress dots below the images light up one by one as each discrepancy is uncovered.</li>
+        <li><strong>Clear the Level and Review Your Performance:</strong> Once you discover the final difference, a victory screen appears with your total completion time, number of hints used, mistakes made, and a star rating from one to three stars. From there, you can proceed to the next puzzle or replay the stage to beat your personal best time.</li>
+      </ol>
+
+      <h2>How to Identify Differences Between Two Images</h2>
+      <p>Visual differences in well-designed puzzles are not placed randomly. They typically fall into five distinct categories that you can train your eyes to spot quickly:</p>
+      <ul>
+        <li><strong>Missing or Extra Elements:</strong> An object present in one picture is entirely omitted in the other, such as a plume of chimney smoke, a fruit on a kitchen counter, or a bird in the sky.</li>
+        <li><strong>Color and Shading Shifts:</strong> An element keeps its exact shape but changes hue, brightness, or pattern, such as a striped umbrella turning solid or a coffee mug switching from blue to orange.</li>
+        <li><strong>Rotations and Positional Changes:</strong> An item tilts at a different angle, moves slightly higher or lower, or points in the opposite direction, like clock hands showing a different hour.</li>
+        <li><strong>Pattern and Texture Alterations:</strong> Surface details change, such as polka dots turning into chevrons or wooden floorboards displaying different grain lines.</li>
+        <li><strong>Quantity and Count Differences:</strong> A group of small repeated items changes in count, such as three flowers in a vase reduced to two, or four stars in the night sky instead of five.</li>
+      </ul>
+
+      <h2>Understanding Difficulty Levels</h2>
+      <p>Every difficulty level on PuzzleFeels provides a tailored level of visual challenge and puzzle complexity:</p>
+      <div class="table-responsive">
+        <table class="spot-table">
+          <thead>
+            <tr>
+              <th>Difficulty Tier</th>
+              <th>Differences</th>
+              <th>Typical Solve Time</th>
+              <th>What to Expect</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Easy</strong></td>
+              <td>5 Differences</td>
+              <td>45s – 1m 30s</td>
+              <td>Prominent objects, bold color shifts, and clear omissions in the foreground. Great for beginners, children, or quick warm-ups.</td>
+            </tr>
+            <tr>
+              <td><strong>Medium</strong></td>
+              <td>7 Differences</td>
+              <td>1m 30s – 3m 00s</td>
+              <td>Richer backgrounds, moderate visual density, and smaller secondary props that require methodical scanning.</td>
+            </tr>
+            <tr>
+              <td><strong>Hard</strong></td>
+              <td>10 Differences</td>
+              <td>3m 00s – 6m 00s</td>
+              <td>Intricate illustrations with micro-variations tucked into distant scenery, architectural details, and complex patterns.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>You can browse different puzzles within any difficulty level at any time using the left and right navigation arrows next to the puzzle title.</p>
+
+      <h2>Game Controls, Hints, and Helpful Features</h2>
+      <p>The toolbar above the picture cards provides several handy utilities designed to make your session smooth and enjoyable:</p>
+      <ul>
+        <li><strong>The Hint Button:</strong> When you cannot find the last tricky difference, clicking the amber <em>Hint</em> button displays an animated pulsing radar circle directly over the undiscovered area on both images. A brief hint message also appears in the notification bar describing what to look for, giving you just enough guidance without taking away the fun of solving it.</li>
+        <li><strong>Pause & Privacy Shield:</strong> Need to step away? Click <em>Pause</em> to freeze the timer. The puzzle images are temporarily hidden behind a blurred shield while paused so the clock remains an honest reflection of your active searching time.</li>
+        <li><strong>Restart:</strong> If you want a fresh start on the current puzzle, the <em>Restart</em> button clears all markers, resets the timer, and lets you tackle the level from scratch.</li>
+        <li><strong>Sound Toggle:</strong> You can enable or disable game sound effects at any time. The game remembers your preference automatically for future visits.</li>
+        <li><strong>Zoom Controls:</strong> When inspecting intricate artwork on high-resolution monitors or smaller laptop screens, use the built-in zoom popover to zoom in up to 150%, zoom out, or reset to fit the screen. Just like the zoom system introduced in our <a href="/norinori-game/">Norinori Game</a>, zooming scales only the playable pictures so menus, headers, and buttons remain comfortably readable.</li>
+      </ul>
+
+      <h2>Practical Strategies to Find Hidden Differences Faster</h2>
+      <p>Relying on random glances often leaves players frustrated when searching for the final one or two items. Using structured visual scanning habits makes finding differences far easier and faster:</p>
+
+      <h3>1. The Systematic Quadrant Method</h3>
+      <p>Divide both pictures mentally into four quadrants: top-left, top-right, bottom-left, and bottom-right. Focus entirely on one quadrant before shifting your gaze to the next. Solvers who enjoy systematic scanning often recognize this disciplined grid approach from puzzle games like <a href="/picross-game-online/">Picross Game Online</a>, where breaking large visual fields into orderly sections makes complex details manageable.</p>
+
+      <h3>2. The Rapid Flicker Technique</h3>
+      <p>Instead of staring deeply at one picture and trying to remember every detail, rapidly shift your eyes back and forth between the exact same spot on Picture A and Picture B. Your visual system is naturally wired to notice sudden motion or discrepancies. When you glance between the two images quickly, an altered detail will often seem to "jump" or flicker in your peripheral vision.</p>
+
+      <h3>3. Follow Natural Lines and Horizons</h3>
+      <p>Scan along continuous structural edges such as rooflines, fences, table edges, coastlines, and window frames. Artists frequently place small variations along prominent contours, such as a missing brick or an extra railing spoke, which become obvious when you trace the continuous line from end to end.</p>
+
+      <h3>4. Check Foreground vs. Distant Background</h3>
+      <p>Human vision naturally gravitates toward large, colorful foreground subjects like people, animals, or vehicles. Once you have checked those primary focal points, consciously shift your attention to the distant background: tree canopies, mountain silhouettes, cloud patterns, wall pictures, and far-off buildings where subtle variations are often nestled.</p>
+
+      <h2>Common Mistakes to Avoid</h2>
+      <p>Keep these frequent pitfalls in mind to keep your mistake count low and earn three-star completions:</p>
+      <ul>
+        <li><strong>Frantic Guess-Clicking:</strong> Clicking randomly across the image when you feel stuck will quickly rack up mistakes on your score card and lower your star rating. If you truly cannot locate a difference after careful searching, it is much better to use the built-in Hint button than to guess blindly.</li>
+        <li><strong>Getting Stuck in Tunnel Vision:</strong> Spending two continuous minutes staring at the same corner of an image creates visual fatigue. When an area yields nothing, force your eyes to move to the opposite side of the screen and return to the challenging spot later.</li>
+        <li><strong>Ignoring Screen Zoom on Mobile:</strong> Trying to spot tiny details on a compact mobile screen without zooming strains your eyes. Take advantage of the zoom controls or switch the mobile view to focus comfortably on one picture at a time.</li>
+      </ul>
+
+      <h2>Playing Comfortably on Desktop and Mobile</h2>
+      <p>Our Spot the Difference game is fully responsive and adjusts automatically to whatever device you prefer:</p>
+      <ul>
+        <li><strong>On Desktop Computers:</strong> The wide landscape layout places Picture A and Picture B side by side at a generous scale. Use your mouse or trackpad for pinpoint clicking and take advantage of keyboard shortcuts or zoom to inspect high-density scenes.</li>
+        <li><strong>On Mobile Phones & Tablets:</strong> In portrait orientation, screen width is limited. The toolbar includes a convenient mobile view switcher with three modes: <em>Both</em> (shows both pictures stacked vertically), <em>Pic A</em> (focuses on the original image), and <em>Pic B</em> (focuses on the modified image). You can tap either view freely, and your markers remain perfectly synchronized across both pictures.</li>
+      </ul>
+
+      <h2>The Benefits of Visual Difference Puzzles for Concentration</h2>
+      <p>Spot the Difference is celebrated by educators and cognitive scientists because it combines relaxing play with genuine mental stimulation. Comparing two complex scenes exercises visual working memory—requiring you to hold a mental picture of shapes and colors in your mind while scanning the adjacent artwork, much like the active visual recall practiced in our <a href="/memory-matching-game-online/">Memory Matching Game Online</a>.</p>
+      <p>Furthermore, searching for minute discrepancies exercises sustained visual attention and fine visual discrimination. Regularly training your eyes to detect subtle changes sharpens visual processing speed, complementing the reflex training found in our <a href="/reaction-time-challenge/">Reaction Time Challenge</a>. Most importantly, the quiet, focused nature of visual search provides a restorative mental break from stressful multitasking. Solvers looking for a balanced daily brain-training routine can explore our complete collection of <a href="/games/">free online puzzle games</a> to enjoy logic, spatial, and memory challenges alongside their favorite difference puzzles.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <FaqList items={faqs} />
+    </article>
+
+    <!-- Explore More Puzzle Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep Your Brain Sharp</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Challenge your mind with our curated collection of free, high-focus browser puzzle games.</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/memory-matching-game-online/">
+          <div class="related-visual memory-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon memory-icon">
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.25"></polygon></svg></span>
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg></span>
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"></circle><line x1="12" y1="8" x2="12" y2="21"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path></svg></span>
+            </div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">MEMORY PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Memory Matching Game Online</h3>
+            <p class="muted">Flip cards, match pairs across icon, number, color, and shape sets, and train your short-term visual memory.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/picross-game-online/">
+          <div class="related-visual picross-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
+            <h3>Picross Game Online</h3>
+            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram picture logic challenge.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/reaction-time-challenge/">
+          <div class="related-visual reaction-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon reaction-icon"><span>⚡</span><span>⏱️</span><span>🎯</span><span>🚀</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">REFLEX TEST</span><span class="difficulty-label">All Skill Levels</span></div>
+            <h3>Reaction Time Challenge</h3>
+            <p class="muted">Test your visual reflexes and measure your reaction speed in milliseconds across classic and endurance modes.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .spot-page {
+    padding-bottom: 80px;
+  }
+
+  .spot-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 20px 0 10px;
+  }
+
+  .spot-breadcrumbs a {
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+
+  .spot-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+
+  .spot-intro {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 10px 0 24px;
+  }
+
+  .spot-intro .eyebrow {
+    display: inline-block;
+  }
+
+  .spot-intro h1 {
+    font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+    line-height: 1.1;
+    margin: 8px auto 14px;
+    letter-spacing: -0.04em;
+  }
+
+  .spot-intro p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin: 0 auto;
+    max-width: 640px;
+  }
+
+  /* Game Shell Card */
+  .spot-shell {
+    padding: 24px;
+    margin-bottom: 50px;
+    background: var(--paper, #fff);
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: 20px;
+    box-shadow: 0 12px 36px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* Difficulty Bar */
+  .spot-diff-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line, #e2e8f0);
+    padding-bottom: 16px;
+  }
+
+  .spot-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--wash, #f1f4fb);
+    color: var(--ink, #17233b);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .spot-tab-btn:hover {
+    background: #e2e8f0;
+  }
+
+  .spot-tab-btn.is-active {
+    background: var(--blue, #315ee8);
+    border-color: var(--blue, #315ee8);
+    color: #ffffff;
+  }
+
+  .diff-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .diff-dot.easy { background: #10b981; }
+  .diff-dot.medium { background: #f59e0b; }
+  .diff-dot.hard { background: #ef4444; }
+
+  /* Level & Status Bar */
+  .spot-status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .spot-level-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .level-arrow-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--paper, #fff);
+    color: var(--ink, #17233b);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .level-arrow-btn:hover {
+    border-color: var(--blue);
+    background: var(--wash);
+  }
+
+  .level-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .level-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--blue, #315ee8);
+    letter-spacing: 0.05em;
+  }
+
+  .puzzle-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink, #17233b);
+    letter-spacing: -0.02em;
+  }
+
+  .puzzle-category {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .spot-metrics {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .metric-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--wash, #f1f4fb);
+    border: 1px solid var(--line, #e2e8f0);
+    font-size: 13px;
+    color: var(--ink, #17233b);
+  }
+
+  .metric-label {
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .metric-val {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Toolbar */
+  .spot-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--wash, #f8fafc);
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line, #e2e8f0);
+  }
+
+  .toolbar-left, .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--paper, #fff);
+    color: var(--ink, #17233b);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 34px;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+  }
+
+  .tool-btn:hover {
+    border-color: var(--blue);
+    background: var(--wash);
+  }
+
+  .tool-btn.primary {
+    background: #f59e0b;
+    border-color: #d97706;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .tool-btn.primary:hover {
+    background: #d97706;
+  }
+
+  .tool-btn.icon-only {
+    padding: 0;
+    width: 34px;
+    justify-content: center;
+  }
+
+  /* Mobile View Switcher */
+  .mobile-view-toggle {
+    display: none;
+    gap: 2px;
+    background: var(--line, #e2e8f0);
+    padding: 2px;
+    border-radius: 8px;
+  }
+
+  .view-btn {
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .view-btn.is-active {
+    background: var(--paper, #fff);
+    color: var(--ink, #17233b);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  @media (max-width: 768px) {
+    .mobile-view-toggle {
+      display: inline-flex;
+    }
+  }
+
+  /* Hint Banner */
+  .spot-hint-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 13px;
+    font-weight: 600;
+    animation: fadeIn 0.25s ease;
+  }
+
+  /* Comparison Playground Wrapper */
+  .spot-comparison-wrapper {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .spot-comparison-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+    transform: scale(var(--zoom-scale, 1));
+    transform-origin: top center;
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .image-card {
+    background: var(--paper, #fff);
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  }
+
+  .image-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--wash, #f8fafc);
+    border-bottom: 1px solid var(--line, #e2e8f0);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .image-hint-tag {
+    font-size: 11px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  .image-canvas-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 800 / 520;
+    cursor: crosshair;
+    user-select: none;
+    background: #0f172a;
+    overflow: hidden;
+  }
+
+  .image-canvas-box img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    pointer-events: none;
+  }
+
+  /* Markers & Feedback Overlays */
+  .markers-layer, .feedback-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  :global(.diff-marker) {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid #10b981;
+    background: rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), inset 0 0 8px rgba(16, 185, 129, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    pointer-events: none;
+    animation: markerPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 5;
+  }
+
+  :global(.hint-radar) {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px dashed #f59e0b;
+    background: rgba(245, 158, 11, 0.2);
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.7);
+    pointer-events: none;
+    animation: radarPulse 1.2s infinite ease-out;
+    z-index: 4;
+  }
+
+  :global(.click-ripple) {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #ef4444;
+    background: rgba(239, 68, 68, 0.25);
+    pointer-events: none;
+    animation: rippleFade 0.5s ease-out forwards;
+    z-index: 6;
+  }
+
+  /* Pause Overlay */
+  .spot-pause-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    z-index: 20;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .pause-card {
+    text-align: center;
+    background: var(--paper, #fff);
+    border: 1px solid var(--line, #e2e8f0);
+    padding: 30px;
+    border-radius: 16px;
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  }
+
+  .pause-card svg {
+    color: var(--blue);
+    margin-bottom: 12px;
+  }
+
+  .pause-card h2 {
+    font-size: 22px;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+
+  .pause-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+
+  /* Progress Dots Row */
+  .spot-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line, #e2e8f0);
+  }
+
+  .progress-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  :global(.p-dot) {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--line, #e2e8f0);
+    border: 2px solid transparent;
+    transition: all 0.25s ease;
+  }
+
+  :global(.p-dot.is-found) {
+    background: #10b981;
+    border-color: #059669;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    transform: scale(1.15);
+  }
+
+  /* Victory Modal */
+  .spot-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+
+  .spot-victory-card {
+    background: var(--paper, #fff);
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: 20px;
+    padding: 36px 30px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+    animation: modalBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .victory-confetti {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .spot-victory-card h2 {
+    font-size: 28px;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+
+  .victory-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 20px;
+  }
+
+  .victory-stars {
+    font-size: 32px;
+    color: #f59e0b;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .victory-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .vstat-box {
+    background: var(--wash, #f8fafc);
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .vstat-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+
+  .vstat-val {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  .victory-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* SEO Content Styling - Strict Typography Matching Memory Matching Game */
+  .wrap.game-article-content.spot-guide-section {
+    max-width: 760px;
+    margin: 54px auto 48px;
+    line-height: 1.72;
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .wrap.game-article-content.spot-guide-section h2 {
+    font-size: 24px;
+    line-height: 1.3;
+    letter-spacing: -.025em;
+    margin: 36px 0 14px;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.spot-guide-section h2:first-child {
+    margin-top: 0;
+  }
+
+  .wrap.game-article-content.spot-guide-section h3 {
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -.02em;
+    margin: 26px 0 10px;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.spot-guide-section p {
+    font-size: 16px;
+    line-height: 1.72;
+    margin: 0 0 16px;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.spot-guide-section ol,
+  .wrap.game-article-content.spot-guide-section ul {
+    padding-inline-start: 24px;
+    margin: 0 0 20px;
+  }
+
+  .wrap.game-article-content.spot-guide-section li {
+    font-size: 16px;
+    line-height: 1.68;
+    margin: 0 0 8px;
+    padding-inline-start: 2px;
+  }
+
+  .wrap.game-article-content.spot-guide-section a {
+    color: var(--blue, #315ee8);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+  }
+
+  .wrap.game-article-content.spot-guide-section a:hover {
+    color: #1a42b8;
+  }
+
+  .spot-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0 28px;
+    font-size: 14px;
+  }
+
+  .spot-table th, .spot-table td {
+    padding: 12px 14px;
+    border: 1px solid var(--line, #e2e8f0);
+    text-align: left;
+  }
+
+  .spot-table th {
+    background: var(--wash, #f8fafc);
+    font-weight: 700;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    margin-bottom: 24px;
+  }
+
+  /* Related Games Section - Matching Reaction Time Challenge */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .related-card {
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 18px;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 14px 34px #17233b12;
+  }
+
+  .related-visual {
+    height: 170px;
+    position: relative;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+
+  .related-orbit {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 50px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+
+  .related-icon span {
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: white;
+    color: #315ee8;
+    font-size: 18px;
+    font-weight: 800;
+    box-shadow: 0 6px 16px #293e8b14;
+  }
+
+  .memory-icon span:nth-child(1) { background: #ede9fe; color: #7c3aed; }
+  .memory-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .memory-icon span:nth-child(3) { background: #fef08a; color: #a16207; }
+  .memory-icon span:nth-child(4) { background: #dcfce7; color: #15803d; }
+
+  .picross-icon span:nth-child(1), .picross-icon span:nth-child(4) { background: #315ee8; color: #fff; }
+  .picross-icon span:nth-child(2), .picross-icon span:nth-child(3) { background: #edf2ff; color: #315ee8; }
+
+  .reaction-icon span:nth-child(1) { background: #fef08a; color: #a16207; }
+  .reaction-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .reaction-icon span:nth-child(3) { background: #dcfce7; color: #15803d; }
+  .reaction-icon span:nth-child(4) { background: #fee2e2; color: #b91c1c; }
+
+  .related-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+
+  .related-card h3 {
+    margin: 8px 0;
+    font-size: 18px;
+    letter-spacing: -.02em;
+  }
+
+  .related-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+  }
+
+  .related-play {
+    margin-top: auto;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+  .related-play span { transition: transform .18s ease; }
+  .related-card:hover .related-play span { transform: translateX(3px); }
+
+  /* Animations */
+  @keyframes markerPop {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    70% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  @keyframes radarPulse {
+    0% { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.6; }
+    100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+  }
+
+  @keyframes rippleFade {
+    0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+  }
+
+  @keyframes modalBounce {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsive Rules */
+  @media (max-width: 900px) {
+    .related-games-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .wrap.game-article-content.spot-guide-section {
+      width: calc(100% - 32px);
+      margin-top: 48px;
+      margin-bottom: 40px;
+      font-size: 15px;
+    }
+
+    .wrap.game-article-content.spot-guide-section h2 {
+      font-size: 21px;
+      margin-top: 28px;
+    }
+
+    .wrap.game-article-content.spot-guide-section h3 {
+      font-size: 17px;
+    }
+
+    .wrap.game-article-content.spot-guide-section p,
+    .wrap.game-article-content.spot-guide-section li {
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    .spot-shell {
+      padding: 16px;
+    }
+
+    .spot-comparison-board {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    /* When mobile view focus is toggled */
+    .spot-comparison-board[data-active-view="a"] #card-image-b {
+      display: none;
+    }
+
+    .spot-comparison-board[data-active-view="b"] #card-image-a {
+      display: none;
+    }
+
+    .spot-status-bar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
+    .related-games-head { margin-bottom: 24px; }
+    .related-games-grid { grid-template-columns: 1fr; gap: 16px; }
+    .related-card {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      min-height: 160px;
+      border-radius: 16px;
+    }
+    .related-visual { height: auto; min-height: 160px; }
+    .related-orbit { width: 90px; height: 90px; }
+    .related-icon { grid-template-columns: repeat(2, 34px); gap: 5px; }
+    .related-icon span { width: 34px; height: 34px; border-radius: 9px; font-size: 13px; }
+    .related-card-body { padding: 14px 12px; }
+    .related-card h3 { font-size: 16px; margin: 8px 0 4px; }
+    .related-card p { font-size: 12px; margin-bottom: 10px; }
+    .related-play { font-size: 12px; }
+  }
+
+  /* Dark Mode Adjustments */
+  :global(html[data-theme="dark"]) .spot-shell {
+    background: #111a36;
+    border-color: #23335c;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+  }
+
+  :global(html[data-theme="dark"]) .spot-tab-btn {
+    background: #19264c;
+    border-color: #23335c;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .spot-tab-btn:hover {
+    background: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .spot-tab-btn.is-active {
+    background: #315ee8;
+    border-color: #315ee8;
+    color: #fff;
+  }
+
+  :global(html[data-theme="dark"]) .level-arrow-btn,
+  :global(html[data-theme="dark"]) .tool-btn {
+    background: #19264c;
+    border-color: #23335c;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .level-arrow-btn:hover,
+  :global(html[data-theme="dark"]) .tool-btn:hover {
+    background: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .metric-chip {
+    background: #19264c;
+    border-color: #23335c;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .spot-toolbar {
+    background: #152042;
+    border-color: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .image-card {
+    background: #111a36;
+    border-color: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .image-card-header {
+    background: #152042;
+    border-color: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .spot-victory-card,
+  :global(html[data-theme="dark"]) .pause-card {
+    background: #111a36;
+    border-color: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .vstat-box {
+    background: #19264c;
+    border-color: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .spot-table th,
+  :global(html[data-theme="dark"]) .spot-table td {
+    border-color: #23335c;
+  }
+
+  :global(html[data-theme="dark"]) .spot-table th {
+    background: #19264c;
+  }
+
+  /* Dark Theme for Related Games (Matching Reaction Time Challenge) */
+  :global(html[data-theme="dark"]) .related-games-section {
+    border-color: #27375a;
+  }
+
+  :global(html[data-theme="dark"]) .related-card {
+    background: #141f3d;
+    border-color: #27375a;
+    color: #f1f5ff;
+  }
+
+  :global(html[data-theme="dark"]) .related-card:hover {
+    border-color: #52678f;
+    box-shadow: 0 16px 38px #03081760;
+  }
+
+  :global(html[data-theme="dark"]) .related-visual {
+    background: linear-gradient(145deg, #1b294b, #222345);
+  }
+
+  :global(html[data-theme="dark"]) .related-orbit {
+    border-color: #35466c;
+  }
+
+  :global(html[data-theme="dark"]) .related-icon span {
+    background: #263553;
+    color: #c2d0ff;
+    box-shadow: 0 8px 20px #03081755;
+  }
+
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(1) { background: #3b1e75; color: #c4b5fd; }
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(2) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(3) { background: #713f12; color: #fef08a; }
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(4) { background: #14532d; color: #86efac; }
+
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(1),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(4) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(2),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(3) { background: #1b294b; color: #a9bcff; }
+
+  :global(html[data-theme="dark"]) .reaction-icon span:nth-child(1) { background: #713f12; color: #fef08a; }
+  :global(html[data-theme="dark"]) .reaction-icon span:nth-child(2) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .reaction-icon span:nth-child(3) { background: #14532d; color: #86efac; }
+  :global(html[data-theme="dark"]) .reaction-icon span:nth-child(4) { background: #7f1d1d; color: #fca5a5; }
+
+  :global(html[data-theme="dark"]) .related-card h3 { color: #f1f5ff; }
+  :global(html[data-theme="dark"]) .related-card p { color: #b8c4dd; }
+  :global(html[data-theme="dark"]) .related-play { color: #8ea8ff; }
+
+  :global(html[data-theme="dark"]) .wrap.game-article-content.spot-guide-section a {
+    color: #8ea8ff;
+  }
+
+  :global(html[data-theme="dark"]) .wrap.game-article-content.spot-guide-section a:hover {
+    color: #b8c8ff;
+  }
+</style>
+
+<script>
+  import { SPOT_DIFFERENCE_PUZZLES } from '../data/spotDifferenceData';
+
+  // State Management
+  let currentDiff = 'easy';
+  let currentLevelIndex = 0; // index within filtered difficulty puzzles
+  let activePuzzle = SPOT_DIFFERENCE_PUZZLES[0];
+  let foundDiffIds = new Set<number>();
+  let timerInterval: number | null = null;
+  let elapsedSeconds = 0;
+  let isPaused = false;
+  let hintsUsed = 0;
+  let mistakes = 0;
+  let soundEnabled = true;
+
+  // Web Audio Context for synthesized SFX
+  let audioCtx: AudioContext | null = null;
+
+  function initAudio() {
+    if (!audioCtx && typeof window !== 'undefined') {
+      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtxClass) {
+        audioCtx = new AudioCtxClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function playTone(freq: number, type: OscillatorType, duration: number, delay = 0) {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const startTime = audioCtx.currentTime + delay;
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      gain.gain.setValueAtTime(0.18, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    } catch {
+      // Audio autoplay policy fallback
+    }
+  }
+
+  function playSuccessSound() {
+    playTone(523.25, 'triangle', 0.15, 0);      // C5
+    playTone(659.25, 'triangle', 0.18, 0.08);   // E5
+    playTone(783.99, 'triangle', 0.25, 0.16);   // G5
+  }
+
+  function playMissSound() {
+    playTone(220, 'sine', 0.15, 0);             // A3 low thud
+  }
+
+  function playHintSound() {
+    playTone(784, 'sine', 0.12, 0);
+    playTone(988, 'sine', 0.15, 0.08);
+    playTone(1318, 'sine', 0.25, 0.16);
+  }
+
+  function playVictorySound() {
+    playTone(523.25, 'triangle', 0.18, 0);      // C5
+    playTone(659.25, 'triangle', 0.18, 0.12);   // E5
+    playTone(783.99, 'triangle', 0.18, 0.24);   // G5
+    playTone(1046.50, 'triangle', 0.45, 0.36);  // C6
+  }
+
+  // Format mm:ss
+  function formatTime(sec: number): string {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  // Filter puzzles for current difficulty
+  function getPuzzlesForDiff(diff: string) {
+    return SPOT_DIFFERENCE_PUZZLES.filter(p => p.difficulty === diff);
+  }
+
+  function loadSavedSettings() {
+    try {
+      const soundPref = localStorage.getItem('puzzlefeels-spot-sound');
+      if (soundPref !== null) {
+        soundEnabled = soundPref === 'true';
+      }
+    } catch {
+      // Storage blocked
+    }
+    updateSoundUI();
+  }
+
+  function updateSoundUI() {
+    const soundBtn = document.getElementById('btn-sound');
+    if (!soundBtn) return;
+    const svgOn = soundBtn.querySelector('.sound-on-svg') as HTMLElement | null;
+    const svgOff = soundBtn.querySelector('.sound-off-svg') as HTMLElement | null;
+    if (svgOn && svgOff) {
+      svgOn.hidden = !soundEnabled;
+      svgOff.hidden = soundEnabled;
+    }
+  }
+
+  function startTimer() {
+    stopTimer();
+    timerInterval = window.setInterval(() => {
+      if (!isPaused) {
+        elapsedSeconds++;
+        const el = document.getElementById('metric-timer');
+        if (el) el.textContent = formatTime(elapsedSeconds);
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval !== null) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function clearMarkersAndFeedback() {
+    const layerA = document.getElementById('markers-layer-a');
+    const layerB = document.getElementById('markers-layer-b');
+    const feedA = document.getElementById('feedback-layer-a');
+    const feedB = document.getElementById('feedback-layer-b');
+    if (layerA) layerA.innerHTML = '';
+    if (layerB) layerB.innerHTML = '';
+    if (feedA) feedA.innerHTML = '';
+    if (feedB) feedB.innerHTML = '';
+    hideHintBanner();
+  }
+
+  function hideHintBanner() {
+    const banner = document.getElementById('spot-hint-banner');
+    if (banner) banner.hidden = true;
+  }
+
+  function setupProgressDots() {
+    const container = document.getElementById('spot-progress-dots');
+    if (!container) return;
+    container.innerHTML = '';
+    for (let i = 0; i < activePuzzle.differences.length; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'p-dot';
+      dot.dataset.diffIndex = String(i);
+      container.appendChild(dot);
+    }
+  }
+
+  function updateProgressDots() {
+    const container = document.getElementById('spot-progress-dots');
+    if (!container) return;
+    const dots = container.querySelectorAll('.p-dot');
+    dots.forEach((dot, idx) => {
+      if (idx < foundDiffIds.size) {
+        dot.classList.add('is-found');
+      } else {
+        dot.classList.remove('is-found');
+      }
+    });
+  }
+
+  function updateMetricsUI() {
+    const foundEl = document.getElementById('metric-found');
+    const timerEl = document.getElementById('metric-timer');
+    const hintsEl = document.getElementById('metric-hints');
+    const mistakesEl = document.getElementById('metric-mistakes');
+
+    if (foundEl) foundEl.textContent = `${foundDiffIds.size} / ${activePuzzle.differences.length}`;
+    if (timerEl) timerEl.textContent = formatTime(elapsedSeconds);
+    if (hintsEl) hintsEl.textContent = String(hintsUsed);
+    if (mistakesEl) mistakesEl.textContent = String(mistakes);
+
+    updateProgressDots();
+  }
+
+  function renderPuzzle(puzzle: typeof SPOT_DIFFERENCE_PUZZLES[0]) {
+    activePuzzle = puzzle;
+    foundDiffIds.clear();
+    elapsedSeconds = 0;
+    isPaused = false;
+    hintsUsed = 0;
+    mistakes = 0;
+
+    // Update images
+    const imgA = document.getElementById('img-a') as HTMLImageElement | null;
+    const imgB = document.getElementById('img-b') as HTMLImageElement | null;
+    if (imgA) imgA.src = puzzle.imageA;
+    if (imgB) imgB.src = puzzle.imageB;
+
+    // Update titles
+    const badgeEl = document.getElementById('spot-level-badge');
+    const titleEl = document.getElementById('spot-puzzle-title');
+    const catEl = document.getElementById('spot-puzzle-cat');
+    if (badgeEl) badgeEl.textContent = `Level ${currentLevelIndex + 1}`;
+    if (titleEl) titleEl.textContent = puzzle.title;
+    if (catEl) catEl.textContent = puzzle.category;
+
+    // Reset overlay
+    clearMarkersAndFeedback();
+    setupProgressDots();
+    updateMetricsUI();
+    startTimer();
+  }
+
+  function addMarkerToBothImages(diff: typeof SPOT_DIFFERENCE_PUZZLES[0]['differences'][0], index: number) {
+    const layerA = document.getElementById('markers-layer-a');
+    const layerB = document.getElementById('markers-layer-b');
+
+    [layerA, layerB].forEach(layer => {
+      if (!layer) return;
+      const marker = document.createElement('div');
+      marker.className = 'diff-marker';
+      marker.style.left = `${diff.x}%`;
+      marker.style.top = `${diff.y}%`;
+      marker.textContent = String(index);
+      marker.title = diff.label;
+      layer.appendChild(marker);
+    });
+  }
+
+  function showMissFeedback(canvasBox: HTMLElement, clickX: number, clickY: number) {
+    const feedbackLayer = canvasBox.querySelector('.feedback-layer');
+    if (!feedbackLayer) return;
+
+    const ripple = document.createElement('div');
+    ripple.className = 'click-ripple';
+    ripple.style.left = `${clickX}%`;
+    ripple.style.top = `${clickY}%`;
+    feedbackLayer.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 550);
+  }
+
+  function handleImageClick(e: MouseEvent, role: 'a' | 'b') {
+    if (isPaused) return;
+    initAudio();
+
+    const canvasBox = e.currentTarget as HTMLElement;
+    const rect = canvasBox.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    // Normalized percentages (0 - 100)
+    const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+    const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+
+    // Aspect ratio weighting for radial distance (800 x 520 => 520 / 800 = 0.65)
+    const aspectCorrection = 520 / 800;
+
+    let matchedDiff: typeof SPOT_DIFFERENCE_PUZZLES[0]['differences'][0] | null = null;
+
+    for (const diff of activePuzzle.differences) {
+      if (foundDiffIds.has(diff.id)) continue;
+
+      const dx = clickX - diff.x;
+      const dy = (clickY - diff.y) * aspectCorrection;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist <= diff.radius) {
+        matchedDiff = diff;
+        break;
+      }
+    }
+
+    if (matchedDiff) {
+      // Correct spot!
+      foundDiffIds.add(matchedDiff.id);
+      playSuccessSound();
+      addMarkerToBothImages(matchedDiff, foundDiffIds.size);
+      updateMetricsUI();
+
+      // Show brief notification
+      const banner = document.getElementById('spot-hint-banner');
+      const text = document.getElementById('hint-text');
+      if (banner && text) {
+        text.textContent = `Found: ${matchedDiff.label}!`;
+        banner.hidden = false;
+        setTimeout(() => {
+          if (banner.textContent?.includes(matchedDiff?.label || '')) {
+            banner.hidden = true;
+          }
+        }, 2200);
+      }
+
+      // Check level completion
+      if (foundDiffIds.size === activePuzzle.differences.length) {
+        handleLevelComplete();
+      }
+    } else {
+      // Missed click
+      mistakes++;
+      playMissSound();
+      showMissFeedback(canvasBox, clickX, clickY);
+      updateMetricsUI();
+    }
+  }
+
+  function handleHint() {
+    if (isPaused) return;
+    initAudio();
+
+    // Find first undiscovered difference
+    const unfound = activePuzzle.differences.filter(d => !foundDiffIds.has(d.id));
+    if (unfound.length === 0) return;
+
+    const targetDiff = unfound[0];
+    hintsUsed++;
+    playHintSound();
+    updateMetricsUI();
+
+    // Show radar circles on both images
+    const layerA = document.getElementById('markers-layer-a');
+    const layerB = document.getElementById('markers-layer-b');
+
+    [layerA, layerB].forEach(layer => {
+      if (!layer) return;
+      const radar = document.createElement('div');
+      radar.className = 'hint-radar';
+      radar.style.left = `${targetDiff.x}%`;
+      radar.style.top = `${targetDiff.y}%`;
+      layer.appendChild(radar);
+
+      setTimeout(() => {
+        radar.remove();
+      }, 3600);
+    });
+
+    // Display clue in banner
+    const banner = document.getElementById('spot-hint-banner');
+    const text = document.getElementById('hint-text');
+    if (banner && text) {
+      text.textContent = `Hint: ${targetDiff.hint}`;
+      banner.hidden = false;
+    }
+  }
+
+  function handleLevelComplete() {
+    stopTimer();
+    playVictorySound();
+
+    // Calculate stars
+    let stars = '★★★';
+    if (hintsUsed > 2 || mistakes > 5) {
+      stars = '★☆☆';
+    } else if (hintsUsed > 0 || mistakes > 2) {
+      stars = '★★☆';
+    }
+
+    // Save best time
+    try {
+      const key = `puzzlefeels-spot-best-${activePuzzle.id}`;
+      const prevBest = localStorage.getItem(key);
+      if (!prevBest || elapsedSeconds < Number(prevBest)) {
+        localStorage.setItem(key, String(elapsedSeconds));
+      }
+    } catch {
+      // Storage blocked
+    }
+
+    // Populate modal
+    const modal = document.getElementById('victory-modal');
+    const timeEl = document.getElementById('vstat-time');
+    const hintsEl = document.getElementById('vstat-hints');
+    const mistakesEl = document.getElementById('vstat-mistakes');
+    const diffEl = document.getElementById('vstat-diff');
+    const starsEl = document.getElementById('victory-stars');
+
+    if (timeEl) timeEl.textContent = formatTime(elapsedSeconds);
+    if (hintsEl) hintsEl.textContent = String(hintsUsed);
+    if (mistakesEl) mistakesEl.textContent = String(mistakes);
+    if (diffEl) diffEl.textContent = activePuzzle.difficulty.toUpperCase();
+    if (starsEl) starsEl.textContent = stars;
+
+    if (modal) modal.hidden = false;
+  }
+
+  function shareResult() {
+    const text = `I found all ${activePuzzle.differences.length} differences in "${activePuzzle.title}" on PuzzleFeels in ${formatTime(elapsedSeconds)} with ${hintsUsed} hints! Can you beat my time? https://puzzlefeels.com/spot-the-difference-game/`;
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Result copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy your score:', text);
+      });
+    } else {
+      prompt('Copy your score:', text);
+    }
+  }
+
+  function togglePause() {
+    isPaused = !isPaused;
+    const overlay = document.getElementById('spot-pause-overlay');
+    const pauseText = document.getElementById('pause-text');
+    if (overlay) overlay.hidden = !isPaused;
+    if (pauseText) pauseText.textContent = isPaused ? 'Resume' : 'Pause';
+  }
+
+  // Mobile view switcher
+  function initMobileViewToggle() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.mobile-view-toggle .view-btn');
+    const board = document.getElementById('spot-comparison-board');
+    if (!board) return;
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        const view = btn.dataset.view || 'both';
+        board.dataset.activeView = view;
+      });
+    });
+  }
+
+  // Initialize all listeners
+  function initSpotGame() {
+    loadSavedSettings();
+
+    // Canvas click listeners
+    const boxA = document.getElementById('box-image-a');
+    const boxB = document.getElementById('box-image-b');
+    if (boxA) boxA.addEventListener('click', (e) => handleImageClick(e, 'a'));
+    if (boxB) boxB.addEventListener('click', (e) => handleImageClick(e, 'b'));
+
+    // Difficulty buttons
+    document.querySelectorAll<HTMLButtonElement>('.spot-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.spot-tab-btn').forEach(b => {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+
+        currentDiff = btn.dataset.difficulty || 'easy';
+        currentLevelIndex = 0;
+        const puzzles = getPuzzlesForDiff(currentDiff);
+        if (puzzles.length > 0) {
+          renderPuzzle(puzzles[0]);
+        }
+      });
+    });
+
+    // Level navigation arrows
+    const prevBtn = document.getElementById('btn-prev-level');
+    const nextBtn = document.getElementById('btn-next-level');
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const puzzles = getPuzzlesForDiff(currentDiff);
+        currentLevelIndex = (currentLevelIndex - 1 + puzzles.length) % puzzles.length;
+        renderPuzzle(puzzles[currentLevelIndex]);
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const puzzles = getPuzzlesForDiff(currentDiff);
+        currentLevelIndex = (currentLevelIndex + 1) % puzzles.length;
+        renderPuzzle(puzzles[currentLevelIndex]);
+      });
+    }
+
+    // Toolbar actions
+    const hintBtn = document.getElementById('btn-hint');
+    if (hintBtn) hintBtn.addEventListener('click', handleHint);
+
+    const restartBtn = document.getElementById('btn-restart');
+    if (restartBtn) restartBtn.addEventListener('click', () => renderPuzzle(activePuzzle));
+
+    const pauseBtn = document.getElementById('btn-pause');
+    if (pauseBtn) pauseBtn.addEventListener('click', togglePause);
+
+    const resumeBtn = document.getElementById('btn-resume');
+    if (resumeBtn) resumeBtn.addEventListener('click', togglePause);
+
+    const soundBtn = document.getElementById('btn-sound');
+    if (soundBtn) {
+      soundBtn.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        try {
+          localStorage.setItem('puzzlefeels-spot-sound', String(soundEnabled));
+        } catch {}
+        updateSoundUI();
+      });
+    }
+
+    // Victory modal buttons
+    const nextPuzzleBtn = document.getElementById('btn-next-puzzle');
+    if (nextPuzzleBtn) {
+      nextPuzzleBtn.addEventListener('click', () => {
+        const modal = document.getElementById('victory-modal');
+        if (modal) modal.hidden = true;
+        const puzzles = getPuzzlesForDiff(currentDiff);
+        currentLevelIndex = (currentLevelIndex + 1) % puzzles.length;
+        renderPuzzle(puzzles[currentLevelIndex]);
+      });
+    }
+
+    const replayBtn = document.getElementById('btn-replay-puzzle');
+    if (replayBtn) {
+      replayBtn.addEventListener('click', () => {
+        const modal = document.getElementById('victory-modal');
+        if (modal) modal.hidden = true;
+        renderPuzzle(activePuzzle);
+      });
+    }
+
+    const shareBtn = document.getElementById('btn-share-result');
+    if (shareBtn) shareBtn.addEventListener('click', shareResult);
+
+    initMobileViewToggle();
+
+    // Initial render
+    const initialPuzzles = getPuzzlesForDiff(currentDiff);
+    if (initialPuzzles.length > 0) {
+      renderPuzzle(initialPuzzles[0]);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSpotGame);
+  } else {
+    initSpotGame();
+  }
+</script>

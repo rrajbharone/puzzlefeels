@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+  <defs>
+    <linearGradient id="tropSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="65%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#fed7aa"/>
+    </linearGradient>
+    <linearGradient id="tropSea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="45%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#2dd4bf"/>
+    </linearGradient>
+    <linearGradient id="beachSand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#fde047"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="520" fill="url(#tropSky)"/>
+  <!-- Glowing Sun -->
+  <circle cx="120" cy="90" r="45" fill="#fef08a" opacity="0.8"/>
+
+  <!-- Seagulls / Difference 5 -->
+  <g stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M460,70 Q468,64 476,70 Q484,64 492,70"/>
+    <path d="M590,80 Q598,74 606,80 Q614,74 622,80"/>
+    
+  </g>
+
+  <!-- Distant Island Silhouette -->
+  <polygon points="620,220 680,195 760,220" fill="#0d9488" opacity="0.4"/>
+
+  <!-- Sailboat on Horizon / Difference 4 -->
+  <g id="sailboat" transform="translate(672, 203)">
+    <polygon points="-14,8 14,8 10,14 -10,14" fill="#78350f"/>
+    <line x1="0" y1="8" x2="0" y2="-18" stroke="#333333" stroke-width="1.5"/>
+    <!-- Sail Color / Difference 4 -->
+    <polygon points="0,-16 12,6 0,6" fill="#facc15"/>
+  </g>
+
+  <!-- Turquoise Ocean Waves -->
+  <path d="M0,210 Q400,200 800,210 L800,320 Q400,340 0,320 Z" fill="url(#tropSea)"/>
+  <!-- Foamy Tide -->
+  <path d="M0,315 Q400,335 800,315 L800,330 Q400,350 0,330 Z" fill="#ffffff" opacity="0.6"/>
+
+  <!-- Sandy Beach -->
+  <path d="M0,325 Q400,345 800,325 L800,520 L0,520 Z" fill="url(#beachSand)"/>
+
+  <!-- Leaning Coconut Palm Tree / Difference 1 -->
+  <g id="palmTree">
+    <!-- Curved Trunk -->
+    <path d="M80,520 Q120,320 208,130" stroke="#78350f" stroke-width="26" fill="none" stroke-linecap="round"/>
+    <path d="M80,520 Q120,320 208,130" stroke="#9a3412" stroke-width="20" fill="none" stroke-linecap="round"/>
+    <!-- Palm Fronds -->
+    <g fill="#15803d">
+      <path d="M208,130 Q160,80 80,100 Q150,115 208,130 Z"/>
+      <path d="M208,130 Q190,50 140,40 Q180,80 208,130 Z"/>
+      <path d="M208,130 Q240,40 290,50 Q245,85 208,130 Z"/>
+      <path d="M208,130 Q270,90 330,120 Q260,125 208,130 Z"/>
+      <path d="M208,130 Q230,160 270,210 Q225,170 208,130 Z"/>
+      <path d="M208,130 Q160,170 120,200 Q165,160 208,130 Z"/>
+    </g>
+    <!-- Coconuts / Difference 1 -->
+    <circle cx="204" cy="136" r="7" fill="#451a03"/>
+    <circle cx="214" cy="138" r="7" fill="#451a03"/>
+    
+  </g>
+
+  <!-- Striped Beach Umbrella / Difference 2 -->
+  <g id="umbrella" transform="translate(464, 198)">
+    <line x1="0" y1="0" x2="-20" y2="170" stroke="#cbd5e1" stroke-width="5"/>
+    <!-- Canopy Segments -->
+    <path d="M-80,0 Q0,-70 80,0 Z" fill="#ffffff"/>
+    <path d="M-50,-24 Q0,-70 50,-24 Q0,-45 -50,-24 Z" fill="#38bdf8"/>
+    <!-- Center Stripe / Difference 2 -->
+    <path d="M-20,-50 Q0,-70 20,-50 Q0,-58 -20,-50 Z" fill="#84cc16"/>
+  </g>
+
+  <!-- Wooden Lounge Chair -->
+  <g id="loungeChair" transform="translate(560, 360)">
+    <polygon points="-60,10 -20,15 60,-35 70,-30 -15,22 -60,16" fill="#854d0e"/>
+    <line x1="-50" y1="14" x2="-55" y2="35" stroke="#78350f" stroke-width="4"/>
+    <line x1="-15" y1="18" x2="-15" y2="35" stroke="#78350f" stroke-width="4"/>
+    <line x1="45" y1="-20" x2="35" y2="25" stroke="#78350f" stroke-width="4"/>
+  </g>
+
+  <!-- Side Table & Tropical Drink / Difference 3 -->
+  <g id="drinkTable" transform="translate(344, 374)">
+    <ellipse cx="0" cy="15" rx="24" ry="8" fill="#a16207"/>
+    <line x1="0" y1="15" x2="0" y2="45" stroke="#78350f" stroke-width="4"/>
+    <!-- Glass with Juice -->
+    <polygon points="-8,-6 8,-6 6,14 -6,14" fill="#fb923c"/>
+    <!-- Straw / Garnish Difference 3 -->
+    
+    <!-- Cocktail Umbrella Pick in B -->
+    <line x1="0" y1="6" x2="-8" y2="-16" stroke="#0ea5e9" stroke-width="2"/>
+    <polygon points="-12,-18 -4,-18 -8,-24" fill="#f43f5e"/>
+    
+  </g>
+
+  <!-- Beach Towel on Sand / Difference 6 -->
+  <g id="towel" transform="translate(584, 421) rotate(10)">
+    <rect x="-40" y="-18" width="80" height="36" rx="4" fill="#6366f1"/>
+    <!-- Pattern / Difference 6 -->
+    
+    <!-- Polka dots in B -->
+    <circle cx="-25" cy="-5" r="3" fill="#ffffff"/>
+    <circle cx="-5" cy="-5" r="3" fill="#ffffff"/>
+    <circle cx="15" cy="-5" r="3" fill="#ffffff"/>
+    <circle cx="-15" cy="5" r="3" fill="#ffffff"/>
+    <circle cx="5" cy="5" r="3" fill="#ffffff"/>
+    <circle cx="25" cy="5" r="3" fill="#ffffff"/>
+    
+  </g>
+
+  <!-- Seashell on Beach Tideline / Difference 7 -->
+  <g id="beachShell" transform="translate(112, 426)">
+    
+    <!-- Smooth Clam Shell in B -->
+    <path d="M0,6 C6,-12 20,-12 26,6 Z" fill="#fed7aa"/>
+    <line x1="13" y1="-8" x2="13" y2="6" stroke="#f97316" stroke-width="1.5"/>
+    
+  </g>
+</svg>

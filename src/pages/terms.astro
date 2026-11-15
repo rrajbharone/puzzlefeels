@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Terms of Use | PuzzleFeels';
+const description = 'Read the terms for using PuzzleFeels, including its free browser-based puzzle games, local saves, acceptable use, and service limitations.';
+---
+
+<Base {title} {description} path="/terms/">
+  <Header />
+  <main class="wrap legal">
+    <span class="eyebrow">Last updated November 6, 2026</span>
+    <h1>Terms of Use</h1>
+    <p class="lead">These Terms explain the basic rules for using PuzzleFeels.com. Please read them before playing. By using the site, you agree to these Terms to the extent permitted by the laws that apply to you.</p>
+
+    <h2>1. About PuzzleFeels</h2>
+    <p>PuzzleFeels is a free website offering browser-based puzzle games and related information. Currently available games include Number Sequence Game, Color Flood Game, Picross Game Online, and Sliding Number Puzzle Game. No account registration or software download is required to play. Games can save your progress, settings, and preferences locally in your browser, as described in the <a href="/privacy-policy/">Privacy Policy</a>.</p>
+
+    <h2>2. Eligibility and responsible use</h2>
+    <p>You may use PuzzleFeels only in a way that is lawful and consistent with these Terms. If you are not old enough to agree to website terms where you live, ask a parent or guardian to review them with you. PuzzleFeels is provided for casual entertainment and is not a school, medical, financial, or professional service.</p>
+
+    <h2>3. Permitted and prohibited use</h2>
+    <p>You may visit the site and play its games for personal, non-commercial entertainment. Please do not:</p>
+    <ul>
+      <li>attempt to disrupt, overload, damage, or gain unauthorized access to the website or its hosting systems;</li>
+      <li>use bots, scripts, or other tools to interfere with the games, create misleading activity, or impair access for others;</li>
+      <li>probe, exploit, reverse engineer, or bypass technical restrictions, except where applicable law gives you a right that cannot be limited;</li>
+      <li>upload, transmit, or introduce malware or other harmful code; or</li>
+      <li>copy or reuse substantial site content in a way that violates someone’s rights or applicable law.</li>
+    </ul>
+
+    <h2>4. Game rules, scores, and saved progress</h2>
+    <p>Play fairly and use the game controls as intended. Scores, best results, and unfinished sessions are saved in your browser’s local storage, not verified or hosted by a PuzzleFeels server. The site has no global leaderboard, prize, tournament, or cloud account system. Local scores can be changed or lost by editing or clearing browser data and should not be treated as independently verified records. Daily Challenges are selected based on the calendar date and are intended for individual enjoyment.</p>
+
+    <h2>5. Website content and intellectual property</h2>
+    <p>Site text, original illustrations, game presentation, and PuzzleFeels branding are provided for viewing and personal play on the site. Do not reproduce or distribute substantial portions without permission, except where applicable law allows it. Third-party names, software, fonts, and other materials remain subject to the rights and terms of their respective owners. Nothing in these Terms transfers ownership of third-party material.</p>
+
+    <h2>6. Feedback and suggestions</h2>
+    <p>We welcome your questions, feedback, and ideas about our games. You can contact us at <a href="mailto:hello@puzzlefeels.com">hello@puzzlefeels.com</a> or visit our <a href="/contact/">Contact page</a>. By submitting feedback or suggestions, you acknowledge that PuzzleFeels may use your comments to improve games and features without obligation or compensation.</p>
+
+    <h2>7. Third-party services and links</h2>
+    <p>The site currently requests the Inter font through Google Fonts and may link to external resources. Third-party services and websites are operated under their own terms and privacy practices. PuzzleFeels does not control third-party content or services, and a link does not mean that PuzzleFeels endorses them. See the <a href="/privacy-policy/">Privacy Policy</a> for current information about Google Fonts.</p>
+
+    <h2>8. Availability and changes</h2>
+    <p>We may update, change, suspend, or remove site content or features as the project develops. The site may occasionally be unavailable because of maintenance, technical issues, or circumstances outside the site’s control. Saved game data is stored in your browser and is not a backup guaranteed by PuzzleFeels.</p>
+
+    <h2>9. Disclaimers</h2>
+    <p>To the extent permitted by law, PuzzleFeels and its games are provided “as is” and “as available,” without a guarantee that they will be uninterrupted, error-free, or suitable for every purpose. Nothing in these Terms excludes a consumer right or warranty that cannot legally be excluded where you live.</p>
+
+    <h2>10. Limitation of liability</h2>
+    <p>To the extent permitted by law, PuzzleFeels is not liable for indirect or consequential loss arising from use of the site, including loss of locally stored progress. This section does not exclude liability that applicable law does not allow to be excluded, including liability for fraud or intentional misconduct where exclusion is prohibited.</p>
+
+    <h2>11. Responsibility for misuse</h2>
+    <p>You are responsible for your use of the website and for complying with applicable law. These Terms do not impose a blanket obligation to reimburse PuzzleFeels for claims or losses; responsibility for unlawful conduct and any available remedies are determined under applicable law.</p>
+
+    <h2>12. Changes to these Terms</h2>
+    <p>These Terms may be revised when the site or its requirements change. The updated date at the top will indicate the latest revision. Continued use after a revision means the revised Terms apply to later use, subject to any notice or consent requirements that apply by law.</p>
+
+    <h2>13. Governing law and jurisdiction</h2>
+    <p>The project information currently available does not identify a separate legal operator, business address, or jurisdiction for PuzzleFeels. Any dispute is subject to the mandatory laws and consumer protections that apply in your jurisdiction.</p>
+
+    <h2>14. Contact</h2>
+    <p>If you have any questions about these Terms of Use, please reach out via email at <a href="mailto:hello@puzzlefeels.com">hello@puzzlefeels.com</a> or visit our <a href="/contact/">Contact page</a>.</p>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .legal{padding:70px 0 100px;max-width:800px}
+  .legal h1{font-size:clamp(2.5rem,5vw,3.7rem);margin:14px 0}
+  .legal h2{font-size:20px;margin:32px 0 8px}
+  .legal p,.legal li{font-size:14px;line-height:1.8;color:#66748b}
+  .legal .lead{font-size:17px;max-width:700px;margin-bottom:32px}
+  .legal ul{padding-left:24px;margin:0 0 20px}
+  .legal li{padding-left:4px;margin:8px 0}
+  .legal a{color:#315ee8;text-decoration:underline;text-underline-offset:3px}
+  :global(html[data-theme="dark"]) .legal p,
+  :global(html[data-theme="dark"]) .legal li{color:#b8c4dd}
+  :global(html[data-theme="dark"]) .legal a{color:#a9bcff}
+  @media(max-width:640px){.legal{padding:56px 0 72px}}
+</style>

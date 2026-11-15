@@ -1,0 +1,19 @@
+{
+  "name": "puzzlefeels",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report playwright-report"
+  },
+  "dependencies": {
+    "astro": "^5.7.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

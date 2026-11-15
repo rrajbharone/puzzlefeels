@@ -1,0 +1,3099 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+
+const title = 'Memory Matching Game Online – Play Free Memory Card Games';
+const description = 'Play our free Memory Matching Game Online! Match icon, number, color, and shape cards, test your memory, beat your best time, and enjoy daily challenges.';
+
+const faqs = [
+  {
+    question: 'What is a memory matching game?',
+    answer: 'A memory matching game (also historically known as Concentration, Pelmanism, or Pairs) is a tabletop or digital puzzle where players flip over two face-down cards at a time to identify matching pairs. When a pair matches, it stays revealed; when cards differ, they flip back down. The objective is to recall previous card locations and clear the entire board in the fewest moves and fastest time.'
+  },
+  {
+    question: 'How do you play this memory card matching game?',
+    answer: 'Click or tap any face-down card to reveal its symbol, then select a second card. If both cards display the identical item, they remain face up and count toward your matched pairs. If they do not match, both cards turn face down again after a brief pause. Continue flipping cards until every pair has been matched.'
+  },
+  {
+    question: 'Is this memory matching game free to play?',
+    answer: 'Yes, 100% free. The Memory Matching Game on PuzzleFeels requires no subscription, credit card, registration, or hidden fees. You can jump directly into a game on any desktop, tablet, or smartphone browser.'
+  },
+  {
+    question: 'Can I play this memory game online without downloading anything?',
+    answer: 'Yes. The game runs directly in your standard modern web browser using lightweight client-side code. There are no downloads, app store installations, or browser plugins required.'
+  },
+  {
+    question: 'What is the difference between Easy, Medium, and Hard levels?',
+    answer: 'Easy features a 4×3 grid with 12 cards (6 matching pairs), perfect for quick warm-ups and beginners. Medium expands to a 4×4 grid with 16 cards (8 matching pairs), offering a balanced concentration test. Hard provides a 6×4 grid with 24 cards (12 matching pairs), demanding keen spatial recall and systematic mapping.'
+  },
+  {
+    question: 'Are there memory matching games for adults?',
+    answer: 'Yes! Adults Mode focuses on cognitive speed, move efficiency, and personal records. The larger Hard grid (24 cards) and abstract Shape, Number, or Icon categories provide a genuine concentration workout that challenges adult working memory and sustained focus.'
+  },
+  {
+    question: 'Is this game suitable for kids?',
+    answer: 'Yes. Kids Mode provides cheerful, encouraging feedback, larger visual symbols, friendly vector illustrations, and bright colors. It eliminates stressful timers or negative feedback, making it an engaging way for children to develop visual recognition, patience, and memory skills.'
+  },
+  {
+    question: 'What are icon, number, color, and shape matching games?',
+    answer: 'These are four distinct matching categories available in the game. Icon Matching uses modern vector illustrations of everyday objects and nature; Number Matching uses high-contrast numerals with accent cards; Color Matching displays vibrant color swatches with accessible geometric patterns; and Shape Matching tests geometric pattern recognition (stars, hearts, circles, diamonds, and shields).'
+  },
+  {
+    question: 'How can I finish a memory game in fewer moves?',
+    answer: 'To minimize moves, scan the grid systematically rather than flipping cards randomly. Mentally assign names or quadrant coordinates to cards as they are revealed, and avoid guessing when opening a second card—only flip a card if you already know where its match is located.'
+  },
+  {
+    question: 'Does this memory game save my best time?',
+    answer: 'Yes. Your best completion times and move counts are automatically saved in your browser’s local storage. Records are kept completely separate for Adults Mode, Kids Mode, each matching category, each difficulty level, and the Daily Memory Challenge.'
+  },
+  {
+    question: 'What is a daily memory challenge?',
+    answer: 'The Daily Memory Challenge is a unique puzzle synchronized to the current UTC date. Every player around the world receives the exact same category, difficulty, and shuffled card layout for that day. You can complete the challenge once per day and track your daily streak.'
+  },
+  {
+    question: 'Can I play this memory game on my mobile phone?',
+    answer: 'Yes. The game is built mobile-first with touch-friendly card dimensions, responsive grid layouts, 3D flip animations, and full dark theme support across all screen sizes from 320px smartphones to high-resolution tablets.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Memory Matching Game Online',
+  url: 'https://puzzlefeels.com/memory-matching-game-online/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Puzzle game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Memory Matching Game Online', item: 'https://puzzlefeels.com/memory-matching-game-online/' }
+  ]
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+---
+
+<Base {title} {description} path="/memory-matching-game-online/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="memory-page">
+    <nav class="wrap memory-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Memory Matching Game Online</span>
+    </nav>
+
+    <section class="wrap memory-intro">
+      <span class="eyebrow">Visual recall & concentration puzzle</span>
+      <h1>Memory Matching Game Online</h1>
+      <p class="muted">Match the Cards, Train Your Memory, and Beat Your Best Time. Flip cards, reveal matching pairs across icon, number, color, and shape categories, and challenge your focus across multiple difficulty levels. Play free on any device with no downloads or account needed.</p>
+    </section>
+
+    <!-- Main Game Shell -->
+    <section class="wrap memory-shell card" data-memory-game aria-label="Interactive memory matching game">
+      <!-- Player Mode Selector (Adults vs Kids) -->
+      <div class="memory-player-modes" role="group" aria-label="Choose player mode">
+        <button type="button" class="memory-mode-btn is-active" data-player-mode="adults" aria-pressed="true">
+          <svg class="mode-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"></path>
+            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"></path>
+          </svg>
+          <span>Adults Mode</span>
+        </button>
+        <button type="button" class="memory-mode-btn" data-player-mode="kids" aria-pressed="false">
+          <svg class="mode-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span>Kids Mode</span>
+        </button>
+      </div>
+
+      <!-- Categories & Quick Actions Bar -->
+      <div class="memory-controls-bar">
+        <div class="memory-categories" role="group" aria-label="Matching categories">
+          <button type="button" class="memory-cat-btn is-active" data-category="icon" aria-pressed="true">
+            <svg class="cat-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.25"></polygon>
+            </svg>
+            <span>Icons</span>
+          </button>
+          <button type="button" class="memory-cat-btn" data-category="number" aria-pressed="false">
+            <svg class="cat-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="4" y1="9" x2="20" y2="9"></line>
+              <line x1="4" y1="15" x2="20" y2="15"></line>
+              <line x1="10" y1="3" x2="8" y2="21"></line>
+              <line x1="16" y1="3" x2="14" y2="21"></line>
+            </svg>
+            <span>Numbers</span>
+          </button>
+          <button type="button" class="memory-cat-btn" data-category="color" aria-pressed="false">
+            <svg class="cat-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2z"></path>
+            </svg>
+            <span>Colors</span>
+          </button>
+          <button type="button" class="memory-cat-btn" data-category="shape" aria-pressed="false">
+            <svg class="cat-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2L2 12l10 10 10-10L12 2z"></path>
+            </svg>
+            <span>Shapes</span>
+          </button>
+        </div>
+
+        <div class="memory-quick-actions">
+          <ZoomControl id="memory-zoom" label="Board Zoom" targetSelector="#memory-grid" zoomVar="--memory-zoom" />
+          <button type="button" class="btn secondary memory-btn-action" id="memory-sound-toggle" aria-label="Toggle sound effects" aria-pressed="true">
+            <svg class="sound-on-icon btn-svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <svg class="sound-off-icon btn-svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <span class="sound-label">Sound</span>
+          </button>
+          <button type="button" class="btn secondary memory-btn-action" id="memory-daily-toggle" aria-label="Toggle daily memory challenge">
+            <svg class="btn-svg" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span>Daily</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Difficulty Selector Bar -->
+      <div class="memory-difficulty-bar" id="memory-difficulty-bar">
+        <div class="memory-difficulties" role="group" aria-label="Select board difficulty">
+          <button type="button" class="memory-diff-btn is-active" data-difficulty="easy" aria-pressed="true">
+            <strong>Easy</strong>
+            <span>4 × 3 · 6 Pairs</span>
+          </button>
+          <button type="button" class="memory-diff-btn" data-difficulty="medium" aria-pressed="false">
+            <strong>Medium</strong>
+            <span>4 × 4 · 8 Pairs</span>
+          </button>
+          <button type="button" class="memory-diff-btn" data-difficulty="hard" aria-pressed="false">
+            <strong>Hard</strong>
+            <span>6 × 4 · 12 Pairs</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Daily Challenge Banner (Active in Daily Mode) -->
+      <div class="memory-daily-banner" id="memory-daily-banner" hidden>
+        <div class="daily-banner-info">
+          <span class="daily-badge">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            DAILY CHALLENGE
+          </span>
+          <strong id="daily-date-label">Today's Memory Challenge</strong>
+          <span class="daily-status-tag" id="daily-status-tag">Ready to Play</span>
+        </div>
+        <button type="button" class="btn secondary exit-daily-btn" id="exit-daily-btn">
+          <span>Exit Daily</span>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <!-- Live Statistics Strip -->
+      <div class="memory-stats-bar">
+        <div class="stat-cell">
+          <small>Moves</small>
+          <strong id="stat-moves">0</strong>
+        </div>
+        <div class="stat-cell">
+          <small>Time</small>
+          <strong id="stat-timer">00:00</strong>
+        </div>
+        <div class="stat-cell">
+          <small>Pairs Matched</small>
+          <strong id="stat-pairs">0 / 6</strong>
+        </div>
+        <div class="stat-cell">
+          <small>Best Time</small>
+          <strong id="stat-best">—</strong>
+        </div>
+      </div>
+
+      <!-- Progress Track -->
+      <div class="memory-progress-wrap" aria-label="Matching progress">
+        <div class="memory-progress-bar" id="memory-progress-bar" style="width: 0%;"></div>
+      </div>
+
+      <!-- Main Game Board Grid -->
+      <div class="memory-board-wrapper">
+        <div 
+          id="memory-grid" 
+          class="memory-grid grid-easy" 
+          role="grid" 
+          aria-label="Memory card matching board"
+        >
+          <!-- Dynamically populated by client JavaScript -->
+        </div>
+
+        <!-- Pause Screen Overlay -->
+        <div id="memory-paused" class="memory-overlay" hidden>
+          <div class="memory-overlay-box">
+            <span class="eyebrow">Game Paused</span>
+            <h2>Take a Breather</h2>
+            <p class="muted">Timer stopped and cards hidden. Your session is safe. Click resume whenever you are ready to continue.</p>
+            <button type="button" class="btn" id="memory-resume-btn">
+              <span>Resume Game</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Victory Modal Overlay (Redesigned Premium Results) -->
+        <div id="memory-victory" class="memory-overlay" hidden>
+          <div class="memory-overlay-box victory-box" role="dialog" aria-modal="true" aria-labelledby="victory-title">
+            <button type="button" class="victory-close-btn" id="victory-close-btn" aria-label="Close results modal">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="victory-trophy-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2"></path>
+                <path d="M18 9h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path>
+                <path d="M4 3h16v7a8 8 0 0 1-16 0V3z"></path>
+              </svg>
+            </div>
+
+            <div class="victory-mode-badge" id="victory-mode-pill">Adults Mode · Easy · Icons</div>
+            <h2 id="victory-title">Game Completed!</h2>
+            <p class="muted" id="victory-message">You matched all cards with exceptional focus and memory recall.</p>
+
+            <!-- Star rating using clean SVG stars -->
+            <div class="victory-stars" id="victory-stars" aria-label="Performance Rating: 3 Stars">
+              <svg class="star active" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star active" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <svg class="star active" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="victory-stats-grid">
+              <div class="victory-stat-item">
+                <small>Total Time</small>
+                <strong id="victory-time">00:42</strong>
+              </div>
+              <div class="victory-stat-item">
+                <small>Total Moves</small>
+                <strong id="victory-moves">14</strong>
+              </div>
+              <div class="victory-stat-item">
+                <small>Matched Pairs</small>
+                <strong id="victory-pairs">6 / 6</strong>
+              </div>
+              <div class="victory-stat-item">
+                <small>Best Time</small>
+                <strong id="victory-best-time">—</strong>
+              </div>
+              <div class="victory-stat-item">
+                <small>Hints Used</small>
+                <strong id="victory-hints">0</strong>
+              </div>
+              <div class="victory-stat-item">
+                <small>Difficulty</small>
+                <strong id="victory-diff-label">Easy</strong>
+              </div>
+            </div>
+
+            <div class="victory-pb-banner" id="victory-pb-banner" hidden>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>New Personal Best Record for this Mode!</span>
+            </div>
+
+            <div class="victory-actions">
+              <button type="button" class="btn primary-victory-btn" id="victory-replay-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                <span>Play Again</span>
+              </button>
+              <button type="button" class="btn secondary" id="victory-new-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>New Game</span>
+              </button>
+              <button type="button" class="btn secondary" id="victory-share-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                <span>Share Result</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kids Encouragement Toast (SVG Star / Checkmark) -->
+        <div id="kids-toast" class="kids-toast" aria-live="polite" hidden>
+          <span class="kids-toast-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </span>
+          <span class="kids-toast-text">Awesome Match!</span>
+        </div>
+      </div>
+
+      <!-- Action Toolbar -->
+      <div class="memory-toolbar">
+        <button type="button" class="btn secondary toolbar-btn" id="memory-hint-btn" title="Highlight one available matching pair briefly">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18h6"></path>
+            <path d="M10 22h4"></path>
+            <path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6h8c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z"></path>
+          </svg>
+          <span>Hint</span>
+        </button>
+        <button type="button" class="btn secondary toolbar-btn" id="memory-pause-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
+          <span>Pause</span>
+        </button>
+        <button type="button" class="btn secondary toolbar-btn" id="memory-restart-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          <span>Restart</span>
+        </button>
+        <button type="button" class="btn toolbar-btn" id="memory-new-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>New Game</span>
+        </button>
+      </div>
+
+      <div class="memory-footer-meta">
+        <p class="memory-help-text">Click any two cards to test a match. Matched pairs stay revealed. Complete the board in fewer moves to score higher.</p>
+        <button type="button" class="btn-text reset-stats-btn" id="memory-reset-stats">Reset Statistics</button>
+      </div>
+
+      <!-- Toast Feedback -->
+      <div class="share-toast" id="memory-share-toast" role="status" aria-live="polite"></div>
+      <div class="sr-only" id="memory-live-announcer" aria-live="polite"></div>
+    </section>
+
+    <!-- Educational & Guide Article -->
+    <article class="wrap game-article-content memory-article">
+      <h2>What Is a Memory Matching Game?</h2>
+      <p>A <strong>memory matching game</strong>—widely celebrated under classic names such as <em>Concentration</em>, <em>Pelmanism</em>, <em>Pairs</em>, and <em>Memory</em>—is one of the world's most enduring and universally accessible puzzle games. Dating back to 19th-century parlor games and ancient Japanese shell-matching traditions known as <em>Kai-awase</em>, the premise is elegantly simple: a collection of cards or tiles is laid face-down in a rectangular grid. Solvers take turns revealing two cards at a time, searching for identical pairs.</p>
+      <p>When the two revealed cards match, they remain face up on the board and count toward your completed score. When the cards differ, they turn face down again after a brief pause, challenging the player to remember their locations for future turns. Although the basic rules can be learned in seconds, mastering the game requires disciplined working memory, spatial orientation, selective attention, and deliberate visual encoding.</p>
+
+      <h2>How to Play the Memory Card Matching Game</h2>
+      <p>Playing our free online memory matching game is straightforward and intuitive across desktop, tablet, and mobile devices:</p>
+      <ol>
+        <li><strong>Select Your Mode & Difficulty:</strong> Choose between <em>Adults Mode</em> (focused on speed and precision) or <em>Kids Mode</em> (playful and encouraging), and pick an <em>Easy</em> (12 cards), <em>Medium</em> (16 cards), or <em>Hard</em> (24 cards) grid.</li>
+        <li><strong>Choose a Matching Category:</strong> Switch among <em>Icons</em>, <em>Numbers</em>, <em>Colors</em>, or <em>Shapes</em> matching to experience different visual and cognitive challenges.</li>
+        <li><strong>Flip Your First Card:</strong> Click, tap, or navigate via keyboard to turn over any face-down card. Its symbol will be revealed immediately.</li>
+        <li><strong>Flip Your Second Card:</strong> Select another card anywhere on the board. If both cards match, they lock into place with a subtle success glow. If they differ, both cards flip back face down after a brief moment.</li>
+        <li><strong>Track Your Moves and Time:</strong> Each two-card turn counts as a single move. Complete the full board in as few moves and seconds as possible to earn a 3-star memory rating and set personal records.</li>
+      </ol>
+
+      <h2>Explore Four Types of Memory Matching Games</h2>
+      <p>Different types of visual information stimulate distinct areas of human perception. PuzzleFeels provides four dedicated matching categories so solvers can exercise multiple cognitive faculties:</p>
+
+      <h3>1. Icon Matching</h3>
+      <p>Our Icon Matching category features clean, professionally designed vector illustrations of recognizable everyday objects and exploration symbols such as compasses, anchors, rockets, cameras, headphones, and leaves. Vector iconography engages semantic memory and object recognition, making this category intuitive, modern, and visually compelling for all solvers.</p>
+
+      <h3>2. Number Matching</h3>
+      <p>Number Matching presents clear, high-contrast numerals from 1 through 12 formatted on styled card surfaces. Because numbers are symbolic and abstract, matching them exercises working memory and numerical recall, requiring solvers to categorize cards by value rather than contour alone.</p>
+
+      <h3>3. Color Matching</h3>
+      <p>Color Matching displays rich, vibrant swatches ranging from Ruby Red and Ocean Blue to Emerald Green and Amber Gold. To ensure complete color-vision accessibility, every color card also features an unmistakable text label and geometric motif, allowing players with varying color perception to enjoy equal, competitive gameplay.</p>
+
+      <h3>4. Shape Matching</h3>
+      <p>Shape Matching features clean geometric silhouettes including stars, hearts, diamonds, circles, hexagons, and shields. Shape recognition exercises two-dimensional spatial processing and edge detection, forcing the brain to differentiate subtle outline variations across the grid.</p>
+
+      <h2>Memory Games for Adults and Kids</h2>
+      <p>Because cognitive priorities vary across age groups, our memory game offers two specialized player modes:</p>
+      <ul>
+        <li><strong>Adults Mode:</strong> Designed for adult brain training, concentration breaks, and personal challenge. The interface is clean, minimal, and focused on performance metrics—tracking exact seconds, moves efficiency, personal bests, and statistical records across every category.</li>
+        <li><strong>Kids Mode:</strong> Created to offer a friendly, cheerful, and encouraging environment for younger solvers. Kids Mode features playful animations, larger touch targets, and encouraging celebration toasts (such as <em>"Awesome Match!"</em> and <em>"Super Memory!"</em>) after every successful pair. There are no punishing timers or aggressive popups, allowing kids to learn patience and spatial memory at their own relaxed pace.</li>
+      </ul>
+
+      <h2>Easy, Medium, and Hard Memory Game Levels</h2>
+      <p>Different grid sizes provide scalable challenge levels suitable for beginners and seasoned memory puzzle enthusiasts alike:</p>
+      <ul>
+        <li><strong>Easy (4 × 3 Grid · 12 Cards · 6 Matching Pairs):</strong> The ideal starting point. With only six pairs to memorize, games typically take between 20 and 45 seconds, making it a quick, refreshing mental warm-up between tasks.</li>
+        <li><strong>Medium (4 × 4 Grid · 16 Cards · 8 Matching Pairs):</strong> The classic concentration standard. Sixteen cards require solvers to maintain eight discrete spatial coordinates in working memory, offering a satisfying balance of speed and challenge.</li>
+        <li><strong>Hard (6 × 4 Grid · 24 Cards · 12 Matching Pairs):</strong> A true test of sustained visual memory. Managing 12 distinct pairs across 24 cells requires structured memory strategies to prevent confusing earlier flips with recent card positions. On mobile devices, this level automatically adapts into a comfortable 4×6 layout for effortless tapping.</li>
+      </ul>
+
+      <h2>Tips for Finding Matching Pairs Faster</h2>
+      <p>If you want to clear the board in fewer moves and set personal best times, consider incorporating these proven memory strategies:</p>
+      <ul>
+        <li><strong>Use the Grid-Mapping Method:</strong> Mentally divide the board into coordinates (such as top-left, bottom-right, or rows A through D). Attaching a specific coordinate to a symbol makes it much easier to recall than trying to remember an isolated position.</li>
+        <li><strong>Scan in Systematic Sweeps:</strong> Avoid flipping cards haphazardly across opposite corners of the board. Scanning in orderly rows or quadrants helps build a coherent mental map of where previously seen cards reside.</li>
+        <li><strong>Quietly Name the Item Aloud or Sub-Vocally:</strong> Engaging the phonological loop by silently naming the card (e.g., <em>"Compass in row one, anchor in row two"</em>) creates dual visual and verbal memory traces, doubling your recall retention.</li>
+        <li><strong>Never Guess on the Second Card:</strong> If you uncover an item whose location you have already seen elsewhere on the board, immediately match it. If you uncover an unfamiliar card on flip one, use flip two as an exploration step on an unrevealed card rather than guessing randomly among known cards.</li>
+      </ul>
+
+      <h2>Why Play Online Memory Matching Games?</h2>
+      <p>Regular puzzle play provides an engaging, screen-friendly alternative to passive scrolling. Spending five to ten minutes matching card pairs stimulates working memory, exercises selective attention, and encourages a calm, meditative state of flow. Memory card challenges also complement our other deductive online puzzles, including the spatial maneuvering of our <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>, the strategic expansion in our <a href="/color-flood-game/">Color Flood Game</a>, the numerical logic in <a href="/number-sequence-game/">Number Sequence Game</a>, the grid deduction in <a href="/picross-game-online/">Picross Game Online</a>, the word transformations in <a href="/word-ladder-game-online/">Word Ladder Game Online</a>, and the reflex speed tests in our <a href="/reaction-time-challenge/">Reaction Time Challenge</a>.</p>
+
+      <h2>How Best Time and Moves Are Calculated</h2>
+      <p>In our Memory Matching Game, a "move" is counted each time two cards are revealed, rather than counting every individual tap. If an Easy game has 6 matching pairs, the absolute mathematical minimum is 6 moves (achieved only with psychic foresight). A typical skilled game completes in 8 to 12 moves on Easy and 18 to 26 moves on Hard.</p>
+      <p>When you solve a puzzle, your performance is evaluated using an objective 3-star rating system:</p>
+      <ul>
+        <li><strong>3 Stars (★★★):</strong> Solved with exceptional accuracy ($\le 1.4 \times$ minimum pairs) and rapid recall.</li>
+        <li><strong>2 Stars (★★☆):</strong> Solved with strong concentration ($\le 2.0 \times$ minimum pairs).</li>
+        <li><strong>1 Star (★☆☆):</strong> Board cleared successfully with perseverance.</li>
+      </ul>
+
+      <h2>What Is the Daily Memory Challenge?</h2>
+      <p>The <strong>Daily Memory Challenge</strong> generates a synchronized puzzle based on the universal UTC calendar date. Every player across the globe receives the exact same matching category, difficulty level, and shuffled card arrangement on that calendar day. This provides a fair, universal benchmark where you can compare your moves and completion time against friends without creating an account or storing sensitive personal data.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <FaqList items={faqs} />
+    </article>
+
+    <!-- Explore More Puzzle Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep the fun going</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Enjoyed matching pairs? Keep your brain active with more free online challenges on PuzzleFeels. Choose a game and start playing instantly!</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/sliding-number-puzzle-game/">
+          <div class="related-visual slide-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Sliding Number Puzzle Game</h3>
+            <p class="muted">Slide numbered tiles into numerical order across 3×3, 4×4, and 5×5 classic sliding boards.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/reaction-time-challenge/">
+          <div class="related-visual reaction-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon reaction-icon"><span>⚡</span><span>⏱️</span><span>🎯</span><span>🚀</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">REFLEX TEST</span><span class="difficulty-label">All Skill Levels</span></div>
+            <h3>Reaction Time Challenge</h3>
+            <p class="muted">Test your reflexes and measure your visual reaction speed in milliseconds across 4 game modes.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/word-ladder-game-online/">
+          <div class="related-visual ladder-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon ladder-icon"><span>W</span><span>O</span><span>R</span><span>D</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">WORD PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Word Ladder Game Online</h3>
+            <p class="muted">Transform words one letter at a time to bridge the gap from start to target in Lewis Carroll's classic doublets.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  // ==========================================
+  // MEMORY MATCHING GAME ENGINE (PREMIUM V2)
+  // ==========================================
+
+  type PlayerMode = 'adults' | 'kids';
+  type Category = 'icon' | 'number' | 'color' | 'shape';
+  type Difficulty = 'easy' | 'medium' | 'hard';
+
+  interface CardItem {
+    id: string;
+    pairId: string;
+    label: string;
+    html: string;
+  }
+
+  interface DifficultyConfig {
+    cols: number;
+    rows: number;
+    totalCards: number;
+    pairs: number;
+    gridClass: string;
+  }
+
+  const DIFFICULTY_MAP: Record<Difficulty, DifficultyConfig> = {
+    easy: { cols: 4, rows: 3, totalCards: 12, pairs: 6, gridClass: 'grid-easy' },
+    medium: { cols: 4, rows: 4, totalCards: 16, pairs: 8, gridClass: 'grid-medium' },
+    hard: { cols: 6, rows: 4, totalCards: 24, pairs: 12, gridClass: 'grid-hard' }
+  };
+
+  // 1. Premium Vector SVG Icon Dataset (12 distinct items)
+  const ICON_ITEMS = [
+    {
+      id: 'icon-compass',
+      label: 'Compass',
+      color: '#2563eb',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.2"></polygon></svg>'
+    },
+    {
+      id: 'icon-anchor',
+      label: 'Anchor',
+      color: '#0891b2',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"></circle><line x1="12" y1="8" x2="12" y2="21"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path></svg>'
+    },
+    {
+      id: 'icon-rocket',
+      label: 'Rocket',
+      color: '#ea580c',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>'
+    },
+    {
+      id: 'icon-camera',
+      label: 'Camera',
+      color: '#7c3aed',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>'
+    },
+    {
+      id: 'icon-headphones',
+      label: 'Headphones',
+      color: '#059669',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>'
+    },
+    {
+      id: 'icon-coffee',
+      label: 'Coffee',
+      color: '#b45309',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>'
+    },
+    {
+      id: 'icon-leaf',
+      label: 'Leaf',
+      color: '#16a34a',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path></svg>'
+    },
+    {
+      id: 'icon-mountain',
+      label: 'Mountain',
+      color: '#475569',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path><path d="M4.15 18h15.7"></path></svg>'
+    },
+    {
+      id: 'icon-lightbulb',
+      label: 'Lightbulb',
+      color: '#d97706',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-7 7c0 2.5 1.5 4.5 3 6h8c1.5-1.5 3-3.5 3-6a7 7 0 0 0-7-7z"></path></svg>'
+    },
+    {
+      id: 'icon-key',
+      label: 'Key',
+      color: '#e11d48',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"></circle><path d="m21 4.5-9.5 9.5"></path><path d="m15.5 7.5 3 3"></path><path d="m18 5 3 3"></path></svg>'
+    },
+    {
+      id: 'icon-bicycle',
+      label: 'Bicycle',
+      color: '#4f46e5',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5L9 11l3-5 4 6h2.5"></path><path d="M5.5 17.5 9 11h4l3.5 6.5"></path></svg>'
+    },
+    {
+      id: 'icon-gem',
+      label: 'Diamond Gem',
+      color: '#9333ea',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"></path><path d="M11 3 8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>'
+    }
+  ];
+
+  // 2. Number Dataset (12 items)
+  const NUMBER_ITEMS = [
+    { id: 'num-1', symbol: '1', color: '#2563eb', label: 'One' },
+    { id: 'num-2', symbol: '2', color: '#16a34a', label: 'Two' },
+    { id: 'num-3', symbol: '3', color: '#9333ea', label: 'Three' },
+    { id: 'num-4', symbol: '4', color: '#d97706', label: 'Four' },
+    { id: 'num-5', symbol: '5', color: '#e11d48', label: 'Five' },
+    { id: 'num-6', symbol: '6', color: '#0891b2', label: 'Six' },
+    { id: 'num-7', symbol: '7', color: '#4f46e5', label: 'Seven' },
+    { id: 'num-8', symbol: '8', color: '#ea580c', label: 'Eight' },
+    { id: 'num-9', symbol: '9', color: '#0d9488', label: 'Nine' },
+    { id: 'num-10', symbol: '10', color: '#db2777', label: 'Ten' },
+    { id: 'num-11', symbol: '11', color: '#7c3aed', label: 'Eleven' },
+    { id: 'num-12', symbol: '12', color: '#65a30d', label: 'Twelve' }
+  ];
+
+  // 3. Accessible Color Dataset (12 items with geometric motif for colorblindness accessibility)
+  const COLOR_ITEMS = [
+    {
+      id: 'col-red',
+      color: '#ef4444',
+      label: 'Ruby Red',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><circle cx="12" cy="12" r="9"/></svg>'
+    },
+    {
+      id: 'col-blue',
+      color: '#2563eb',
+      label: 'Ocean Blue',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>'
+    },
+    {
+      id: 'col-green',
+      color: '#16a34a',
+      label: 'Emerald Green',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M1 21h22L12 2 1 21z"/></svg>'
+    },
+    {
+      id: 'col-gold',
+      color: '#f59e0b',
+      label: 'Amber Gold',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>'
+    },
+    {
+      id: 'col-purple',
+      color: '#9333ea',
+      label: 'Amethyst Purple',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg>'
+    },
+    {
+      id: 'col-orange',
+      color: '#f97316',
+      label: 'Coral Orange',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z"/></svg>'
+    },
+    {
+      id: 'col-teal',
+      color: '#0d9488',
+      label: 'Deep Teal',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>'
+    },
+    {
+      id: 'col-pink',
+      color: '#ec4899',
+      label: 'Rose Pink',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
+    },
+    {
+      id: 'col-cyan',
+      color: '#06b6d4',
+      label: 'Electric Cyan',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2l2.4 7.2L21 12l-6.6 2.8L12 22l-2.4-7.2L3 12l6.6-2.8L12 2z"/></svg>'
+    },
+    {
+      id: 'col-lime',
+      color: '#84cc16',
+      label: 'Lime Mint',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
+    },
+    {
+      id: 'col-bronze',
+      color: '#b45309',
+      label: 'Warm Bronze',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 16a6 6 0 1 1 6-6 6 6 0 0 1-6 6z"/></svg>'
+    },
+    {
+      id: 'col-indigo',
+      color: '#4338ca',
+      label: 'Midnight Indigo',
+      iconSvg: '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+    }
+  ];
+
+  // 4. Shape Dataset (12 geometric SVG items)
+  const SHAPE_ITEMS = [
+    { id: 'shp-star', name: 'Star', color: '#f59e0b', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>' },
+    { id: 'shp-heart', name: 'Heart', color: '#ef4444', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' },
+    { id: 'shp-circle', name: 'Circle', color: '#3b82f6', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="9"/></svg>' },
+    { id: 'shp-diamond', name: 'Diamond', color: '#8b5cf6', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg>' },
+    { id: 'shp-triangle', name: 'Triangle', color: '#10b981', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21z"/></svg>' },
+    { id: 'shp-square', name: 'Square', color: '#ec4899', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' },
+    { id: 'shp-hexagon', name: 'Hexagon', color: '#06b6d4', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7L12 2z"/></svg>' },
+    { id: 'shp-moon', name: 'Moon', color: '#eab308', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>' },
+    { id: 'shp-shield', name: 'Shield', color: '#6366f1', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>' },
+    { id: 'shp-cross', name: 'Cross Badge', color: '#14b8a6', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 10.5h-5.5V5a1.5 1.5 0 0 0-3 0v5.5H5a1.5 1.5 0 0 0 0 3h5.5V19a1.5 1.5 0 0 0 3 0v-5.5H19a1.5 1.5 0 0 0 0-3z"/></svg>' },
+    { id: 'shp-clover', name: 'Clover', color: '#22c55e', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><circle cx="8" cy="16" r="4"/><circle cx="16" cy="16" r="4"/><path d="M12 12v9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>' },
+    { id: 'shp-sun', name: 'Sunburst', color: '#f97316', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="5"/><path d="M12 1v3m0 16v3M4.22 4.22l2.12 2.12m11.32 11.32l2.12 2.12M1 12h3m16 0h3M4.22 19.78l2.12-2.12m11.32-11.32l2.12-2.12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>' }
+  ];
+
+  // State variables
+  let currentMode: PlayerMode = 'adults';
+  let currentCategory: Category = 'icon';
+  let currentDifficulty: Difficulty = 'easy';
+  let isDaily = false;
+  let cards: CardItem[] = [];
+  let flippedIndices: number[] = [];
+  let matchedPairIds: Set<string> = new Set();
+  let isLocked = false;
+  let moves = 0;
+  let timerSeconds = 0;
+  let timerInterval: number | null = null;
+  let isTimerRunning = false;
+  let isPaused = false;
+  let hintsUsed = 0;
+  let isHintActive = false;
+  let hintTimeoutId: number | null = null;
+  let kidsToastTimeoutId: number | null = null;
+  let soundEnabled = true;
+  let audioCtx: AudioContext | null = null;
+
+  // DOM element caches
+  const gridEl = document.getElementById('memory-grid') as HTMLElement;
+  const statMoves = document.getElementById('stat-moves') as HTMLElement;
+  const statTimer = document.getElementById('stat-timer') as HTMLElement;
+  const statPairs = document.getElementById('stat-pairs') as HTMLElement;
+  const statBest = document.getElementById('stat-best') as HTMLElement;
+  const progressBar = document.getElementById('memory-progress-bar') as HTMLElement;
+  const pauseOverlay = document.getElementById('memory-paused') as HTMLElement;
+  const victoryOverlay = document.getElementById('memory-victory') as HTMLElement;
+  const kidsToast = document.getElementById('kids-toast') as HTMLElement;
+  const shareToast = document.getElementById('memory-share-toast') as HTMLElement;
+  const liveAnnouncer = document.getElementById('memory-live-announcer') as HTMLElement;
+  const dailyBanner = document.getElementById('memory-daily-banner') as HTMLElement;
+  const dailyDateLabel = document.getElementById('daily-date-label') as HTMLElement;
+  const dailyStatusTag = document.getElementById('daily-status-tag') as HTMLElement;
+  const diffBar = document.getElementById('memory-difficulty-bar') as HTMLElement;
+
+  // Audio System
+  function initAudio() {
+    if (!audioCtx && typeof window !== 'undefined') {
+      const AudioClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioClass) {
+        audioCtx = new AudioClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function playTone(freq: number, type: OscillatorType, duration: number, delay = 0, gainLevel = 0.1) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const startTime = audioCtx.currentTime + delay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(gainLevel, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    } catch {
+      // Audio playback gracefully suppressed
+    }
+  }
+
+  function playFlipSound() {
+    playTone(520, 'sine', 0.08, 0, 0.08);
+  }
+
+  function playMatchSound() {
+    playTone(523.25, 'triangle', 0.14, 0, 0.12);     // C5
+    playTone(659.25, 'triangle', 0.18, 0.08, 0.12);  // E5
+    playTone(783.99, 'triangle', 0.24, 0.16, 0.14);  // G5
+  }
+
+  function playMismatchSound() {
+    playTone(320, 'sine', 0.12, 0, 0.08);
+    playTone(280, 'sine', 0.16, 0.09, 0.08);
+  }
+
+  function playHintSound() {
+    playTone(880, 'sine', 0.12, 0, 0.1);
+    playTone(1174.66, 'sine', 0.22, 0.08, 0.1);
+  }
+
+  function playVictorySound() {
+    playTone(523.25, 'triangle', 0.16, 0, 0.15);     // C5
+    playTone(659.25, 'triangle', 0.16, 0.12, 0.15);  // E5
+    playTone(783.99, 'triangle', 0.16, 0.24, 0.15);  // G5
+    playTone(1046.50, 'triangle', 0.40, 0.36, 0.18); // C6
+  }
+
+  // PRNG and Date Helpers for Daily Challenge
+  function getUtcDateString(d = new Date()): string {
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function hashString(str: string): number {
+    let hash = 1779033703 ^ str.length;
+    for (let i = 0; i < str.length; i++) {
+      hash = Math.imul(hash ^ str.charCodeAt(i), 3432918353);
+      hash = (hash << 13) | (hash >>> 19);
+    }
+    return hash >>> 0;
+  }
+
+  function mulberry32(a: number): () => number {
+    return function() {
+      let t = (a += 0x6D2B79F5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // LocalStorage Helpers
+  interface StoredStats {
+    bestTime: number | null; // in seconds
+    bestMoves: number | null;
+    gamesPlayed: number;
+    history?: number[];
+  }
+
+  interface DailyResult {
+    date: string;
+    completed: boolean;
+    time: number;
+    moves: number;
+  }
+
+  function getStorageKey(mode: PlayerMode, cat: Category, diff: Difficulty): string {
+    const base = mode === 'adults' ? 'pf-memory-matching-adults-v1' : 'pf-memory-matching-kids-v1';
+    return `${base}-${cat}-${diff}`;
+  }
+
+  function getStats(mode: PlayerMode, cat: Category, diff: Difficulty): StoredStats {
+    try {
+      const raw = localStorage.getItem(getStorageKey(mode, cat, diff));
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed === 'object' && parsed !== null) {
+          return {
+            bestTime: typeof parsed.bestTime === 'number' ? parsed.bestTime : null,
+            bestMoves: typeof parsed.bestMoves === 'number' ? parsed.bestMoves : null,
+            gamesPlayed: typeof parsed.gamesPlayed === 'number' ? parsed.gamesPlayed : 0,
+            history: Array.isArray(parsed.history) ? parsed.history : []
+          };
+        }
+      }
+    } catch {
+      // Storage unavailable
+    }
+    return { bestTime: null, bestMoves: null, gamesPlayed: 0 };
+  }
+
+  function saveStats(mode: PlayerMode, cat: Category, diff: Difficulty, stats: StoredStats): void {
+    try {
+      localStorage.setItem(getStorageKey(mode, cat, diff), JSON.stringify(stats));
+    } catch {
+      // Storage full
+    }
+  }
+
+  function getDailyRecord(dateStr: string): DailyResult | null {
+    try {
+      const raw = localStorage.getItem('pf-memory-matching-daily-v1');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.date === dateStr) {
+          return parsed;
+        }
+      }
+    } catch {
+      // Ignore
+    }
+    return null;
+  }
+
+  function saveDailyRecord(record: DailyResult): void {
+    try {
+      localStorage.setItem('pf-memory-matching-daily-v1', JSON.stringify(record));
+    } catch {
+      // Ignore
+    }
+  }
+
+  // Formatting helpers
+  function formatTime(totalSeconds: number): string {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+
+  function announce(msg: string) {
+    if (liveAnnouncer) {
+      liveAnnouncer.textContent = msg;
+    }
+  }
+
+  function showToast(text: string) {
+    if (!shareToast) return;
+    shareToast.textContent = text;
+    shareToast.classList.add('is-visible');
+    setTimeout(() => {
+      shareToast.classList.remove('is-visible');
+    }, 2200);
+  }
+
+  // Timer Management
+  function startTimer() {
+    if (isTimerRunning) return;
+    isTimerRunning = true;
+    timerInterval = window.setInterval(() => {
+      if (!isPaused) {
+        timerSeconds += 1;
+        if (statTimer) statTimer.textContent = formatTime(timerSeconds);
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    isTimerRunning = false;
+    if (timerInterval) {
+      window.clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
+
+  function resetTimer() {
+    stopTimer();
+    timerSeconds = 0;
+    if (statTimer) statTimer.textContent = '00:00';
+  }
+
+  // Card Generation
+  function generateCards(): CardItem[] {
+    const config = DIFFICULTY_MAP[currentDifficulty];
+    const pairCount = config.pairs;
+    let baseList: { id: string; label: string; html: string }[] = [];
+
+    if (currentCategory === 'icon') {
+      baseList = ICON_ITEMS.slice(0, pairCount).map(item => ({
+        id: item.id,
+        label: item.label,
+        html: `<div class="card-symbol card-icon" style="color: ${item.color}">${item.svg}</div>`
+      }));
+    } else if (currentCategory === 'number') {
+      baseList = NUMBER_ITEMS.slice(0, pairCount).map(item => ({
+        id: item.id,
+        label: item.label,
+        html: `
+          <div class="card-number-wrap">
+            <span class="card-number-badge" style="color: ${item.color}">${item.symbol}</span>
+            <span class="card-number-sub">${item.label}</span>
+          </div>
+        `
+      }));
+    } else if (currentCategory === 'color') {
+      baseList = COLOR_ITEMS.slice(0, pairCount).map(item => ({
+        id: item.id,
+        label: item.label,
+        html: `
+          <div class="card-color-wrap">
+            <span class="card-color-swatch" style="background-color: ${item.color}" aria-hidden="true">
+              ${item.iconSvg}
+            </span>
+            <span class="card-color-label">${item.label}</span>
+          </div>
+        `
+      }));
+    } else if (currentCategory === 'shape') {
+      baseList = SHAPE_ITEMS.slice(0, pairCount).map(item => ({
+        id: item.id,
+        label: item.name,
+        html: `<div class="card-symbol card-shape" style="color: ${item.color}">${item.svg}</div>`
+      }));
+    }
+
+    // Duplicate each item once to create pairs
+    const deck: CardItem[] = [];
+    baseList.forEach(item => {
+      deck.push({ id: `${item.id}-a`, pairId: item.id, label: item.label, html: item.html });
+      deck.push({ id: `${item.id}-b`, pairId: item.id, label: item.label, html: item.html });
+    });
+
+    // Shuffle using Fisher-Yates (Deterministic seed for Daily, standard crypto/math for casual)
+    if (isDaily) {
+      const todayStr = getUtcDateString();
+      const rng = mulberry32(hashString(todayStr));
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+    } else {
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+    }
+
+    return deck;
+  }
+
+  // Render cards to DOM
+  function renderBoard() {
+    if (!gridEl) return;
+    const config = DIFFICULTY_MAP[currentDifficulty];
+    gridEl.className = `memory-grid ${config.gridClass} mode-${currentMode} cat-${currentCategory}`;
+    gridEl.innerHTML = '';
+
+    cards.forEach((card, idx) => {
+      const isMatched = matchedPairIds.has(card.pairId);
+      const isFlipped = isMatched || flippedIndices.includes(idx);
+
+      const cardEl = document.createElement('div');
+      cardEl.className = `memory-card ${isFlipped ? 'is-flipped' : ''} ${isMatched ? 'is-matched' : ''}`;
+      cardEl.setAttribute('role', 'button');
+      cardEl.setAttribute('tabindex', isMatched ? '-1' : '0');
+      cardEl.setAttribute('aria-label', isMatched ? `Matched card ${idx + 1}: ${card.label}` : isFlipped ? `Revealed card ${idx + 1}: ${card.label}` : `Face-down card ${idx + 1}`);
+      cardEl.dataset.index = String(idx);
+      cardEl.dataset.pairId = card.pairId;
+
+      cardEl.innerHTML = `
+        <div class="memory-card-inner">
+          <div class="card-front" aria-hidden="true">
+            <div class="card-back-pattern">
+              <div class="card-back-emblem">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="card-emblem-svg">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="card-back">
+            ${card.html}
+            ${isMatched ? '<span class="card-matched-badge" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>' : ''}
+          </div>
+        </div>
+      `;
+
+      cardEl.addEventListener('click', () => handleCardSelect(idx));
+      cardEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleCardSelect(idx);
+        }
+      });
+
+      gridEl.appendChild(cardEl);
+    });
+
+    updateStatsBar();
+  }
+
+  // Update Stats Bar
+  function updateStatsBar() {
+    const config = DIFFICULTY_MAP[currentDifficulty];
+    if (statMoves) statMoves.textContent = String(moves);
+    if (statPairs) statPairs.textContent = `${matchedPairIds.size} / ${config.pairs}`;
+
+    const percent = Math.round((matchedPairIds.size / config.pairs) * 100);
+    if (progressBar) progressBar.style.width = `${percent}%`;
+
+    const stats = getStats(currentMode, currentCategory, currentDifficulty);
+    if (statBest) {
+      statBest.textContent = stats.bestTime !== null ? formatTime(stats.bestTime) : '—';
+    }
+
+    // Daily Banner status
+    if (isDaily && dailyStatusTag) {
+      const todayStr = getUtcDateString();
+      const record = getDailyRecord(todayStr);
+      if (record && record.completed) {
+        dailyStatusTag.textContent = `Completed: ${formatTime(record.time)} (${record.moves} moves)`;
+        dailyStatusTag.className = 'daily-status-tag is-completed';
+      } else {
+        dailyStatusTag.textContent = 'Ready to Play';
+        dailyStatusTag.className = 'daily-status-tag';
+      }
+    }
+  }
+
+  // Handle Card Click / Selection
+  function handleCardSelect(index: number) {
+    if (isLocked || isPaused) return;
+    const card = cards[index];
+    if (!card) return;
+
+    // Do nothing if already matched or already face-up
+    if (matchedPairIds.has(card.pairId)) return;
+    if (flippedIndices.includes(index)) return;
+
+    // If an active hint is running, clear it immediately upon card selection
+    clearHintState();
+
+    // Ensure audio and timer start on first interaction
+    initAudio();
+    if (!isTimerRunning && matchedPairIds.size < DIFFICULTY_MAP[currentDifficulty].pairs) {
+      startTimer();
+    }
+
+    flippedIndices.push(index);
+    playFlipSound();
+    renderFlippedState();
+
+    if (flippedIndices.length === 2) {
+      moves += 1;
+      updateStatsBar();
+      isLocked = true;
+
+      const idx1 = flippedIndices[0];
+      const idx2 = flippedIndices[1];
+      const card1 = cards[idx1];
+      const card2 = cards[idx2];
+
+      if (card1.pairId === card2.pairId) {
+        // MATCH FOUND
+        matchedPairIds.add(card1.pairId);
+        playMatchSound();
+        announce(`Match found! ${card1.label}. ${matchedPairIds.size} of ${DIFFICULTY_MAP[currentDifficulty].pairs} pairs matched.`);
+
+        if (currentMode === 'kids') {
+          showKidsToast(`Awesome Match! ${card1.label}`);
+        }
+
+        setTimeout(() => {
+          flippedIndices = [];
+          isLocked = false;
+          renderBoard();
+          checkVictory();
+        }, 360);
+      } else {
+        // MISMATCH
+        playMismatchSound();
+        announce(`Not a match: ${card1.label} and ${card2.label}.`);
+        setTimeout(() => {
+          flippedIndices = [];
+          isLocked = false;
+          renderBoard();
+        }, 850);
+      }
+    }
+  }
+
+  function renderFlippedState() {
+    const cardEls = gridEl?.querySelectorAll('.memory-card');
+    if (!cardEls) return;
+
+    cards.forEach((card, idx) => {
+      const el = cardEls[idx] as HTMLElement;
+      if (!el) return;
+      const isMatched = matchedPairIds.has(card.pairId);
+      const isFlipped = isMatched || flippedIndices.includes(idx);
+      el.classList.toggle('is-flipped', isFlipped);
+    });
+  }
+
+  // Kids toast encouraging message (Zero emojis, clean SVG icon)
+  function showKidsToast(text: string) {
+    if (!kidsToast) return;
+    const textEl = kidsToast.querySelector('.kids-toast-text');
+    if (textEl) textEl.textContent = text;
+    kidsToast.hidden = false;
+    kidsToast.classList.add('is-visible');
+
+    if (kidsToastTimeoutId) window.clearTimeout(kidsToastTimeoutId);
+    kidsToastTimeoutId = window.setTimeout(() => {
+      kidsToast.classList.remove('is-visible');
+      kidsToast.hidden = true;
+      kidsToastTimeoutId = null;
+    }, 1600);
+  }
+
+  // Check victory condition
+  function checkVictory() {
+    const config = DIFFICULTY_MAP[currentDifficulty];
+    if (matchedPairIds.size >= config.pairs) {
+      stopTimer();
+      playVictorySound();
+
+      const finalTime = timerSeconds;
+      const finalMoves = moves;
+      const minPairs = config.pairs;
+
+      // Calculate star rating
+      let starCount = 1;
+      let starTitle = 'Good Effort – Keep Practicing!';
+      if (finalMoves <= Math.ceil(minPairs * 1.45)) {
+        starCount = 3;
+        starTitle = currentMode === 'kids' ? 'Superstar Memory!' : 'Outstanding Memory!';
+      } else if (finalMoves <= Math.ceil(minPairs * 2.1)) {
+        starCount = 2;
+        starTitle = currentMode === 'kids' ? 'Great Job!' : 'Great Concentration!';
+      }
+
+      // Check Personal Best
+      const prevStats = getStats(currentMode, currentCategory, currentDifficulty);
+      let isNewPB = false;
+      if (prevStats.bestTime === null || finalTime < prevStats.bestTime) {
+        isNewPB = true;
+      }
+
+      // Save statistics
+      const updatedStats: StoredStats = {
+        bestTime: prevStats.bestTime === null ? finalTime : Math.min(prevStats.bestTime, finalTime),
+        bestMoves: prevStats.bestMoves === null ? finalMoves : Math.min(prevStats.bestMoves, finalMoves),
+        gamesPlayed: prevStats.gamesPlayed + 1,
+        history: [...(prevStats.history || []).slice(-19), finalTime]
+      };
+      saveStats(currentMode, currentCategory, currentDifficulty, updatedStats);
+
+      // Handle Daily Challenge persistence
+      if (isDaily) {
+        const todayStr = getUtcDateString();
+        saveDailyRecord({
+          date: todayStr,
+          completed: true,
+          time: finalTime,
+          moves: finalMoves
+        });
+      }
+
+      // Populate victory modal elements
+      const vicTitle = document.getElementById('victory-title');
+      const vicMessage = document.getElementById('victory-message');
+      const vicTime = document.getElementById('victory-time');
+      const vicMoves = document.getElementById('victory-moves');
+      const vicPairs = document.getElementById('victory-pairs');
+      const vicBestTime = document.getElementById('victory-best-time');
+      const vicHints = document.getElementById('victory-hints');
+      const vicDiffLabel = document.getElementById('victory-diff-label');
+      const vicModePill = document.getElementById('victory-mode-pill');
+      const vicPbBanner = document.getElementById('victory-pb-banner');
+      const vicStars = document.getElementById('victory-stars');
+
+      const catDisplayNames: Record<Category, string> = {
+        icon: 'Icons',
+        number: 'Numbers',
+        color: 'Colors',
+        shape: 'Shapes'
+      };
+
+      if (vicTitle) vicTitle.textContent = isNewPB ? 'New Personal Best!' : 'Game Completed!';
+      if (vicMessage) vicMessage.textContent = starTitle;
+      if (vicTime) vicTime.textContent = formatTime(finalTime);
+      if (vicMoves) vicMoves.textContent = String(finalMoves);
+      if (vicPairs) vicPairs.textContent = `${config.pairs} / ${config.pairs}`;
+      if (vicBestTime) vicBestTime.textContent = formatTime(updatedStats.bestTime || finalTime);
+      if (vicHints) vicHints.textContent = String(hintsUsed);
+      if (vicDiffLabel) vicDiffLabel.textContent = `${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)}`;
+      if (vicModePill) {
+        vicModePill.textContent = `${currentMode === 'adults' ? 'Adults Mode' : 'Kids Mode'} · ${currentDifficulty.charAt(0).toUpperCase() + currentDifficulty.slice(1)} · ${catDisplayNames[currentCategory]}`;
+      }
+
+      if (vicPbBanner) {
+        vicPbBanner.hidden = !isNewPB;
+      }
+
+      if (vicStars) {
+        const starSvgs = vicStars.querySelectorAll('svg.star');
+        starSvgs.forEach((svg, idx) => {
+          svg.classList.toggle('active', idx < starCount);
+          svg.classList.toggle('inactive', idx >= starCount);
+        });
+        vicStars.setAttribute('aria-label', `Performance Rating: ${starCount} of 3 Stars`);
+      }
+
+      if (victoryOverlay) {
+        victoryOverlay.hidden = false;
+        victoryOverlay.classList.add('is-active');
+      }
+
+      announce(`Congratulations! All ${config.pairs} pairs matched in ${finalMoves} moves and ${formatTime(finalTime)}.`);
+      updateStatsBar();
+    }
+  }
+
+  // ==========================================
+  // CRITICAL HINT SYSTEM (RELIABLE & AIRTIGHT)
+  // ==========================================
+
+  function clearHintState() {
+    if (hintTimeoutId !== null) {
+      window.clearTimeout(hintTimeoutId);
+      hintTimeoutId = null;
+    }
+    isHintActive = false;
+    const hintedCards = gridEl?.querySelectorAll('.memory-card.is-hinted');
+    hintedCards?.forEach(el => el.classList.remove('is-hinted'));
+  }
+
+  function provideHint() {
+    // 1. Guard against clicks during active hint, active card lock, pause, or completed puzzle
+    if (isHintActive || isLocked || isPaused || matchedPairIds.size >= DIFFICULTY_MAP[currentDifficulty].pairs) {
+      return;
+    }
+
+    // 2. Identify all currently unmatched and unrevealed cards
+    // Must strictly exclude already matched pairs and currently revealed cards
+    const availableIndices: number[] = [];
+    cards.forEach((card, index) => {
+      if (!matchedPairIds.has(card.pairId) && !flippedIndices.includes(index)) {
+        availableIndices.push(index);
+      }
+    });
+
+    // 3. Group available unrevealed card indices by their pairId
+    const pairMap = new Map<string, number[]>();
+    availableIndices.forEach(index => {
+      const pid = cards[index].pairId;
+      if (!pairMap.has(pid)) {
+        pairMap.set(pid, []);
+      }
+      pairMap.get(pid)!.push(index);
+    });
+
+    // 4. Find valid pairs where BOTH cards are unmatched and unrevealed
+    const candidatePairs: { pairId: string; indices: [number, number] }[] = [];
+    pairMap.forEach((indices, pairId) => {
+      if (indices.length === 2) {
+        // Assert identical pairId
+        if (cards[indices[0]].pairId === pairId && cards[indices[1]].pairId === pairId) {
+          candidatePairs.push({ pairId, indices: [indices[0], indices[1]] });
+        }
+      }
+    });
+
+    // 5. If one card is currently flipped (partial turn) and only that pair remains
+    if (candidatePairs.length === 0 && flippedIndices.length === 1) {
+      const flippedIdx = flippedIndices[0];
+      const flippedCard = cards[flippedIdx];
+      const partnerIdx = cards.findIndex((c, idx) => idx !== flippedIdx && c.pairId === flippedCard.pairId && !matchedPairIds.has(c.pairId));
+      if (partnerIdx !== -1) {
+        candidatePairs.push({ pairId: flippedCard.pairId, indices: [flippedIdx, partnerIdx] });
+      }
+    }
+
+    // 6. If no valid unmatched pair exists on the board
+    if (candidatePairs.length === 0) {
+      showToast('No matching pairs available for hints.');
+      announce('No matching pairs are available for hints.');
+      return;
+    }
+
+    // 7. Pick a valid matching pair
+    const chosen = candidatePairs[Math.floor(Math.random() * candidatePairs.length)];
+    const [idxA, idxB] = chosen.indices;
+
+    // 8. Strict verification: ensure both indices point to the same valid pairId
+    if (cards[idxA].pairId !== cards[idxB].pairId || matchedPairIds.has(chosen.pairId)) {
+      return;
+    }
+
+    isHintActive = true;
+    hintsUsed += 1;
+    playHintSound();
+
+    const cardEls = gridEl?.querySelectorAll('.memory-card');
+    const elA = cardEls?.[idxA] as HTMLElement;
+    const elB = cardEls?.[idxB] as HTMLElement;
+
+    if (elA) elA.classList.add('is-hinted');
+    if (elB) elB.classList.add('is-hinted');
+
+    announce(`Hint: one available matching pair is highlighted.`);
+
+    // 9. Remove highlight automatically after duration (1400ms)
+    hintTimeoutId = window.setTimeout(() => {
+      if (elA) elA.classList.remove('is-hinted');
+      if (elB) elB.classList.remove('is-hinted');
+      isHintActive = false;
+      hintTimeoutId = null;
+    }, 1400);
+  }
+
+  // Start fresh game (shuffled new deal)
+  function startNewGame(confirmIfProgress = false) {
+    if (confirmIfProgress && moves > 0 && matchedPairIds.size < DIFFICULTY_MAP[currentDifficulty].pairs) {
+      const confirmReset = window.confirm('Start a new game? Current progress will be lost.');
+      if (!confirmReset) return;
+    }
+
+    clearHintState();
+    stopTimer();
+    resetTimer();
+    moves = 0;
+    hintsUsed = 0;
+    isLocked = false;
+    isPaused = false;
+    flippedIndices = [];
+    matchedPairIds.clear();
+
+    if (victoryOverlay) {
+      victoryOverlay.hidden = true;
+      victoryOverlay.classList.remove('is-active');
+    }
+    if (pauseOverlay) pauseOverlay.hidden = true;
+
+    cards = generateCards();
+    renderBoard();
+  }
+
+  // Restart current board (same card positions, reset moves/timer)
+  function restartCurrentGame(promptConfirm = true) {
+    if (promptConfirm && moves > 0 && matchedPairIds.size < DIFFICULTY_MAP[currentDifficulty].pairs) {
+      const confirmRestart = window.confirm('Restart current puzzle from the beginning?');
+      if (!confirmRestart) return;
+    }
+
+    clearHintState();
+    stopTimer();
+    resetTimer();
+    moves = 0;
+    hintsUsed = 0;
+    isLocked = false;
+    isPaused = false;
+    flippedIndices = [];
+    matchedPairIds.clear();
+
+    if (victoryOverlay) {
+      victoryOverlay.hidden = true;
+      victoryOverlay.classList.remove('is-active');
+    }
+    if (pauseOverlay) pauseOverlay.hidden = true;
+
+    renderBoard();
+  }
+
+  // Pause / Resume
+  function togglePause() {
+    if (matchedPairIds.size >= DIFFICULTY_MAP[currentDifficulty].pairs) return;
+    isPaused = !isPaused;
+
+    if (isPaused) {
+      clearHintState();
+      stopTimer();
+      if (pauseOverlay) pauseOverlay.hidden = false;
+    } else {
+      if (pauseOverlay) pauseOverlay.hidden = true;
+      if (moves > 0) startTimer();
+    }
+  }
+
+  // Switch Player Mode (Adults / Kids)
+  function switchPlayerMode(newMode: PlayerMode) {
+    if (newMode === currentMode) return;
+    clearHintState();
+    currentMode = newMode;
+
+    const modeBtns = document.querySelectorAll<HTMLButtonElement>('.memory-mode-btn');
+    modeBtns.forEach(btn => {
+      const active = btn.dataset.playerMode === newMode;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+
+    startNewGame(false);
+  }
+
+  // Switch Category
+  function switchCategory(newCat: Category) {
+    if (newCat === currentCategory && !isDaily) return;
+    clearHintState();
+    currentCategory = newCat;
+    isDaily = false;
+
+    if (dailyBanner) dailyBanner.hidden = true;
+    if (diffBar) diffBar.hidden = false;
+
+    const catBtns = document.querySelectorAll<HTMLButtonElement>('.memory-cat-btn');
+    catBtns.forEach(btn => {
+      const catVal = btn.dataset.category || btn.dataset.legacyCategory;
+      const active = catVal === newCat || (newCat === 'icon' && catVal === 'emoji');
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+
+    startNewGame(false);
+  }
+
+  // Switch Difficulty
+  function switchDifficulty(newDiff: Difficulty) {
+    if (newDiff === currentDifficulty && !isDaily) return;
+    if (moves > 0 && matchedPairIds.size < DIFFICULTY_MAP[currentDifficulty].pairs) {
+      const ok = window.confirm('Changing difficulty will start a fresh game. Proceed?');
+      if (!ok) return;
+    }
+
+    clearHintState();
+    currentDifficulty = newDiff;
+    isDaily = false;
+
+    if (dailyBanner) dailyBanner.hidden = true;
+
+    const diffBtns = document.querySelectorAll<HTMLButtonElement>('.memory-diff-btn');
+    diffBtns.forEach(btn => {
+      const active = btn.dataset.difficulty === newDiff;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+
+    startNewGame(false);
+  }
+
+  // Toggle Daily Challenge
+  function toggleDailyMode() {
+    clearHintState();
+    isDaily = true;
+    currentDifficulty = 'medium'; // Standardized daily challenge difficulty
+    const todayStr = getUtcDateString();
+    const seed = hashString(todayStr);
+    const catList: Category[] = ['icon', 'shape', 'number', 'color'];
+    currentCategory = catList[seed % catList.length];
+
+    if (dailyBanner) dailyBanner.hidden = false;
+    if (diffBar) diffBar.hidden = true;
+
+    if (dailyDateLabel) {
+      const d = new Date();
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      dailyDateLabel.textContent = `Daily Memory Challenge · ${monthNames[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} (UTC)`;
+    }
+
+    // Update Category visual buttons to match daily
+    const catBtns = document.querySelectorAll<HTMLButtonElement>('.memory-cat-btn');
+    catBtns.forEach(btn => {
+      const catVal = btn.dataset.category;
+      const active = catVal === currentCategory || (currentCategory === 'icon' && catVal === 'emoji');
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+
+    startNewGame(false);
+  }
+
+  function exitDailyMode() {
+    clearHintState();
+    isDaily = false;
+    if (dailyBanner) dailyBanner.hidden = true;
+    if (diffBar) diffBar.hidden = false;
+    switchCategory('icon');
+  }
+
+  // Reset Statistics Confirmation
+  function resetAllStatistics() {
+    const ok = window.confirm('Reset all saved memory records, best times, and game counts? This action cannot be undone.');
+    if (!ok) return;
+
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith('pf-memory-matching-adults-v1') || k.startsWith('pf-memory-matching-kids-v1') || k === 'pf-memory-matching-daily-v1')) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      showToast('All statistics have been reset.');
+      updateStatsBar();
+    } catch {
+      // Ignore
+    }
+  }
+
+  // Share Score Functionality
+  async function shareScore() {
+    const config = DIFFICULTY_MAP[currentDifficulty];
+    const catName = currentCategory.charAt(0).toUpperCase() + currentCategory.slice(1);
+    const modeName = currentMode === 'adults' ? 'Adults' : 'Kids';
+    const shareText = `PuzzleFeels Memory Matching (${modeName} · ${currentDifficulty.toUpperCase()} · ${catName}): Solved all ${config.pairs} pairs in ${formatTime(timerSeconds)} (${moves} moves)! Play free: https://puzzlefeels.com/memory-matching-game-online/`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Memory Matching Game Online – PuzzleFeels',
+          text: shareText,
+          url: 'https://puzzlefeels.com/memory-matching-game-online/'
+        });
+        showToast('Shared successfully!');
+      } catch {
+        // User cancelled share
+      }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareText);
+        showToast('Results copied to clipboard!');
+      } catch {
+        showToast('Failed to copy score.');
+      }
+    }
+  }
+
+  // ==========================================
+  // EVENT LISTENERS & INITIALIZATION
+  // ==========================================
+
+  // Player Mode buttons
+  document.querySelectorAll<HTMLButtonElement>('.memory-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.playerMode as PlayerMode;
+      if (mode) switchPlayerMode(mode);
+    });
+  });
+
+  // Category buttons
+  document.querySelectorAll<HTMLButtonElement>('.memory-cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      let cat = btn.dataset.category as Category;
+      if ((cat as string) === 'emoji') cat = 'icon';
+      if (cat) switchCategory(cat);
+    });
+  });
+
+  // Difficulty buttons
+  document.querySelectorAll<HTMLButtonElement>('.memory-diff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const diff = btn.dataset.difficulty as Difficulty;
+      if (diff) switchDifficulty(diff);
+    });
+  });
+
+  // Toolbar Actions
+  document.getElementById('memory-hint-btn')?.addEventListener('click', provideHint);
+  document.getElementById('memory-pause-btn')?.addEventListener('click', togglePause);
+  document.getElementById('memory-restart-btn')?.addEventListener('click', () => restartCurrentGame(true));
+  document.getElementById('memory-new-btn')?.addEventListener('click', () => startNewGame(true));
+  document.getElementById('memory-resume-btn')?.addEventListener('click', togglePause);
+  document.getElementById('memory-daily-toggle')?.addEventListener('click', toggleDailyMode);
+  document.getElementById('exit-daily-btn')?.addEventListener('click', exitDailyMode);
+  document.getElementById('memory-reset-stats')?.addEventListener('click', resetAllStatistics);
+
+  // Victory modal buttons & close
+  document.getElementById('victory-replay-btn')?.addEventListener('click', () => restartCurrentGame(false));
+  document.getElementById('victory-new-btn')?.addEventListener('click', () => startNewGame(false));
+  document.getElementById('victory-share-btn')?.addEventListener('click', shareScore);
+  document.getElementById('victory-close-btn')?.addEventListener('click', () => {
+    if (victoryOverlay) {
+      victoryOverlay.hidden = true;
+      victoryOverlay.classList.remove('is-active');
+    }
+  });
+
+  // Sound toggle
+  const soundBtn = document.getElementById('memory-sound-toggle') as HTMLButtonElement;
+  const soundOnIcon = soundBtn?.querySelector('.sound-on-icon') as HTMLElement;
+  const soundOffIcon = soundBtn?.querySelector('.sound-off-icon') as HTMLElement;
+  const soundLabel = soundBtn?.querySelector('.sound-label') as HTMLElement;
+
+  if (soundBtn) {
+    soundBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundBtn.setAttribute('aria-pressed', String(soundEnabled));
+      if (soundOnIcon) soundOnIcon.hidden = !soundEnabled;
+      if (soundOffIcon) soundOffIcon.hidden = soundEnabled;
+      if (soundLabel) soundLabel.textContent = soundEnabled ? 'Sound' : 'Muted';
+      try {
+        localStorage.setItem('pf-memory-matching-preferences-v1', JSON.stringify({ sound: soundEnabled }));
+      } catch {
+        // Ignore
+      }
+    });
+
+    try {
+      const rawPref = localStorage.getItem('pf-memory-matching-preferences-v1');
+      if (rawPref) {
+        const parsed = JSON.parse(rawPref);
+        if (parsed && parsed.sound === false) {
+          soundEnabled = false;
+          soundBtn.setAttribute('aria-pressed', 'false');
+          if (soundOnIcon) soundOnIcon.hidden = true;
+          if (soundOffIcon) soundOffIcon.hidden = false;
+          if (soundLabel) soundLabel.textContent = 'Muted';
+        }
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  // Check URL query parameters (e.g. ?daily=today)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('daily') === 'today') {
+    toggleDailyMode();
+  } else {
+    // Initial start in Easy Icon mode
+    startNewGame(false);
+  }
+</script>
+
+<style is:global>
+  /* ==========================================
+     MEMORY MATCHING GAME - PREMIUM STYLING
+     ========================================== */
+
+  .memory-page {
+    padding-bottom: 70px;
+  }
+
+  .memory-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 18px 0 6px;
+  }
+  .memory-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+
+  .memory-intro {
+    padding: 16px 0 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .memory-intro .eyebrow {
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .memory-intro h1 {
+    margin: 8px auto 14px;
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    letter-spacing: -.035em;
+    text-align: center;
+  }
+  .memory-intro p {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 15.5px;
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  /* Shell Container */
+  .memory-shell {
+    max-width: 760px;
+    margin: 0 auto 56px;
+    padding: 30px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+    background: var(--paper);
+    border: 1px solid var(--line);
+  }
+
+  /* Player Mode Switcher */
+  .memory-player-modes {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 22px;
+    background: var(--wash);
+    padding: 5px;
+    border-radius: 14px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid var(--line);
+  }
+  .memory-mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 10px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .16s ease;
+  }
+  .memory-mode-btn:hover {
+    color: var(--ink);
+  }
+  .memory-mode-btn.is-active {
+    background: var(--paper);
+    color: var(--blue);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  }
+  .mode-icon-svg {
+    flex-shrink: 0;
+  }
+
+  /* Controls & Categories Bar */
+  .memory-controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+
+  .memory-categories {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .memory-cat-btn {
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 7px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all .16s ease;
+  }
+  .memory-cat-btn:hover {
+    border-color: var(--blue);
+  }
+  .memory-cat-btn.is-active {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+  .cat-svg {
+    flex-shrink: 0;
+  }
+
+  .memory-quick-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .memory-btn-action {
+    min-height: 38px;
+    padding: 0 13px;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 10px;
+  }
+  .btn-svg,
+  .sound-on-icon,
+  .sound-off-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  /* Difficulty Selector Bar */
+  .memory-difficulty-bar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .memory-difficulties {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .memory-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    transition: all .16s ease;
+  }
+  .memory-diff-btn strong {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .memory-diff-btn span {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .memory-diff-btn:hover {
+    border-color: var(--blue);
+  }
+  .memory-diff-btn.is-active {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .memory-diff-btn.is-active span {
+    color: var(--blue);
+    opacity: .85;
+  }
+
+  /* Daily banner */
+  .memory-daily-banner {
+    width: 100%;
+    background: linear-gradient(135deg, #dcfce7 0%, #ecfdf5 100%);
+    border: 1px solid #86efac;
+    border-radius: 16px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .daily-banner-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .daily-badge {
+    font-size: 10px;
+    font-weight: 800;
+    color: #15803d;
+    letter-spacing: .06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .daily-banner-info strong {
+    font-size: 14px;
+    color: #14532d;
+  }
+  .daily-status-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: #166534;
+  }
+  .daily-status-tag.is-completed {
+    color: #047857;
+    font-weight: 800;
+  }
+  .exit-daily-btn {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 12px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Statistics bar */
+  .memory-stats-bar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 12px 14px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .stat-cell small {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .stat-cell strong {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -.02em;
+  }
+
+  /* Progress track */
+  .memory-progress-wrap {
+    width: 100%;
+    height: 6px;
+    background: var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .memory-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #315ee8, #10b981);
+    border-radius: 10px;
+    transition: width .25s ease-out;
+  }
+
+  /* Board container */
+  .memory-board-wrapper {
+    width: 100%;
+    position: relative;
+    margin: 0 auto 22px;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: auto;
+    padding: 6px 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .memory-grid {
+    --memory-zoom: 1;
+    --base-grid-max: 540px;
+    width: calc(min(100%, var(--base-grid-max)) * var(--memory-zoom, 1));
+    max-width: none;
+    flex-shrink: 0;
+    display: grid;
+    gap: calc(12px * var(--memory-zoom, 1));
+    perspective: 1000px;
+    user-select: none;
+    touch-action: manipulation;
+    transition: width 0.15s ease;
+  }
+
+  /* Easy: 4 cols x 3 rows */
+  .memory-grid.grid-easy {
+    --base-grid-max: 540px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Medium: 4 cols x 4 rows */
+  .memory-grid.grid-medium {
+    --base-grid-max: 540px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Hard: 6 cols x 4 rows on desktop */
+  .memory-grid.grid-hard {
+    --base-grid-max: 660px;
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  /* 3D Flippable Memory Card */
+  .memory-card {
+    aspect-ratio: 1 / 1.08;
+    position: relative;
+    cursor: pointer;
+    border-radius: 16px;
+    perspective: 1000px;
+    outline: none;
+    transition: transform .18s ease;
+  }
+
+  .memory-card:focus-visible .memory-card-inner {
+    box-shadow: 0 0 0 3px #93abff;
+  }
+
+  .memory-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    text-align: center;
+    transition: transform .32s cubic-bezier(0.2, 0.85, 0.25, 1);
+    transform-style: preserve-3d;
+  }
+
+  .memory-card.is-flipped .memory-card-inner,
+  .memory-card.is-matched .memory-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  /* Front face (Face-Down back cover) */
+  .card-front {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 6px 14px rgba(30, 58, 138, 0.2), inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+
+  .memory-card:hover .card-front {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 10px 22px rgba(30, 58, 138, 0.28);
+  }
+
+  .card-back-pattern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-back-emblem {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .card-emblem-svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Back face (Face-Up revealed content) */
+  .card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: rotateY(180deg);
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    border: 1.5px solid #cbd5e1;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    overflow: hidden;
+  }
+
+  /* Matched Card styling */
+  .memory-card.is-matched .card-back {
+    background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: #22c55e;
+    box-shadow: 0 4px 14px rgba(34, 197, 94, 0.2);
+  }
+
+  .card-matched-badge {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hinted card pulse and aura */
+  .memory-card.is-hinted {
+    animation: hint-glow 1.4s ease-in-out infinite alternate;
+    z-index: 5;
+  }
+  .memory-card.is-hinted .card-front,
+  .memory-card.is-hinted .card-back {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.5), 0 8px 24px rgba(245, 158, 11, 0.35) !important;
+  }
+
+  @keyframes hint-glow {
+    0% { transform: scale(1); }
+    100% { transform: translateY(-3px) scale(1.03); }
+  }
+
+  /* Card content typography & layouts */
+  .card-symbol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .card-icon svg {
+    width: clamp(34px, 7vw, 44px);
+    height: clamp(34px, 7vw, 44px);
+  }
+
+  .card-shape svg {
+    width: clamp(34px, 7vw, 44px);
+    height: clamp(34px, 7vw, 44px);
+  }
+
+  .card-number-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+  }
+  .card-number-badge {
+    font-size: clamp(2rem, 5.5vw, 2.7rem);
+    font-weight: 900;
+    letter-spacing: -.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-number-sub {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+  }
+
+  .card-color-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+  .card-color-swatch {
+    width: clamp(32px, 6.5vw, 42px);
+    height: clamp(32px, 6.5vw, 42px);
+    border-radius: 50%;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    border: 2px solid #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+  }
+  .card-color-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -.01em;
+    text-align: center;
+  }
+
+  /* Overlay Screens (Pause & Results) */
+  .memory-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 19, 43, 0.72);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 20;
+    animation: fade-in .2s ease-out;
+  }
+  .memory-overlay[hidden] {
+    display: none;
+  }
+
+  .memory-overlay-box {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 32px 28px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    position: relative;
+  }
+
+  .victory-box {
+    max-width: 480px;
+    padding: 32px 26px;
+  }
+
+  .victory-close-btn {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 0;
+    background: var(--wash);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .16s ease;
+  }
+  .victory-close-btn:hover {
+    color: var(--ink);
+    background: var(--line);
+  }
+
+  .victory-trophy-badge {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 1.5px solid #f59e0b;
+    color: #b45309;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.25);
+  }
+
+  .victory-mode-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+
+  .victory-box h2 {
+    font-size: 24px;
+    letter-spacing: -.03em;
+    margin: 4px 0 6px;
+  }
+
+  .victory-stars {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 14px 0 18px;
+  }
+  .victory-stars svg.star {
+    color: #e2e8f0;
+    transition: transform .2s ease;
+  }
+  .victory-stars svg.star.active {
+    color: #f59e0b;
+    filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.4));
+  }
+
+  .victory-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    background: var(--wash);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 18px;
+    border: 1px solid var(--line);
+  }
+  .victory-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .victory-stat-item small {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .victory-stat-item strong {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  .victory-pb-banner {
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .victory-pb-banner[hidden] {
+    display: none;
+  }
+
+  .victory-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .victory-actions .btn {
+    flex: 1 1 120px;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 13px;
+    padding: 0 16px;
+  }
+  .primary-victory-btn {
+    background: var(--blue);
+    color: #ffffff;
+  }
+
+  /* Kids Mode Encouragement Toast */
+  .kids-toast {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: #10b981;
+    color: #ffffff;
+    border-radius: 99px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+    z-index: 15;
+    opacity: 0;
+    pointer-events: none;
+    transition: all .25s cubic-bezier(0.2, 0.85, 0.25, 1);
+  }
+  .kids-toast[hidden] {
+    display: none;
+  }
+  .kids-toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .kids-toast-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Toolbar */
+  .memory-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .toolbar-btn {
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 13.5px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .memory-footer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .memory-help-text {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .reset-stats-btn {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: underline;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 4px;
+  }
+  .reset-stats-btn:hover {
+    color: #ef4444;
+  }
+
+  .share-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #17233b;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: all .2s ease;
+    z-index: 100;
+  }
+  .share-toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Article typography strict matching */
+  .wrap.game-article-content.memory-article {
+    max-width: 760px;
+    margin: 54px auto 48px;
+    line-height: 1.72;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .wrap.game-article-content.memory-article h2 {
+    font-size: 24px;
+    line-height: 1.3;
+    letter-spacing: -.025em;
+    margin: 36px 0 14px;
+    text-align: left;
+  }
+  .wrap.game-article-content.memory-article h2:first-child {
+    margin-top: 0;
+  }
+  .wrap.game-article-content.memory-article h3 {
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -.02em;
+    margin: 26px 0 10px;
+    text-align: left;
+  }
+  .wrap.game-article-content.memory-article h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    text-align: left;
+  }
+  .wrap.game-article-content.memory-article p {
+    font-size: 16px;
+    line-height: 1.72;
+    margin: 0 0 16px;
+    text-align: left;
+  }
+  .wrap.game-article-content.memory-article ol,
+  .wrap.game-article-content.memory-article ul {
+    padding-inline-start: 24px;
+    margin: 0 0 20px;
+  }
+  .wrap.game-article-content.memory-article li {
+    font-size: 16px;
+    line-height: 1.68;
+    margin: 0 0 8px;
+    padding-inline-start: 2px;
+  }
+  .wrap.game-article-content.memory-article a {
+    color: var(--blue);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Related Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+  .related-card {
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 18px;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 14px 34px rgba(23, 35, 59, 0.08);
+  }
+  .related-visual {
+    height: 170px;
+    position: relative;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+  .related-orbit {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 6px;
+  }
+  .slide-icon {
+    grid-template-columns: repeat(2, 42px);
+  }
+  .slide-icon span {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: white;
+    color: #315ee8;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .reaction-icon {
+    grid-template-columns: repeat(2, 42px);
+  }
+  .reaction-icon span {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: white;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(23, 35, 59, 0.08);
+  }
+  .ladder-icon {
+    grid-template-columns: repeat(2, 42px);
+  }
+  .ladder-icon span {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: white;
+    color: #315ee8;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .related-card-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+  .related-card h3 {
+    font-size: 17px;
+    margin: 0 0 8px;
+    letter-spacing: -.02em;
+  }
+  .related-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+    flex: 1;
+  }
+  .related-play {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ==========================================
+     DARK THEME SUPPORT (#0B132B)
+     ========================================== */
+
+  html[data-theme="dark"] .memory-shell {
+    background: #151f3d;
+    border-color: #293858;
+    box-shadow: 0 16px 40px rgba(3, 8, 23, 0.35);
+  }
+
+  html[data-theme="dark"] .memory-player-modes {
+    background: #101932;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .memory-mode-btn {
+    color: #94a3b8;
+  }
+  html[data-theme="dark"] .memory-mode-btn:hover {
+    color: #f1f5f9;
+  }
+  html[data-theme="dark"] .memory-mode-btn.is-active {
+    background: #1e293b;
+    color: #93c5fd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  html[data-theme="dark"] .memory-cat-btn,
+  html[data-theme="dark"] .memory-diff-btn {
+    background: #111b36;
+    border-color: #2c3e66;
+    color: #e2e8f0;
+  }
+  html[data-theme="dark"] .memory-cat-btn:hover,
+  html[data-theme="dark"] .memory-diff-btn:hover {
+    background: #23355e;
+  }
+  html[data-theme="dark"] .memory-cat-btn.is-active,
+  html[data-theme="dark"] .memory-diff-btn.is-active {
+    background: #263866;
+    border-color: #4b6cb7;
+    color: #a9bcff;
+  }
+  html[data-theme="dark"] .memory-diff-btn.is-active span {
+    color: #c2d0ff;
+  }
+
+  html[data-theme="dark"] .memory-stats-bar {
+    background: #101932;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .memory-progress-wrap {
+    background: #1c2b50;
+  }
+
+  /* Dark mode card faces */
+  html[data-theme="dark"] .card-front {
+    background: linear-gradient(135deg, #0f172a 0%, #172554 50%, #1e3a8a 100%);
+    border-color: rgba(147, 197, 253, 0.28);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(147, 197, 253, 0.08);
+  }
+  html[data-theme="dark"] .card-back-emblem {
+    background: rgba(147, 197, 253, 0.1);
+    border-color: rgba(147, 197, 253, 0.3);
+    color: #93c5fd;
+  }
+
+  html[data-theme="dark"] .card-back {
+    background: linear-gradient(145deg, #151f3d 0%, #101932 100%);
+    border-color: #27375a;
+    color: #f1f5f9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  html[data-theme="dark"] .card-color-label {
+    color: #f1f5f9;
+  }
+
+  html[data-theme="dark"] .memory-card.is-matched .card-back {
+    background: linear-gradient(145deg, #064e3b 0%, #065f46 100%);
+    border-color: #10b981;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+  }
+  html[data-theme="dark"] .card-matched-badge {
+    background: #064e3b;
+    color: #6ee7b7;
+  }
+
+  html[data-theme="dark"] .memory-overlay-box {
+    background: #141f3d;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .victory-stats-grid {
+    background: #101932;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .victory-trophy-badge {
+    background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+    border-color: #d97706;
+    color: #fde68a;
+  }
+  html[data-theme="dark"] .victory-stars svg.star {
+    color: #334155;
+  }
+  html[data-theme="dark"] .victory-stars svg.star.active {
+    color: #f59e0b;
+  }
+  html[data-theme="dark"] .victory-pb-banner {
+    background: #451a03;
+    border-color: #78350f;
+    color: #fde68a;
+  }
+  html[data-theme="dark"] .victory-close-btn {
+    background: #1b294b;
+    color: #94a3b8;
+  }
+  html[data-theme="dark"] .victory-close-btn:hover {
+    color: #ffffff;
+    background: #27375a;
+  }
+
+  html[data-theme="dark"] .memory-daily-banner {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    border-color: #047857;
+  }
+  html[data-theme="dark"] .daily-badge {
+    color: #a7f3d0;
+  }
+  html[data-theme="dark"] .daily-banner-info strong {
+    color: #f0fdf4;
+  }
+  html[data-theme="dark"] .daily-status-tag {
+    color: #6ee7b7;
+  }
+  html[data-theme="dark"] .daily-status-tag.is-completed {
+    color: #a7f3d0;
+  }
+
+  html[data-theme="dark"] .related-visual {
+    background: linear-gradient(145deg, #1b294b, #222345);
+  }
+  html[data-theme="dark"] .related-orbit {
+    border-color: #35466c;
+  }
+  html[data-theme="dark"] .related-icon span {
+    background: #263553;
+    color: #c2d0ff;
+    box-shadow: 0 8px 20px rgba(3, 8, 23, 0.35);
+  }
+
+  /* ==========================================
+     RESPONSIVE RULES (320px to 1280px)
+     ========================================== */
+
+  @media (max-width: 900px) {
+    .related-games-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .wrap.game-article-content.memory-article {
+      width: calc(100% - 32px);
+      margin-top: 48px;
+      margin-bottom: 40px;
+      font-size: 15px;
+    }
+    .wrap.game-article-content.memory-article h2 {
+      font-size: 21px;
+      margin-top: 28px;
+    }
+    .wrap.game-article-content.memory-article h3 {
+      font-size: 17px;
+    }
+    .wrap.game-article-content.memory-article p,
+    .wrap.game-article-content.memory-article li {
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    .memory-shell {
+      padding: 20px 16px;
+      border-radius: 20px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    /* Adaptive Hard Grid for mobile: 4 cols x 6 rows */
+    .memory-grid.grid-hard {
+      grid-template-columns: repeat(4, 1fr);
+      --base-grid-max: 440px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .memory-intro {
+      padding: 12px 0 22px;
+    }
+    .memory-categories {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .memory-cat-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 9px 8px;
+      font-size: 12px;
+    }
+    .memory-quick-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .memory-btn-action {
+      flex: 1;
+      justify-content: center;
+    }
+    .memory-diff-btn {
+      padding: 8px 6px;
+      text-align: center;
+      align-items: center;
+    }
+    .memory-diff-btn strong {
+      font-size: 12px;
+    }
+    .memory-diff-btn span {
+      font-size: 9px;
+    }
+
+    .related-games-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .related-card {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      min-height: 150px;
+    }
+    .related-visual {
+      height: auto;
+      min-height: 150px;
+    }
+    .related-orbit {
+      width: 96px;
+      height: 96px;
+    }
+    .related-icon span {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+    .related-card-body {
+      padding: 14px 12px;
+    }
+    .related-card h3 {
+      font-size: 15px;
+      margin: 6px 0 4px;
+    }
+    .related-card p {
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .related-play {
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .memory-stats-bar {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .memory-toolbar {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      width: 100%;
+    }
+    .toolbar-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 0 10px;
+      font-size: 12.5px;
+    }
+    .victory-stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .memory-shell {
+      padding: 16px 10px;
+    }
+    .memory-grid {
+      gap: 8px;
+    }
+    .related-card {
+      grid-template-columns: 96px minmax(0, 1fr);
+    }
+    .related-icon span {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .memory-card-inner,
+    .memory-progress-bar,
+    .related-card {
+      transition: none !important;
+      animation: none !important;
+    }
+    .memory-card.is-hinted {
+      animation: none !important;
+    }
+  }
+</style>

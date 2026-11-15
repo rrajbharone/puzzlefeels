@@ -1,0 +1,2672 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+
+const title = 'Reaction Time Test – Play Free Reaction Time Challenge Online | PuzzleFeels';
+const description = 'Test your reflexes with our free Reaction Time Test. Measure your reaction speed in milliseconds, beat your personal best, and try daily challenges.';
+
+const faqs = [
+  {
+    question: 'What is a normal human reaction time?',
+    answer: 'For a healthy adult responding to visual stimuli (such as a screen turning from red to green), the typical average reaction time ranges between 200 and 275 milliseconds. Auditory reaction times are generally slightly faster (approximately 140 to 180 ms) because auditory signals take fewer synaptic steps to reach the primary processing centers of the brain.'
+  },
+  {
+    question: 'Is 200 ms a good reaction time?',
+    answer: 'Yes, 200 ms is considered very fast. It places you well above the median score of the general population. Competitive esports athletes, martial artists, and Formula 1 drivers frequently record reaction times between 170 ms and 210 ms under tournament conditions.'
+  },
+  {
+    question: 'How can I test my reaction speed accurately?',
+    answer: 'To test your reaction speed accurately, eliminate hardware latency where possible. Use a computer monitor with a high refresh rate (120Hz or higher) and a wired optical mouse. Sit upright in a comfortable position, rest your finger directly on the mouse button without floating above it, focus your vision on the center of the play area, and run a 5-round average test.'
+  },
+  {
+    question: 'Why do I sometimes get a false start?',
+    answer: 'A false start occurs when you click the game zone before the signal turns green. Because the waiting interval is randomized between 1.5 and 5.0 seconds, anticipating or guessing when the color will switch often leads to clicking while the screen is still red. A false start invalidates that round so your true cognitive response time remains uncorrupted.'
+  },
+  {
+    question: 'Does reaction time depend on the device or display?',
+    answer: 'Yes, hardware introduces input and display lag. Standard 60Hz displays refresh the frame every 16.7 milliseconds, whereas 144Hz monitors refresh every 6.9 milliseconds. Wireless Bluetooth peripherals can also add 10 to 30 ms of transmission latency compared to wired inputs. Furthermore, mobile operating systems apply minor touch-polling buffering. Our test uses high-precision performance.now() timestamps to measure browser rendering timing as accurately as possible.'
+  },
+  {
+    question: 'Can I improve my reaction time with practice?',
+    answer: 'Yes. While biological nerve conduction velocity has a genetic foundation, dedicated perceptual training, cognitive games, adequate sleep, good hydration, and physical aerobic conditioning can improve your effective reaction time by 15% to 25%. Practice trains your nervous system to streamline visual recognition and motor unit firing.'
+  },
+  {
+    question: 'What is the fastest possible human reaction time?',
+    answer: 'The biological floor for human visual response is approximately 100 to 120 milliseconds. Light must hit the retina, photopigments must trigger electrical action potentials, signals must traverse the optic nerve to the visual cortex, and the motor cortex must signal peripheral muscles in your hand. Any recorded reaction below 100 ms is almost always considered an anticipation or accidental pre-click rather than genuine stimulus processing.'
+  },
+  {
+    question: 'Is this reaction time test free to play?',
+    answer: 'Yes, Reaction Time Challenge on PuzzleFeels is completely free, runs directly in your web browser, requires no software download or registration, and works completely client-side without any advertisements interrupting your gameplay.'
+  },
+  {
+    question: 'Does this game save my personal best and daily stats?',
+    answer: 'Yes. All personal bests, round counts, and daily challenge records are saved locally on your device via browser LocalStorage. Your statistics persist between browser sessions and are never transmitted to external tracking servers.'
+  },
+  {
+    question: 'How many rounds are included in the test?',
+    answer: 'The default Classic Test includes 5 rounds, which provides a statistically stable average that smooths out single-round anomalies. You can also play the Quick Reflex mode (1 round for instant checks), the Endurance Test (10 rounds to evaluate focus fatigue), or the Daily Challenge (5 synchronized rounds refreshed every midnight UTC).'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Reaction Time Challenge',
+  url: 'https://puzzlefeels.com/reaction-time-challenge/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Reaction Time Challenge', item: 'https://puzzlefeels.com/reaction-time-challenge/' }
+  ]
+};
+---
+
+<Base {title} {description} path="/reaction-time-challenge/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="reaction-page">
+    <nav class="wrap reaction-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Reaction Time Challenge</span>
+    </nav>
+
+    <section class="wrap reaction-intro">
+      <span class="eyebrow">Reflex & Speed Measurement</span>
+      <h1>Reaction Time Challenge</h1>
+      <p class="muted">Test your reflexes with our free Reaction Time Test. Measure your reaction speed in milliseconds, beat your personal best, and try daily challenges. Experience seamless client-side timing, false-start prevention, and comprehensive performance analysis right in your browser.</p>
+    </section>
+
+    <!-- Main Game Shell -->
+    <section class="wrap reaction-shell card" data-reaction-game aria-label="Reaction time testing game">
+      <!-- Mode Selection & Audio Bar -->
+      <div class="reaction-header-bar">
+        <div class="reaction-modes" role="group" aria-label="Select test mode">
+          <button type="button" class="reaction-mode-btn is-active" data-mode="classic" aria-pressed="true">
+            <strong>Classic Test</strong>
+            <span>5 Rounds · Average</span>
+          </button>
+          <button type="button" class="reaction-mode-btn" data-mode="quick" aria-pressed="false">
+            <strong>Quick Reflex</strong>
+            <span>1 Round · Instant</span>
+          </button>
+          <button type="button" class="reaction-mode-btn" data-mode="endurance" aria-pressed="false">
+            <strong>Endurance</strong>
+            <span>10 Rounds · Focus</span>
+          </button>
+          <button type="button" class="reaction-mode-btn" data-mode="daily" aria-pressed="false">
+            <strong>Daily Challenge</strong>
+            <span>5 Rounds · Shared</span>
+          </button>
+        </div>
+
+        <div class="reaction-header-actions">
+          <ZoomControl id="reaction-zoom" label="Zone Zoom" targetSelector="#reaction-play-zone" zoomVar="--reaction-zoom" />
+          <button type="button" class="btn secondary reaction-sound-btn" id="reaction-sound-toggle" aria-label="Toggle sound effects" aria-pressed="true">
+            <svg class="sound-on-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <svg class="sound-off-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <span class="sound-label">Sound</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Status & PB Bar -->
+      <div class="reaction-status-bar" id="reaction-status-bar">
+        <div class="status-left">
+          <span class="status-mode-pill" id="status-mode-pill">Classic Mode</span>
+          <span class="status-round-pill" id="status-round-pill">Round 1 of 5</span>
+        </div>
+        <div class="status-right">
+          <span class="status-pb" id="status-pb-display">Personal Best: <strong>-- ms</strong></span>
+        </div>
+      </div>
+
+      <!-- Main Interactive Play Zone -->
+      <div 
+        class="reaction-play-zone state-idle" 
+        id="reaction-play-zone" 
+        tabindex="0" 
+        role="button" 
+        aria-label="Reaction time interactive play area"
+      >
+        <div class="play-zone-content">
+          <!-- State: Idle / Start -->
+          <div class="zone-view view-idle">
+            <div class="zone-icon-orbit">
+              <span class="zone-icon">⚡</span>
+            </div>
+            <h2 class="zone-heading" id="idle-heading">Wait for the green signal!</h2>
+            <p class="zone-sub">Click or tap anywhere on this box to start. When the screen switches from red to green, click as fast as humanly possible.</p>
+            <button type="button" class="btn zone-start-btn" id="zone-start-btn">
+              <span>Start Test</span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <span class="zone-hint"><kbd>Spacebar</kbd> or <kbd>Enter</kbd> can also be used</span>
+          </div>
+
+          <!-- State: Waiting (Red) -->
+          <div class="zone-view view-waiting" aria-hidden="true">
+            <div class="zone-waiting-pulse"></div>
+            <span class="zone-large-icon">🛑</span>
+            <h2 class="zone-heading">Wait for Green...</h2>
+            <p class="zone-sub">Stay focused. Do not click until the screen turns vibrant green!</p>
+          </div>
+
+          <!-- State: Ready (Green) -->
+          <div class="zone-view view-ready" aria-hidden="true">
+            <span class="zone-large-icon">⚡</span>
+            <h2 class="zone-heading pulse-text">CLICK NOW!</h2>
+            <p class="zone-sub">Click, tap, or press Spacebar immediately!</p>
+          </div>
+
+          <!-- State: False Start (Early Click) -->
+          <div class="zone-view view-false-start" aria-hidden="true">
+            <span class="zone-large-icon">⚠️</span>
+            <h2 class="zone-heading">Too Early!</h2>
+            <p class="zone-sub">You clicked before the signal turned green. This round has been invalidated to protect your stats.</p>
+            <button type="button" class="btn secondary zone-retry-btn" id="zone-retry-btn">
+              <span>Try Round Again</span>
+              <span aria-hidden="true">↺</span>
+            </button>
+          </div>
+
+          <!-- State: Round Result -->
+          <div class="zone-view view-round-result" aria-hidden="true">
+            <span class="round-num-tag" id="round-result-tag">Round 1 Result</span>
+            <div class="round-time-display">
+              <span class="time-number" id="round-time-val">242</span>
+              <span class="time-unit">ms</span>
+            </div>
+            <div class="rating-badge" id="round-rating-badge">Very Fast</div>
+            <p class="zone-sub" id="round-sub-text">Click or press Spacebar to proceed to the next round.</p>
+            <button type="button" class="btn zone-next-btn" id="zone-next-btn">
+              <span>Next Round</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+
+          <!-- State: Completed -->
+          <div class="zone-view view-completed" aria-hidden="true">
+            <div class="completed-icon-orbit" aria-hidden="true">
+              <span class="completed-check-icon">✓</span>
+            </div>
+            <h2 class="completed-heading">COMPLETED</h2>
+            <p class="zone-sub" id="completed-sub-text">All rounds recorded. Your verified results and statistics are ready below.</p>
+            <div class="completed-actions">
+              <button type="button" class="btn zone-replay-btn" id="zone-replay-btn">
+                <span>Play Again</span>
+                <span aria-hidden="true">↺</span>
+              </button>
+            </div>
+            <button type="button" class="completed-scroll-hint" id="completed-scroll-hint" aria-label="Scroll down to score breakdown">
+              <span>View score breakdown</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Dashboard (Shown on Completion) -->
+      <div class="reaction-results-dashboard card" id="reaction-results-dashboard" hidden>
+        <div class="results-header">
+          <div class="results-badge" id="results-pb-badge" hidden>🎉 New Personal Best!</div>
+          <h2 class="results-title" id="results-title">Challenge Complete!</h2>
+          <p class="results-subtitle" id="results-subtitle">Here is your verified reaction performance breakdown:</p>
+        </div>
+
+        <div class="results-hero-stat">
+          <span class="hero-label" id="results-hero-label">Average Reaction Time</span>
+          <div class="hero-number-wrap">
+            <span class="hero-number" id="results-hero-value">224</span>
+            <span class="hero-unit">ms</span>
+          </div>
+          <div class="rating-badge large" id="results-rating-badge">Very Fast</div>
+          <p class="results-comparison" id="results-comparison">Beat previous best by 14 ms!</p>
+        </div>
+
+        <div class="results-grid">
+          <div class="stat-card">
+            <small>Fastest Round</small>
+            <strong id="stat-fastest">204 ms</strong>
+          </div>
+          <div class="stat-card">
+            <small>Slowest Round</small>
+            <strong id="stat-slowest">256 ms</strong>
+          </div>
+          <div class="stat-card">
+            <small>Completed Rounds</small>
+            <strong id="stat-rounds">5 / 5</strong>
+          </div>
+          <div class="stat-card">
+            <small>Mode Record</small>
+            <strong id="stat-record">218 ms</strong>
+          </div>
+        </div>
+
+        <!-- Round by round pills -->
+        <div class="results-rounds-section" id="results-rounds-container">
+          <h3>Round Breakdown</h3>
+          <div class="rounds-list" id="rounds-list"></div>
+        </div>
+
+        <!-- Dashboard Actions -->
+        <div class="results-actions">
+          <button type="button" class="btn" id="btn-replay">
+            <span>Play Again</span>
+            <span aria-hidden="true">↺</span>
+          </button>
+          <button type="button" class="btn secondary" id="btn-share">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share Result</span>
+          </button>
+          <button type="button" class="btn tertiary" id="btn-reset-mode">
+            <span>Reset Mode Stats</span>
+          </button>
+        </div>
+        <p id="share-toast" class="share-toast" aria-live="polite"></p>
+      </div>
+
+      <!-- Daily Challenge Specific Card (Visible when in Daily mode) -->
+      <div class="daily-banner card" id="daily-banner" hidden>
+        <div class="daily-info">
+          <span class="daily-pill">UTC Synchronized</span>
+          <h3 id="daily-date-label">Today's Daily Challenge</h3>
+          <p class="muted" id="daily-desc">Every visitor receives identical signal delays today. Test your reflexes on the global daily seed!</p>
+        </div>
+        <div class="daily-status-box" id="daily-status-box">
+          <span class="daily-status-tag" id="daily-status-tag">Not Completed Today</span>
+          <strong id="daily-today-score">-- ms</strong>
+        </div>
+      </div>
+
+      <!-- Controls & Reset Footer -->
+      <div class="reaction-footer-meta">
+        <p class="reaction-help-text">
+          <strong>Tip:</strong> Keep your finger resting directly on your mouse button or touch surface. Waiting times are randomized between 1.5 and 5 seconds to eliminate anticipation bias.
+        </p>
+        <div class="reaction-meta-links">
+          <button type="button" class="link-btn" id="btn-reset-all">Reset All Local Statistics</button>
+        </div>
+      </div>
+
+      <p id="reaction-live" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <!-- Comprehensive Educational Article Section -->
+    <article class="wrap game-article-content reaction-article">
+      <h2>What Is a Reaction Time Test?</h2>
+      <p>A reaction time test measures how swiftly your central nervous system detects a sensory stimulus and triggers a physical response. In visual reaction testing, a neutral waiting state—typically a red holding screen—switches unexpectedly to bright green. The duration between the green signal appearing and your click or screen tap is your reaction time, recorded in milliseconds (ms).</p>
+      <p>Quick reflexes are vital across sports, driving safety, competitive gaming, and daily cognitive tasks. If you enjoy testing different mental faculties, explore our collection of <a href="/games/">free online puzzle games</a>, practice pattern recognition in the <a href="/number-sequence-game/">Number Sequence Game</a>, exercise spatial planning in the <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>, or solve logic deductions in <a href="/picross-game-online/">Picross Game Online</a>.</p>
+
+      <h2>How to Play the Reaction Time Challenge</h2>
+      <p>Playing our Reaction Time Challenge is straightforward, fast, and optimized for low latency across all modern devices:</p>
+      <ul>
+        <li><strong>Choose a Mode:</strong> Select the 5-round <strong>Classic Test</strong>, the 1-round <strong>Quick Reflex</strong>, the 10-round <strong>Endurance Test</strong>, or the synchronized <strong>Daily Challenge</strong>.</li>
+        <li><strong>Start the Round:</strong> Click the reaction box or press Spacebar. The area turns red with "Wait for Green...".</li>
+        <li><strong>Wait for the Signal:</strong> The internal timer waits for an unpredictable interval between 1.5 and 5.0 seconds. Clicking early causes a <em>False Start</em>, invalidating that attempt so your averages remain accurate.</li>
+        <li><strong>Click on Green:</strong> The instant the screen turns green with "CLICK NOW!", tap, click, or press Spacebar immediately.</li>
+        <li><strong>Review and Continue:</strong> Your response time displays in milliseconds alongside a performance rating tier. Advance through the remaining rounds to complete the set.</li>
+        <li><strong>View Dashboard:</strong> Upon finishing, your dashboard shows your true mathematical average, fastest round, slowest round, personal records, and a share button.</li>
+      </ul>
+      <p>Players worldwide can also participate in our synchronized <a href="/reaction-time-challenge/?daily=today">Daily Reaction Challenge</a>, which pairs naturally with our daily puzzles in the <a href="/word-ladder-game-online/?daily=today">Daily Word Ladder Challenge</a> and <a href="/color-flood-game/?daily=today">Daily Color Flood</a>.</p>
+
+      <h2>How Reaction Time Is Measured</h2>
+      <p>Accurate reaction testing requires sub-millisecond precision. Our test uses the browser's monotonic <code>performance.now()</code> API, unaffected by clock adjustments. The measurement follows four key stages:</p>
+      <ol>
+        <li><strong>Stimulus Paint:</strong> When the random interval ends, the green background renders and the browser captures <code>startTime</code>.</li>
+        <li><strong>Sensory Detection:</strong> Photons from your screen stimulate eye photoreceptors, sending electrical impulses via the optic nerve to the visual cortex.</li>
+        <li><strong>Motor Command:</strong> The brain confirms the green signal and dispatches motor commands through the spinal cord to your finger muscles.</li>
+        <li><strong>Input Registration:</strong> Your click creates a hardware pointer event where <code>endTime</code> is recorded, calculating:</li>
+      </ol>
+      <p><code>Reaction Time (ms) = Math.round(endTime - startTime)</code></p>
+      <p>While deduction puzzles like <a href="/picross-game-online/">Picross Game Online</a> provide untimed reflection, reflex testing measures physiological transmission speed under time pressure. For multi-round modes, your score represents the exact mean across all completed rounds.</p>
+
+      <h2>What Is a Good Reaction Time?</h2>
+      <p>Visual reaction times follow a well-studied physiological spectrum. General performance benchmarks for healthy adults are outlined below:</p>
+
+      <div class="table-wrap">
+        <table class="reaction-benchmark-table">
+          <thead>
+            <tr>
+              <th>Reaction Time (ms)</th>
+              <th>Performance Tier</th>
+              <th>Typical Real-World Context</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>&lt; 150 ms</strong></td>
+              <td><span class="pill tier-lightning">Lightning Fast</span></td>
+              <td>Near biological limits; top 1% esports competitors and elite athletes.</td>
+            </tr>
+            <tr>
+              <td><strong>150 – 199 ms</strong></td>
+              <td><span class="pill tier-extreme">Extremely Fast</span></td>
+              <td>Exceptional reflexes; competitive gamers, martial artists, and racing drivers.</td>
+            </tr>
+            <tr>
+              <td><strong>200 – 249 ms</strong></td>
+              <td><span class="pill tier-very-fast">Very Fast</span></td>
+              <td>Above-average response speed; highly alert, well-rested adults.</td>
+            </tr>
+            <tr>
+              <td><strong>250 – 299 ms</strong></td>
+              <td><span class="pill tier-fast">Fast</span></td>
+              <td>Typical healthy median reaction speed for most human adults.</td>
+            </tr>
+            <tr>
+              <td><strong>300 – 349 ms</strong></td>
+              <td><span class="pill tier-average">Average</span></td>
+              <td>Standard response under relaxed conditions or minor touch latency.</td>
+            </tr>
+            <tr>
+              <td><strong>350 – 399 ms</strong></td>
+              <td><span class="pill tier-below">Below Average</span></td>
+              <td>Indicates mild distraction, eye fatigue, or elevated display latency.</td>
+            </tr>
+            <tr>
+              <td><strong>400+ ms</strong></td>
+              <td><span class="pill tier-practice">Keep Practicing</span></td>
+              <td>Cognitive fatigue, divided attention, or significant peripheral input delay.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>These tiers are practical benchmarks rather than medical diagnostics. Testing your alertness with a 5-round reaction session also makes an excellent mental warmup before tackling strategic grids in the <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a> or optimizing paths in the <a href="/color-flood-game/">Color Flood Game</a>.</p>
+
+      <h2>Factors That Affect Reaction Speed</h2>
+      <p>Reaction velocity fluctuates based on biological, mental, and environmental factors:</p>
+      <ul>
+        <li><strong>Age & Conduction:</strong> Reflexes peak in early adulthood (ages 18–25) and gradually decline by 2–6 ms per decade as nerve conduction slows.</li>
+        <li><strong>Sleep & Alertness:</strong> Sleep loss is the largest inhibitor of reflex speed; staying awake for 20 hours can add 50 ms or more to your baseline.</li>
+        <li><strong>Hydration:</strong> Dehydration degrades electrical nerve impulses, while modest caffeine intake can temporarily heighten alertness.</li>
+        <li><strong>Ergonomics:</strong> Resting your finger directly on the mouse button or touch surface eliminates mechanical travel delay and helps avoid false starts.</li>
+        <li><strong>Hardware Latency:</strong> A 144Hz monitor refreshes every 6.9 ms compared to 16.7 ms on a 60Hz display, and wired optical mice poll faster than Bluetooth devices.</li>
+      </ul>
+
+      <h2>Tips to Improve Your Reaction Time</h2>
+      <p>Targeted training can produce noticeable gains in cognitive responsiveness. Practice these core habits:</p>
+      <ul>
+        <li><strong>Foveal Gaze:</strong> Fix your eyes on the center of the reaction area, where chromatic sensitivity to the red-to-green shift is sharpest.</li>
+        <li><strong>Relaxed Muscles:</strong> Avoid tensing your arm or hand beforehand; relaxed muscles actuate significantly faster than clenched muscles.</li>
+        <li><strong>Anticipation Discipline:</strong> Wait strictly for the green hue rather than guessing the countdown to avoid penalty false starts.</li>
+        <li><strong>Cognitive Cross-Training:</strong> Varying mental stimuli sharpens overall processing speed. Pair reflex drills with card concentration in <a href="/memory-matching-game-online/">Memory Matching Game Online</a>, vocabulary transformations in <a href="/word-ladder-game-online/">Word Ladder Game Online</a>, number deduction in the <a href="/number-sequence-game/">Number Sequence Game</a>, color strategy in <a href="/color-flood-game/">Color Flood Game</a>, or spatial tile sliding in <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>.</li>
+        <li><strong>Consistent Timing:</strong> Test during peak alertness periods—such as mid-morning—to track progress under consistent conditions.</li>
+      </ul>
+
+      <h2>Why Try Different Reaction Time Game Modes?</h2>
+      <p>Our challenge includes four modes designed for different testing needs:</p>
+      <ul>
+        <li><strong>Classic Test (5 Rounds):</strong> The gold standard. Five trials smooth out variance and calculate a representative median reflex score.</li>
+        <li><strong>Quick Reflex (1 Round):</strong> Instant, zero-friction test when you have only a few seconds to check your response speed.</li>
+        <li><strong>Endurance Test (10 Rounds):</strong> Evaluates sustained attention and mental stamina across ten unpredictable trials.</li>
+        <li><strong>Daily Challenge (5 Rounds):</strong> Features deterministic delays tied to the UTC date, ensuring players worldwide compete on identical intervals.</li>
+      </ul>
+      <p>Whether you want a quick reflex check or prefer exploring diverse brain games on the <a href="/games/">All Games directory</a>, rotating between formats keeps mental workouts engaging.</p>
+
+      <h2>Is This Reaction Time Test Accurate?</h2>
+      <p>Yes. Our game engine uses direct browser hardware timing APIs rather than low-resolution timers. Event listeners trigger synchronously with render cycles to keep software measurement delay negligible.</p>
+      <p>Unlike turn-based puzzles in our <a href="/games/">games catalog</a> where hardware speed never changes the solution, visual reflex testing inherently reflects display refresh intervals and input polling. For consistent self-tracking, test on the same device and under steady ambient lighting.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <FaqList items={faqs} />
+    </article>
+
+    <!-- Explore More Puzzle Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep Your Brain Sharp</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Challenge your mind with our curated collection of free, high-focus browser puzzle games.</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/sliding-number-puzzle-game/">
+          <div class="related-visual slide-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">CLASSIC PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Sliding Number Puzzle Game</h3>
+            <p class="muted">Slide numbered tiles into order in classic 8-puzzle, 15-puzzle, and 24-puzzle configurations.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/word-ladder-game-online/">
+          <div class="related-visual ladder-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon ladder-icon"><span>W</span><span>O</span><span>R</span><span>D</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">WORD PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Word Ladder Game Online</h3>
+            <p class="muted">Transform words one letter at a time to bridge the gap from start to target in Lewis Carroll's classic doublets.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/color-flood-game/">
+          <div class="related-visual flood-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon flood-icon"><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">STRATEGY PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Color Flood Game</h3>
+            <p class="muted">Grow the connected territory by choosing colors and flood the entire board within the allotted move limit.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  // ==========================================
+  // REACTION TIME CHALLENGE ENGINE
+  // ==========================================
+
+  type ModeType = 'classic' | 'quick' | 'endurance' | 'daily';
+  type StateType = 'idle' | 'waiting' | 'ready' | 'false-start' | 'round-result' | 'completed';
+
+  interface ModeConfig {
+    name: string;
+    totalRounds: number;
+    storageKey: string;
+  }
+
+  const MODES: Record<ModeType, ModeConfig> = {
+    classic: { name: 'Classic Test', totalRounds: 5, storageKey: 'pf-reaction-time-classic-v1' },
+    quick: { name: 'Quick Reflex', totalRounds: 1, storageKey: 'pf-reaction-time-quick-v1' },
+    endurance: { name: 'Endurance Test', totalRounds: 10, storageKey: 'pf-reaction-time-endurance-v1' },
+    daily: { name: 'Daily Challenge', totalRounds: 5, storageKey: 'pf-reaction-time-daily-v1' }
+  };
+
+  // State variables
+  let currentMode: ModeType = 'classic';
+  let currentState: StateType = 'idle';
+  let currentRound = 1;
+  let roundTimes: number[] = [];
+  let startTime = 0;
+  let waitTimeoutId: number | null = null;
+  let soundEnabled = true;
+  let audioCtx: AudioContext | null = null;
+  let lastActionTime = 0;
+
+  // Cache DOM elements
+  const playZone = document.getElementById('reaction-play-zone') as HTMLElement;
+  const statusModePill = document.getElementById('status-mode-pill') as HTMLElement;
+  const statusRoundPill = document.getElementById('status-round-pill') as HTMLElement;
+  const statusPbDisplay = document.getElementById('status-pb-display') as HTMLElement;
+  const modeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.reaction-mode-btn'));
+  const soundToggleBtn = document.getElementById('reaction-sound-toggle') as HTMLButtonElement;
+  const soundOnIcon = soundToggleBtn?.querySelector('.sound-on-icon') as SVGElement;
+  const soundOffIcon = soundToggleBtn?.querySelector('.sound-off-icon') as SVGElement;
+  const soundLabel = soundToggleBtn?.querySelector('.sound-label') as HTMLElement;
+
+  // Dashboard elements
+  const dashboard = document.getElementById('reaction-results-dashboard') as HTMLElement;
+  const resultsTitle = document.getElementById('results-title') as HTMLElement;
+  const resultsSubtitle = document.getElementById('results-subtitle') as HTMLElement;
+  const resultsHeroLabel = document.getElementById('results-hero-label') as HTMLElement;
+  const resultsHeroVal = document.getElementById('results-hero-value') as HTMLElement;
+  const resultsRatingBadge = document.getElementById('results-rating-badge') as HTMLElement;
+  const resultsComparison = document.getElementById('results-comparison') as HTMLElement;
+  const resultsPbBadge = document.getElementById('results-pb-badge') as HTMLElement;
+  const statFastest = document.getElementById('stat-fastest') as HTMLElement;
+  const statSlowest = document.getElementById('stat-slowest') as HTMLElement;
+  const statRounds = document.getElementById('stat-rounds') as HTMLElement;
+  const statRecord = document.getElementById('stat-record') as HTMLElement;
+  const roundsList = document.getElementById('rounds-list') as HTMLElement;
+  const resultsRoundsContainer = document.getElementById('results-rounds-container') as HTMLElement;
+  const btnReplay = document.getElementById('btn-replay') as HTMLButtonElement;
+  const btnShare = document.getElementById('btn-share') as HTMLButtonElement;
+  const btnResetMode = document.getElementById('btn-reset-mode') as HTMLButtonElement;
+  const btnResetAll = document.getElementById('btn-reset-all') as HTMLButtonElement;
+  const shareToast = document.getElementById('share-toast') as HTMLElement;
+
+  // Daily elements
+  const dailyBanner = document.getElementById('daily-banner') as HTMLElement;
+  const dailyDateLabel = document.getElementById('daily-date-label') as HTMLElement;
+  const dailyStatusTag = document.getElementById('daily-status-tag') as HTMLElement;
+  const dailyTodayScore = document.getElementById('daily-today-score') as HTMLElement;
+
+  // Round result view elements
+  const roundResultTag = document.getElementById('round-result-tag') as HTMLElement;
+  const roundTimeVal = document.getElementById('round-time-val') as HTMLElement;
+  const roundRatingBadge = document.getElementById('round-rating-badge') as HTMLElement;
+  const roundSubText = document.getElementById('round-sub-text') as HTMLElement;
+  const liveAnnouncer = document.getElementById('reaction-live') as HTMLElement;
+
+  // Views inside play zone
+  const viewIdle = playZone?.querySelector('.view-idle') as HTMLElement;
+  const viewWaiting = playZone?.querySelector('.view-waiting') as HTMLElement;
+  const viewReady = playZone?.querySelector('.view-ready') as HTMLElement;
+  const viewFalseStart = playZone?.querySelector('.view-false-start') as HTMLElement;
+  const viewRoundResult = playZone?.querySelector('.view-round-result') as HTMLElement;
+  const viewCompleted = playZone?.querySelector('.view-completed') as HTMLElement;
+  const completedSubText = document.getElementById('completed-sub-text') as HTMLElement;
+  const zoneReplayBtn = document.getElementById('zone-replay-btn') as HTMLButtonElement;
+  const completedScrollHint = document.getElementById('completed-scroll-hint') as HTMLElement;
+
+  // Sound setup via Web Audio API
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function playTone(freq: number, type: OscillatorType, duration: number, gainVal = 0.08) {
+    if (!soundEnabled) return;
+    try {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch {
+      // Audio autoplay policy fallback
+    }
+  }
+
+  function playSignalSound() {
+    playTone(880, 'sine', 0.12, 0.12);
+  }
+
+  function playSuccessClickSound() {
+    playTone(523.25, 'sine', 0.08, 0.09);
+    setTimeout(() => playTone(659.25, 'sine', 0.1, 0.09), 60);
+  }
+
+  function playFalseStartSound() {
+    playTone(180, 'sawtooth', 0.22, 0.12);
+  }
+
+  function playVictoryFanfare() {
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((n, idx) => {
+      setTimeout(() => playTone(n, 'sine', 0.25, 0.1), idx * 110);
+    });
+  }
+
+  // PRNG for Daily Challenge
+  function getUtcDateString(d = new Date()): string {
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function hashString(str: string): number {
+    let hash = 1779033703 ^ str.length;
+    for (let i = 0; i < str.length; i++) {
+      hash = Math.imul(hash ^ str.charCodeAt(i), 3432918353);
+      hash = (hash << 13) | (hash >>> 19);
+    }
+    return hash >>> 0;
+  }
+
+  function mulberry32(a: number): () => number {
+    return function() {
+      let t = (a += 0x6D2B79F5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function getDailyDelays(utcDateStr: string, count = 5): number[] {
+    const seed = hashString(utcDateStr);
+    const rng = mulberry32(seed);
+    const delays: number[] = [];
+    for (let i = 0; i < count; i++) {
+      // 1800ms to 4600ms deterministic
+      const delay = Math.round(1800 + rng() * 2800);
+      delays.push(delay);
+    }
+    return delays;
+  }
+
+  // LocalStorage Helpers
+  interface StoredStats {
+    bestTime: number | null;
+    gamesPlayed: number;
+    history: number[];
+    lastUpdated?: string;
+    lastCompletedDate?: string;
+    todayAverage?: number | null;
+  }
+
+  function getStats(mode: ModeType): StoredStats {
+    try {
+      const raw = localStorage.getItem(MODES[mode].storageKey);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed === 'object' && parsed !== null) {
+          return {
+            bestTime: typeof parsed.bestTime === 'number' ? parsed.bestTime : null,
+            gamesPlayed: typeof parsed.gamesPlayed === 'number' ? parsed.gamesPlayed : 0,
+            history: Array.isArray(parsed.history) ? parsed.history : [],
+            lastUpdated: parsed.lastUpdated,
+            lastCompletedDate: parsed.lastCompletedDate,
+            todayAverage: typeof parsed.todayAverage === 'number' ? parsed.todayAverage : null
+          };
+        }
+      }
+    } catch {
+      // Storage unavailable or JSON error
+    }
+    return { bestTime: null, gamesPlayed: 0, history: [] };
+  }
+
+  function saveStats(mode: ModeType, stats: StoredStats): void {
+    try {
+      localStorage.setItem(MODES[mode].storageKey, JSON.stringify(stats));
+    } catch {
+      // Ignore storage errors
+    }
+  }
+
+  function getPerformanceRating(ms: number): { label: string; className: string } {
+    if (ms < 150) return { label: 'Lightning Fast', className: 'tier-lightning' };
+    if (ms < 200) return { label: 'Extremely Fast', className: 'tier-extreme' };
+    if (ms < 250) return { label: 'Very Fast', className: 'tier-very-fast' };
+    if (ms < 300) return { label: 'Fast', className: 'tier-fast' };
+    if (ms < 350) return { label: 'Average', className: 'tier-average' };
+    if (ms < 400) return { label: 'Below Average', className: 'tier-below' };
+    return { label: 'Keep Practicing', className: 'tier-practice' };
+  }
+
+  // UI state switcher
+  function updateUIState(state: StateType) {
+    currentState = state;
+    playZone.className = `reaction-play-zone state-${state}`;
+
+    if (viewIdle) viewIdle.setAttribute('aria-hidden', String(state !== 'idle'));
+    if (viewWaiting) viewWaiting.setAttribute('aria-hidden', String(state !== 'waiting'));
+    if (viewReady) viewReady.setAttribute('aria-hidden', String(state !== 'ready'));
+    if (viewFalseStart) viewFalseStart.setAttribute('aria-hidden', String(state !== 'false-start'));
+    if (viewRoundResult) viewRoundResult.setAttribute('aria-hidden', String(state !== 'round-result'));
+    if (viewCompleted) viewCompleted.setAttribute('aria-hidden', String(state !== 'completed'));
+
+    if (dashboard) dashboard.hidden = (state !== 'completed');
+
+    if (state === 'completed') {
+      playZone.setAttribute('aria-label', 'Reaction time interactive play area - Test completed. Click to play again.');
+    } else {
+      playZone.setAttribute('aria-label', 'Reaction time interactive play area');
+    }
+
+    // Accessibility announcements
+    if (state === 'waiting') {
+      announce('Wait for green. Timer will begin when screen turns green.');
+    } else if (state === 'ready') {
+      announce('Click now!');
+    } else if (state === 'false-start') {
+      announce('False start. You clicked too early.');
+    } else if (state === 'completed') {
+      announce('Challenge completed! Detailed results and performance stats are displayed below.');
+    }
+  }
+
+  // Smooth scroll helpers with sticky header clearance and reduced motion support
+  function scrollToResults() {
+    if (!dashboard || dashboard.hidden) return;
+    const headerHeight = window.innerWidth <= 680 ? 66 : 76;
+    const buffer = 18;
+    const rect = dashboard.getBoundingClientRect();
+    const targetY = rect.top + window.scrollY - headerHeight - buffer;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: prefersReducedMotion ? 'auto' : 'smooth'
+    });
+  }
+
+  function scrollToPlayZone() {
+    if (!playZone) return;
+    const headerHeight = window.innerWidth <= 680 ? 66 : 76;
+    const buffer = 18;
+    const rect = playZone.getBoundingClientRect();
+    const targetY = rect.top + window.scrollY - headerHeight - buffer;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: prefersReducedMotion ? 'auto' : 'smooth'
+    });
+  }
+
+  function replayGame() {
+    switchMode(currentMode);
+    scrollToPlayZone();
+  }
+
+  function announce(msg: string) {
+    if (liveAnnouncer) {
+      liveAnnouncer.textContent = msg;
+    }
+  }
+
+  function updateStatusDisplay() {
+    const config = MODES[currentMode];
+    if (statusModePill) statusModePill.textContent = config.name;
+
+    if (currentMode === 'quick') {
+      if (statusRoundPill) statusRoundPill.textContent = 'Single Reflex Test';
+    } else {
+      if (statusRoundPill) statusRoundPill.textContent = `Round ${currentRound} of ${config.totalRounds}`;
+    }
+
+    const stats = getStats(currentMode);
+    if (statusPbDisplay) {
+      if (stats.bestTime !== null) {
+        statusPbDisplay.innerHTML = `Personal Best: <strong>${stats.bestTime} ms</strong>`;
+      } else {
+        statusPbDisplay.innerHTML = `Personal Best: <strong>-- ms</strong>`;
+      }
+    }
+
+    // Update Daily Banner
+    if (currentMode === 'daily') {
+      if (dailyBanner) dailyBanner.hidden = false;
+      const todayStr = getUtcDateString();
+      if (dailyDateLabel) {
+        const d = new Date();
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        dailyDateLabel.textContent = `Daily Challenge · ${monthNames[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} (UTC)`;
+      }
+      if (stats.lastCompletedDate === todayStr && stats.todayAverage !== null && stats.todayAverage !== undefined) {
+        if (dailyStatusTag) {
+          dailyStatusTag.textContent = 'Completed Today';
+          dailyStatusTag.className = 'daily-status-tag is-completed';
+        }
+        if (dailyTodayScore) dailyTodayScore.textContent = `${stats.todayAverage} ms avg`;
+      } else {
+        if (dailyStatusTag) {
+          dailyStatusTag.textContent = 'Not Completed Today';
+          dailyStatusTag.className = 'daily-status-tag';
+        }
+        if (dailyTodayScore) dailyTodayScore.textContent = '-- ms';
+      }
+    } else {
+      if (dailyBanner) dailyBanner.hidden = true;
+    }
+  }
+
+  // Start waiting phase
+  function startRound() {
+    if (waitTimeoutId) {
+      window.clearTimeout(waitTimeoutId);
+      waitTimeoutId = null;
+    }
+
+    updateStatusDisplay();
+    updateUIState('waiting');
+
+    let delay = 0;
+    if (currentMode === 'daily') {
+      const todayStr = getUtcDateString();
+      const delays = getDailyDelays(todayStr, 5);
+      const idx = Math.min(Math.max(currentRound - 1, 0), delays.length - 1);
+      delay = delays[idx];
+    } else {
+      // Randomized between 1500ms and 4800ms
+      delay = Math.floor(1500 + Math.random() * 3300);
+    }
+
+    waitTimeoutId = window.setTimeout(() => {
+      triggerSignal();
+    }, delay);
+  }
+
+  // Green signal triggers
+  function triggerSignal() {
+    waitTimeoutId = null;
+    startTime = performance.now();
+    updateUIState('ready');
+    playSignalSound();
+  }
+
+  // Handle click during waiting state
+  function handleFalseStart() {
+    if (waitTimeoutId) {
+      window.clearTimeout(waitTimeoutId);
+      waitTimeoutId = null;
+    }
+    playFalseStartSound();
+    updateUIState('false-start');
+  }
+
+  // Handle valid click in ready state
+  function handleValidClick(elapsed: number) {
+    playSuccessClickSound();
+    roundTimes.push(elapsed);
+
+    const config = MODES[currentMode];
+    const isFinalRound = (currentRound >= config.totalRounds);
+
+    if (isFinalRound) {
+      completeChallenge();
+    } else {
+      // Show intermediate round result
+      if (roundResultTag) roundResultTag.textContent = `Round ${currentRound} of ${config.totalRounds}`;
+      if (roundTimeVal) roundTimeVal.textContent = String(elapsed);
+      const rating = getPerformanceRating(elapsed);
+      if (roundRatingBadge) {
+        roundRatingBadge.textContent = rating.label;
+        roundRatingBadge.className = `rating-badge ${rating.className}`;
+      }
+      if (roundSubText) {
+        roundSubText.textContent = `Great reflex! Next is Round ${currentRound + 1} of ${config.totalRounds}. Click or press Spacebar to proceed.`;
+      }
+      updateUIState('round-result');
+      currentRound += 1;
+      updateStatusDisplay();
+    }
+  }
+
+  // Complete challenge and display results
+  function completeChallenge() {
+    updateUIState('completed');
+    playVictoryFanfare();
+
+    const config = MODES[currentMode];
+    const sum = roundTimes.reduce((acc, t) => acc + t, 0);
+    const average = Math.round(sum / roundTimes.length);
+    const fastest = Math.min(...roundTimes);
+    const slowest = Math.max(...roundTimes);
+
+    const oldStats = getStats(currentMode);
+    const isNewPb = oldStats.bestTime === null || average < oldStats.bestTime;
+    const oldBest = oldStats.bestTime;
+
+    // Save statistics
+    const todayStr = getUtcDateString();
+    const updatedStats: StoredStats = {
+      bestTime: isNewPb ? average : oldBest,
+      gamesPlayed: oldStats.gamesPlayed + 1,
+      history: [average, ...oldStats.history].slice(0, 20),
+      lastUpdated: new Date().toISOString()
+    };
+
+    if (currentMode === 'daily') {
+      updatedStats.lastCompletedDate = todayStr;
+      updatedStats.todayAverage = average;
+    }
+
+    saveStats(currentMode, updatedStats);
+
+    // Update Dashboard UI
+    if (resultsTitle) {
+      resultsTitle.textContent = `${config.name} Complete!`;
+    }
+    if (resultsSubtitle) {
+      resultsSubtitle.textContent = currentMode === 'quick' 
+        ? 'Here is your single reflex score:' 
+        : `Summary of all ${roundTimes.length} completed rounds:`;
+    }
+    if (resultsHeroLabel) {
+      resultsHeroLabel.textContent = currentMode === 'quick' ? 'Reaction Time' : 'Average Reaction Time';
+    }
+    if (resultsHeroVal) {
+      resultsHeroVal.textContent = String(average);
+    }
+
+    const rating = getPerformanceRating(average);
+    if (resultsRatingBadge) {
+      resultsRatingBadge.textContent = rating.label;
+      resultsRatingBadge.className = `rating-badge large ${rating.className}`;
+    }
+
+    if (resultsPbBadge) {
+      resultsPbBadge.hidden = !isNewPb;
+    }
+
+    if (resultsComparison) {
+      if (isNewPb) {
+        if (oldBest !== null) {
+          resultsComparison.textContent = `🎉 New personal best! Beat previous record by ${oldBest - average} ms!`;
+        } else {
+          resultsComparison.textContent = '🎉 Your very first verified record for this mode!';
+        }
+      } else if (oldBest !== null) {
+        resultsComparison.textContent = `Previous personal record: ${oldBest} ms (${average - oldBest} ms slower)`;
+      } else {
+        resultsComparison.textContent = '';
+      }
+    }
+
+    if (statFastest) statFastest.textContent = `${fastest} ms`;
+    if (statSlowest) statSlowest.textContent = `${slowest} ms`;
+    if (statRounds) statRounds.textContent = `${roundTimes.length} / ${config.totalRounds}`;
+    if (statRecord) statRecord.textContent = updatedStats.bestTime ? `${updatedStats.bestTime} ms` : '-- ms';
+
+    // Round breakdown list
+    if (roundsList) {
+      roundsList.innerHTML = '';
+      if (currentMode === 'quick') {
+        if (resultsRoundsContainer) resultsRoundsContainer.hidden = true;
+      } else {
+        if (resultsRoundsContainer) resultsRoundsContainer.hidden = false;
+        roundTimes.forEach((t, i) => {
+          const item = document.createElement('div');
+          item.className = 'round-pill-item';
+          const rRating = getPerformanceRating(t);
+          item.innerHTML = `
+            <span class="round-idx">Round ${i + 1}</span>
+            <span class="round-val">${t} ms</span>
+            <span class="round-tier ${rRating.className}">${rRating.label}</span>
+          `;
+          roundsList.appendChild(item);
+        });
+      }
+    }
+
+    if (completedSubText) {
+      completedSubText.textContent = currentMode === 'quick'
+        ? 'Reflex recorded. Your verified results and performance rating are ready below.'
+        : `All ${roundTimes.length} rounds recorded. Your verified results and statistics are ready below.`;
+    }
+
+    updateStatusDisplay();
+    announce(`Challenge complete. Your score is ${average} milliseconds.`);
+
+    // Smoothly scroll down to results dashboard after completed state displays
+    window.setTimeout(() => {
+      scrollToResults();
+    }, 180);
+  }
+
+  // User input handler (pointer / click / keyboard)
+  function handleAction(event?: Event) {
+    if (event) {
+      // Prevent rapid double triggers
+      const now = performance.now();
+      if (now - lastActionTime < 60) return;
+      lastActionTime = now;
+    }
+
+    initAudio();
+
+    if (currentState === 'completed') {
+      replayGame();
+    } else if (currentState === 'idle') {
+      startRound();
+    } else if (currentState === 'waiting') {
+      handleFalseStart();
+    } else if (currentState === 'ready') {
+      const elapsed = Math.round(performance.now() - startTime);
+      handleValidClick(elapsed);
+    } else if (currentState === 'false-start') {
+      startRound();
+    } else if (currentState === 'round-result') {
+      startRound();
+    }
+  }
+
+  // Switch game mode
+  function switchMode(newMode: ModeType) {
+    if (waitTimeoutId) {
+      window.clearTimeout(waitTimeoutId);
+      waitTimeoutId = null;
+    }
+
+    currentMode = newMode;
+    currentRound = 1;
+    roundTimes = [];
+
+    modeButtons.forEach((btn) => {
+      const isTarget = btn.dataset.mode === newMode;
+      btn.classList.toggle('is-active', isTarget);
+      btn.setAttribute('aria-pressed', String(isTarget));
+    });
+
+    updateStatusDisplay();
+    updateUIState('idle');
+  }
+
+  // Reset current mode statistics
+  function resetCurrentModeStats() {
+    const config = MODES[currentMode];
+    const confirmed = window.confirm(`Reset saved personal records and statistics for ${config.name}?`);
+    if (confirmed) {
+      try {
+        localStorage.removeItem(config.storageKey);
+      } catch {
+        // Ignore
+      }
+      updateStatusDisplay();
+      if (currentState === 'completed') {
+        switchMode(currentMode);
+      }
+    }
+  }
+
+  // Reset ALL statistics
+  function resetAllStats() {
+    const confirmed = window.confirm('Reset ALL saved reaction statistics and daily records on this browser?');
+    if (confirmed) {
+      try {
+        Object.values(MODES).forEach((cfg) => {
+          localStorage.removeItem(cfg.storageKey);
+        });
+      } catch {
+        // Ignore
+      }
+      updateStatusDisplay();
+      switchMode(currentMode);
+    }
+  }
+
+  // Share functionality
+  async function shareResults() {
+    const config = MODES[currentMode];
+    const sum = roundTimes.reduce((acc, t) => acc + t, 0);
+    const avg = roundTimes.length ? Math.round(sum / roundTimes.length) : 0;
+    const rating = getPerformanceRating(avg);
+
+    const shareText = `⚡ Reaction Time Challenge: ${avg} ms (${rating.label})\nMode: ${config.name}\nPlay free on PuzzleFeels: https://puzzlefeels.com/reaction-time-challenge/`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Reaction Time Challenge - PuzzleFeels',
+          text: shareText,
+          url: 'https://puzzlefeels.com/reaction-time-challenge/'
+        });
+        return;
+      } catch {
+        // User cancelled or failed; fallback to clipboard
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+      showShareToast('Result copied to clipboard!');
+    } catch {
+      showShareToast('Could not copy automatically. Your result: ' + avg + ' ms');
+    }
+  }
+
+  function showShareToast(msg: string) {
+    if (shareToast) {
+      shareToast.textContent = msg;
+      shareToast.classList.add('is-visible');
+      setTimeout(() => {
+        shareToast.classList.remove('is-visible');
+      }, 3200);
+    }
+  }
+
+  // Setup Event Listeners
+  if (playZone) {
+    playZone.addEventListener('pointerdown', (e) => {
+      // Don't trigger if clicked directly on an interactive button inside the zone
+      const target = e.target as HTMLElement;
+      if (
+        target.closest('.reaction-mode-btn') || 
+        target.closest('.reaction-sound-btn') ||
+        target.closest('#zone-replay-btn') ||
+        target.closest('#completed-scroll-hint')
+      ) return;
+      handleAction(e);
+    });
+
+    playZone.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        handleAction(e);
+      }
+    });
+  }
+
+  // Standalone start, retry, and next button handlers
+  document.getElementById('zone-start-btn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    handleAction(e);
+  });
+  document.getElementById('zone-retry-btn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    handleAction(e);
+  });
+  document.getElementById('zone-next-btn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    handleAction(e);
+  });
+  zoneReplayBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    replayGame();
+  });
+  completedScrollHint?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    scrollToResults();
+  });
+
+  // Global spacebar listener when active
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.key === ' ') {
+      // Don't intercept if user is typing in search or an input
+      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+      if (currentState === 'waiting' || currentState === 'ready' || currentState === 'round-result' || currentState === 'false-start' || currentState === 'completed') {
+        e.preventDefault();
+        handleAction(e);
+      }
+    }
+  });
+
+  // Mode button events
+  modeButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.mode as ModeType;
+      if (mode && MODES[mode]) {
+        switchMode(mode);
+      }
+    });
+  });
+
+  // Audio Toggle
+  if (soundToggleBtn) {
+    soundToggleBtn.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggleBtn.setAttribute('aria-pressed', String(soundEnabled));
+      if (soundOnIcon) soundOnIcon.style.display = soundEnabled ? 'inline' : 'none';
+      if (soundOffIcon) soundOffIcon.style.display = soundEnabled ? 'none' : 'inline';
+      if (soundLabel) soundLabel.textContent = soundEnabled ? 'Sound' : 'Muted';
+      try {
+        localStorage.setItem('pf-reaction-time-sound', String(soundEnabled));
+      } catch {
+        // Ignore
+      }
+    });
+
+    try {
+      const storedSound = localStorage.getItem('pf-reaction-time-sound');
+      if (storedSound === 'false') {
+        soundEnabled = false;
+        soundToggleBtn.setAttribute('aria-pressed', 'false');
+        if (soundOnIcon) soundOnIcon.style.display = 'none';
+        if (soundOffIcon) soundOffIcon.style.display = 'inline';
+        if (soundLabel) soundLabel.textContent = 'Muted';
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  // Dashboard action listeners
+  btnReplay?.addEventListener('click', () => {
+    replayGame();
+  });
+  btnShare?.addEventListener('click', shareResults);
+  btnResetMode?.addEventListener('click', resetCurrentModeStats);
+  btnResetAll?.addEventListener('click', resetAllStats);
+
+  // Initial render
+  updateStatusDisplay();
+  updateUIState('idle');
+</script>
+
+<style>
+  .reaction-page {
+    padding-bottom: 70px;
+  }
+
+  .reaction-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 18px 0 6px;
+  }
+
+  .reaction-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+
+  .reaction-intro {
+    padding: 16px 0 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .reaction-intro .eyebrow {
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .reaction-intro h1 {
+    margin: 8px auto 14px;
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    letter-spacing: -.035em;
+    text-align: center;
+    max-width: 820px;
+  }
+
+  .reaction-intro p {
+    max-width: 720px;
+    margin: 0 auto;
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  /* Shell Container */
+  .reaction-shell {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Header Bar with Mode Selector */
+  .reaction-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .reaction-modes {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .reaction-mode-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all .16s ease;
+    text-align: left;
+  }
+
+  .reaction-mode-btn strong {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .reaction-mode-btn span {
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .reaction-mode-btn:hover {
+    border-color: var(--blue);
+    background: var(--wash);
+  }
+
+  .reaction-mode-btn.is-active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #ffffff;
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--blue) 35%, transparent);
+  }
+
+  .reaction-mode-btn.is-active span {
+    color: #ffffff;
+    opacity: .9;
+  }
+
+  .reaction-sound-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+    height: 44px;
+  }
+
+  .reaction-sound-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Status Bar */
+  .reaction-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--wash);
+    border-radius: 12px;
+    font-size: 13px;
+    gap: 10px;
+  }
+
+  .status-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-mode-pill {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .status-round-pill {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .status-pb strong {
+    color: var(--blue);
+  }
+
+  .reaction-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Interactive Play Zone */
+  .reaction-play-zone {
+    --reaction-zoom: 1;
+    min-height: calc(380px * var(--reaction-zoom, 1));
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: calc(36px * var(--reaction-zoom, 1)) calc(24px * var(--reaction-zoom, 1));
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    transition: background-color .15s ease, border-color .15s ease, min-height .15s ease, padding .15s ease;
+    border: 2px dashed var(--line);
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reaction-play-zone:focus-visible {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 25%, transparent);
+  }
+
+  .play-zone-content {
+    max-width: calc(580px * var(--reaction-zoom, 1));
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    transform: scale(var(--reaction-zoom, 1));
+    transform-origin: center center;
+    transition: transform 0.15s ease, max-width 0.15s ease;
+  }
+
+  .zone-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .zone-view[aria-hidden="true"] {
+    display: none;
+  }
+
+  /* Idle State */
+  .reaction-play-zone.state-idle {
+    border: 2px dashed #b9c8f5;
+    background: radial-gradient(circle at 50% 30%, #f0f4ff 0%, var(--paper) 70%);
+  }
+
+  .zone-icon-orbit {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #e0e9ff;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 6px 18px #315ee818;
+  }
+
+  .zone-icon {
+    font-size: 32px;
+  }
+
+  .zone-heading {
+    font-size: clamp(1.8rem, 3.8vw, 2.5rem);
+    letter-spacing: -.03em;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .zone-sub {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+    max-width: 500px;
+  }
+
+  .zone-start-btn {
+    padding: 14px 28px;
+    font-size: 15px;
+    border-radius: 12px;
+    gap: 8px;
+  }
+
+  .zone-hint {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .zone-hint kbd {
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-family: inherit;
+    font-weight: 600;
+  }
+
+  /* Waiting State (Red) */
+  .reaction-play-zone.state-waiting {
+    background: #dc2626;
+    border: 2px solid #b91c1c;
+    color: #ffffff;
+    box-shadow: 0 10px 30px #dc262635;
+  }
+
+  .reaction-play-zone.state-waiting .zone-heading {
+    color: #ffffff;
+  }
+
+  .reaction-play-zone.state-waiting .zone-sub {
+    color: #fecaca;
+  }
+
+  .zone-waiting-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    animation: pulse-ring 2s infinite ease-out;
+    pointer-events: none;
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+    100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.8; }
+  }
+
+  .zone-large-icon {
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  /* Ready State (Green) */
+  .reaction-play-zone.state-ready {
+    background: #16a34a;
+    border: 2px solid #15803d;
+    color: #ffffff;
+    box-shadow: 0 10px 35px #16a34a45;
+  }
+
+  .reaction-play-zone.state-ready .zone-heading {
+    color: #ffffff;
+    font-size: clamp(2.4rem, 6vw, 3.8rem);
+    font-weight: 900;
+    letter-spacing: .02em;
+  }
+
+  .reaction-play-zone.state-ready .zone-sub {
+    color: #dcfce7;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  /* False Start State */
+  .reaction-play-zone.state-false-start {
+    background: #7f1d1d;
+    border: 2px solid #991b1b;
+    color: #ffffff;
+  }
+
+  .reaction-play-zone.state-false-start .zone-heading {
+    color: #fef08a;
+  }
+
+  .reaction-play-zone.state-false-start .zone-sub {
+    color: #fecaca;
+  }
+
+  .zone-retry-btn {
+    background: #ffffff;
+    color: #991b1b;
+    border: 0;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  .zone-retry-btn:hover {
+    background: #fee2e2;
+  }
+
+  /* Round Result State */
+  .reaction-play-zone.state-round-result {
+    background: var(--paper);
+    border: 2px solid #a5b4fc;
+  }
+
+  .round-num-tag {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  .round-time-display {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .round-time-display .time-number {
+    font-size: clamp(3.2rem, 7vw, 4.6rem);
+    font-weight: 900;
+    letter-spacing: -.04em;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .round-time-display .time-unit {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  /* Performance Rating Badges */
+  .rating-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .02em;
+    display: inline-block;
+  }
+
+  .rating-badge.large {
+    font-size: 16px;
+    padding: 8px 22px;
+  }
+
+  .tier-lightning { background: #fef08a; color: #854d0e; }
+  .tier-extreme { background: #dbeafe; color: #1e40af; }
+  .tier-very-fast { background: #dcfce7; color: #166534; }
+  .tier-fast { background: #e0f2fe; color: #0369a1; }
+  .tier-average { background: #ffedd5; color: #9a3412; }
+  .tier-below { background: #f3e8ff; color: #6b21a8; }
+  .tier-practice { background: #fee2e2; color: #991b1b; }
+
+  /* Completed State */
+  .reaction-play-zone.state-completed {
+    background: radial-gradient(circle at 50% 32%, #ecfdf5 0%, #f0fdf4 45%, var(--paper) 80%);
+    border: 2px solid #10b981;
+    box-shadow: 0 10px 30px #10b9811c;
+  }
+
+  .completed-icon-orbit {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #d1fae5;
+    color: #059669;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 8px 24px #10b9812a;
+    animation: completed-pop .4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .completed-check-icon {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .completed-heading {
+    font-size: clamp(2.2rem, 5.2vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: -.035em;
+    color: #047857;
+    margin: 0;
+    line-height: 1.1;
+    animation: completed-pop .45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .completed-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 4px;
+    animation: completed-fade .5s ease-out;
+  }
+
+  .zone-replay-btn {
+    background: var(--blue);
+    color: #ffffff;
+    padding: 12px 26px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 12px;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 18px #315ee825;
+    transition: background-color .18s ease, transform .15s ease, box-shadow .18s ease;
+  }
+
+  .zone-replay-btn:hover {
+    background: #254ec9;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px #315ee835;
+  }
+
+  .completed-scroll-hint {
+    background: none;
+    border: none;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: color .15s ease, transform .15s ease;
+    border-radius: 8px;
+    animation: completed-fade .55s ease-out;
+  }
+
+  .completed-scroll-hint:hover {
+    color: var(--blue);
+    transform: translateY(2px);
+  }
+
+  .completed-scroll-hint svg {
+    animation: float-down 1.6s ease-in-out infinite;
+  }
+
+  @keyframes completed-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.82);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes completed-fade {
+    0% {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float-down {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(4px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .completed-icon-orbit,
+    .completed-heading,
+    .completed-actions,
+    .completed-scroll-hint,
+    .completed-scroll-hint svg {
+      animation: none !important;
+    }
+  }
+
+  /* Results Dashboard */
+  .reaction-results-dashboard {
+    padding: 30px;
+    background: var(--paper);
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    animation: fade-in .25s ease-out;
+    scroll-margin-top: 96px;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-header {
+    text-align: center;
+    position: relative;
+  }
+
+  .results-pb-badge {
+    display: inline-block;
+    background: #dcfce7;
+    color: #15803d;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .results-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    margin: 0 0 6px;
+    letter-spacing: -.03em;
+  }
+
+  .results-subtitle {
+    color: var(--muted);
+    margin: 0;
+    font-size: 15px;
+  }
+
+  .results-hero-stat {
+    background: radial-gradient(circle at 50% 30%, #eef3ff 0%, var(--wash) 80%);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  .hero-number-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .hero-number {
+    font-size: clamp(3.6rem, 8vw, 5.2rem);
+    font-weight: 900;
+    letter-spacing: -.04em;
+    color: var(--blue);
+    line-height: 1;
+  }
+
+  .hero-unit {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--muted);
+  }
+
+  .results-comparison {
+    font-size: 14px;
+    font-weight: 600;
+    color: #15803d;
+    margin: 4px 0 0;
+  }
+
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-card small {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight: 600;
+  }
+
+  .stat-card strong {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  .results-rounds-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .results-rounds-section h3 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .rounds-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+  }
+
+  .round-pill-item {
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .round-pill-item .round-idx {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .round-pill-item .round-val {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  .round-pill-item .round-tier {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 700;
+  }
+
+  .results-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
+  .results-actions .btn {
+    padding: 12px 22px;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .btn.tertiary {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .btn.tertiary:hover {
+    background: var(--wash);
+    color: var(--ink);
+  }
+
+  .share-toast {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #15803d;
+    min-height: 20px;
+    opacity: 0;
+    transition: opacity .2s ease;
+  }
+
+  .share-toast.is-visible {
+    opacity: 1;
+  }
+
+  /* Daily Banner */
+  .daily-banner {
+    padding: 18px 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #bbf7d0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .daily-pill {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    background: #166534;
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+
+  .daily-info h3 {
+    margin: 2px 0 4px;
+    font-size: 16px;
+    color: #14532d;
+  }
+
+  .daily-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #166534;
+  }
+
+  .daily-status-box {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .daily-status-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #166534;
+    background: #ffffff;
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+
+  .daily-status-tag.is-completed {
+    background: #15803d;
+    color: #ffffff;
+  }
+
+  .daily-status-box strong {
+    font-size: 18px;
+    color: #14532d;
+    font-weight: 800;
+  }
+
+  /* Footer Meta */
+  .reaction-footer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .reaction-help-text {
+    margin: 0;
+    max-width: 620px;
+    line-height: 1.5;
+  }
+
+  .link-btn {
+    background: transparent;
+    border: 0;
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0;
+  }
+
+  .link-btn:hover {
+    color: #dc2626;
+  }
+
+  /* Educational article layout and typography */
+  .wrap.game-article-content.reaction-article {
+    width: min(780px, calc(100% - 40px));
+    margin-top: 68px;
+    margin-bottom: 48px;
+    font-size: 16px;
+    line-height: 1.72;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.reaction-article h2 {
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: -.025em;
+    margin: 36px 0 12px;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.reaction-article h2:first-child {
+    margin-top: 0;
+  }
+
+  .wrap.game-article-content.reaction-article h3 {
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -.02em;
+    margin: 26px 0 10px;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.reaction-article h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.reaction-article p {
+    font-size: 16px;
+    line-height: 1.72;
+    margin: 0 0 16px;
+    text-align: left;
+  }
+
+  .wrap.game-article-content.reaction-article ol,
+  .wrap.game-article-content.reaction-article ul {
+    padding-inline-start: 24px;
+    margin: 0 0 20px;
+  }
+
+  .wrap.game-article-content.reaction-article li {
+    font-size: 16px;
+    line-height: 1.68;
+    margin: 0 0 8px;
+    padding-inline-start: 2px;
+  }
+
+  .wrap.game-article-content.reaction-article a {
+    color: var(--blue);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .reaction-benchmark-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+
+  .reaction-benchmark-table th,
+  .reaction-benchmark-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+
+  .reaction-benchmark-table th {
+    background: var(--wash);
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  /* Related Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .related-card {
+    text-decoration: none;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 18px;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 14px 34px #17233b12;
+  }
+
+  .related-visual {
+    height: 170px;
+    position: relative;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+
+  .related-orbit {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 50px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+
+  .related-icon span {
+    width: 50px;
+    height: 50px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: white;
+    color: #315ee8;
+    font-size: 18px;
+    font-weight: 800;
+    box-shadow: 0 6px 16px #293e8b14;
+  }
+
+  .slide-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .slide-icon .slide-empty { background: transparent; border: 2px dashed #b9c8f5; box-shadow: none; }
+
+  .ladder-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .ladder-icon span:nth-child(2) { background: #dff5ef; color: #16825d; }
+  .ladder-icon span:nth-child(3) { background: #ede9fe; color: #6d28d9; }
+  .ladder-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+
+  .flood-icon span { border-radius: 12px; background: #ef6b67; }
+  .flood-icon span:nth-child(2) { background: #efa347; }
+  .flood-icon span:nth-child(3) { background: #48ad83; }
+  .flood-icon span:nth-child(4) { background: #5187dc; }
+
+  .related-card-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+
+  .related-card h3 {
+    margin: 8px 0;
+    font-size: 18px;
+    letter-spacing: -.02em;
+  }
+
+  .related-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+  }
+
+  .related-play {
+    margin-top: auto;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  /* Dark Theme Adaptations */
+  :global(html[data-theme="dark"]) .reaction-shell {
+    background: #141f3d;
+    border-color: #27375a;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-mode-btn {
+    background: #1b294b;
+    border-color: #2c3e66;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-mode-btn:hover {
+    background: #23355e;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-mode-btn.is-active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #ffffff;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-status-bar {
+    background: #101932;
+  }
+
+  :global(html[data-theme="dark"]) .status-mode-pill {
+    background: #1b294b;
+    border-color: #2c3e66;
+    color: #f1f5f9;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-play-zone.state-idle {
+    background: radial-gradient(circle at 50% 30%, #1a284c 0%, #141f3d 70%);
+    border-color: #2c3e66;
+  }
+
+  :global(html[data-theme="dark"]) .zone-icon-orbit {
+    background: #1b294b;
+    box-shadow: 0 6px 18px #00000040;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-play-zone.state-round-result {
+    background: #141f3d;
+    border-color: #3b82f6;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-play-zone.state-completed {
+    background: radial-gradient(circle at 50% 32%, #064e3b3d 0%, #064e3b1f 50%, #141f3d 85%);
+    border-color: #059669;
+    box-shadow: 0 10px 30px #04785725;
+  }
+
+  :global(html[data-theme="dark"]) .completed-icon-orbit {
+    background: #064e3b;
+    color: #6ee7b7;
+    box-shadow: 0 8px 24px #00000045;
+  }
+
+  :global(html[data-theme="dark"]) .completed-heading {
+    color: #6ee7b7;
+  }
+
+  :global(html[data-theme="dark"]) .completed-scroll-hint {
+    color: #94a3b8;
+  }
+
+  :global(html[data-theme="dark"]) .completed-scroll-hint:hover {
+    color: #60a5fa;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-results-dashboard {
+    background: #141f3d;
+    border-color: #27375a;
+  }
+
+  :global(html[data-theme="dark"]) .results-hero-stat {
+    background: radial-gradient(circle at 50% 30%, #1c2b50 0%, #101932 80%);
+    border-color: #2c3e66;
+  }
+
+  :global(html[data-theme="dark"]) .hero-number {
+    color: #60a5fa;
+  }
+
+  :global(html[data-theme="dark"]) .stat-card,
+  :global(html[data-theme="dark"]) .round-pill-item {
+    background: #101932;
+    border-color: #27375a;
+  }
+
+  :global(html[data-theme="dark"]) .daily-banner {
+    background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+    border-color: #047857;
+  }
+
+  :global(html[data-theme="dark"]) .daily-info h3,
+  :global(html[data-theme="dark"]) .daily-status-box strong {
+    color: #a7f3d0;
+  }
+
+  :global(html[data-theme="dark"]) .daily-info p {
+    color: #6ee7b7;
+  }
+
+  :global(html[data-theme="dark"]) .daily-status-tag {
+    background: #022c22;
+    color: #6ee7b7;
+  }
+
+  :global(html[data-theme="dark"]) .daily-status-tag.is-completed {
+    background: #10b981;
+    color: #ffffff;
+  }
+
+  :global(html[data-theme="dark"]) .reaction-benchmark-table th {
+    background: #101932;
+  }
+
+  :global(html[data-theme="dark"]) .related-visual {
+    background: linear-gradient(145deg, #1b294b, #222345);
+  }
+
+  :global(html[data-theme="dark"]) .related-orbit {
+    border-color: #35466c;
+  }
+
+  :global(html[data-theme="dark"]) .related-icon span {
+    background: #263553;
+    color: #c2d0ff;
+    box-shadow: 0 8px 20px #03081755;
+  }
+
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .slide-icon .slide-empty { border-color: #35466c; }
+
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(2) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(3) { background: #2e1065; color: #c4b5fd; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(4) { background: #493922; color: #ffd27d; }
+
+  /* Responsive Rules */
+  @media (max-width: 900px) {
+    .related-games-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .wrap.game-article-content.reaction-article {
+      width: calc(100% - 32px);
+      margin-top: 48px;
+      margin-bottom: 40px;
+      font-size: 15px;
+    }
+
+    .wrap.game-article-content.reaction-article h2 {
+      font-size: 21px;
+      margin-top: 28px;
+    }
+
+    .wrap.game-article-content.reaction-article h3 {
+      font-size: 17px;
+    }
+
+    .wrap.game-article-content.reaction-article p,
+    .wrap.game-article-content.reaction-article li {
+      font-size: 15px;
+      line-height: 1.68;
+    }
+
+    .reaction-shell {
+      padding: 16px;
+      gap: 16px;
+    }
+
+    .reaction-play-zone {
+      min-height: calc(320px * var(--reaction-zoom, 1));
+      padding: calc(24px * var(--reaction-zoom, 1)) calc(16px * var(--reaction-zoom, 1));
+    }
+
+    .results-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .reaction-header-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .reaction-modes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .reaction-sound-btn {
+      align-self: flex-end;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
+    .related-games-head { margin-bottom: 24px; }
+    .related-games-grid { grid-template-columns: 1fr; gap: 16px; }
+
+    .reaction-intro {
+      padding: 12px 0 24px;
+    }
+
+    .reaction-intro h1 {
+      font-size: clamp(1.8rem, 7vw, 2.4rem);
+    }
+
+    .reaction-intro p {
+      font-size: 14px;
+    }
+
+    .reaction-modes {
+      grid-template-columns: 1fr;
+    }
+
+    .reaction-mode-btn {
+      padding: 8px 12px;
+    }
+
+    .reaction-play-zone {
+      min-height: 290px;
+      padding: 20px 12px;
+      border-radius: 16px;
+    }
+
+    .zone-icon-orbit {
+      width: 56px;
+      height: 56px;
+    }
+
+    .completed-icon-orbit {
+      width: 56px;
+      height: 56px;
+    }
+
+    .completed-check-icon {
+      font-size: 26px;
+    }
+
+    .completed-heading {
+      font-size: 2rem;
+    }
+
+    .zone-icon {
+      font-size: 26px;
+    }
+
+    .zone-heading {
+      font-size: 1.6rem;
+    }
+
+    .zone-sub {
+      font-size: 13px;
+    }
+
+    .results-dashboard {
+      padding: 18px 14px;
+    }
+
+    .results-hero-stat {
+      padding: 18px 12px;
+    }
+
+    .hero-number {
+      font-size: 3.4rem;
+    }
+
+    .hero-unit {
+      font-size: 18px;
+    }
+
+    .daily-banner {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 14px 16px;
+    }
+
+    .daily-status-box {
+      align-items: flex-start;
+      margin-top: 4px;
+    }
+
+    .results-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .results-actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 390px) {
+    .reaction-play-zone {
+      min-height: 270px;
+    }
+
+    .zone-heading {
+      font-size: 1.45rem;
+    }
+
+    .completed-heading {
+      font-size: 1.75rem;
+    }
+
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

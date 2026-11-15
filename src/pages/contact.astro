@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Contact PuzzleFeels | Get in Touch';
+const description = 'Contact PuzzleFeels for general inquiries, feedback, suggestions, technical support, and questions about the site or its games.';
+---
+
+<Base {title} {description} path="/contact/">
+  <Header />
+  <main class="wrap content">
+    <span class="eyebrow">We’re listening</span>
+    <h1>Contact PuzzleFeels</h1>
+    <p class="lead">Have a question, suggestion, or feedback about PuzzleFeels? We'd love to hear from you!</p>
+
+    <section class="card note">
+      <h2>Get in Touch</h2>
+      <p>Whether you want to report a technical issue, share an idea for a new puzzle game, ask a question, or simply share your feedback, feel free to reach out.</p>
+      <h3>Email Us</h3>
+      <p class="email-address"><a href="mailto:hello@puzzlefeels.com">hello@puzzlefeels.com</a></p>
+      <p>For general inquiries, feedback, suggestions, technical support, and other questions about PuzzleFeels, contact us at the email address above.</p>
+      <p>We appreciate your feedback and will do our best to respond as soon as possible.</p>
+    </section>
+
+    <section class="card note">
+      <h2>Helpful pages while you’re here</h2>
+      <p>Looking for a specific puzzle or policy? Explore our games, learn more about the project, or check our legal documentation below:</p>
+      <div class="help-links">
+        <a href="/games/">Explore All Games <span aria-hidden="true">→</span></a>
+        <a href="/number-sequence-game/">Play Number Sequence Game <span aria-hidden="true">→</span></a>
+        <a href="/color-flood-game/">Play Color Flood Game <span aria-hidden="true">→</span></a>
+        <a href="/picross-game-online/">Play Picross Game Online <span aria-hidden="true">→</span></a>
+        <a href="/about/">About PuzzleFeels <span aria-hidden="true">→</span></a>
+        <a href="/privacy-policy/">Read the Privacy Policy <span aria-hidden="true">→</span></a>
+        <a href="/terms/">Read the Terms of Use <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .content{padding:78px 0 100px;max-width:780px}
+  .content h1{font-size:clamp(2.6rem,6vw,4rem);margin:17px 0}
+  .lead{font-size:19px;line-height:1.7;color:#69758c;margin-bottom:34px}
+  .note{padding:26px;margin:18px 0}
+  .note h2{font-size:19px;margin:0 0 10px}
+  .note h3{font-size:15px;margin:20px 0 8px;color:#17233b}
+  .note p{font-size:14px;line-height:1.8;color:#69758c}
+  .note p:last-child{margin-bottom:0}
+  .note .email-address{margin:0 0 10px}
+  .note .email-address a{font-size:clamp(18px,4vw,22px);font-weight:800;overflow-wrap:anywhere}
+  .help-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:18px}
+  .note a{font-size:14px;color:#315ee8;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+  :global(html[data-theme="dark"]) .content .lead,
+  :global(html[data-theme="dark"]) .note p{color:#b8c4dd}
+  :global(html[data-theme="dark"]) .note h3{color:#f1f5ff}
+  :global(html[data-theme="dark"]) .note a{color:#a9bcff}
+  @media(max-width:640px){.content{padding:56px 0 72px}.note{padding:22px}.help-links{grid-template-columns:1fr}}
+</style>

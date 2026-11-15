@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Cookie Policy | PuzzleFeels';
+const description = 'Learn about cookies and local browser storage used by PuzzleFeels to save game progress, high scores, and theme preferences.';
+---
+
+<Base {title} {description} path="/cookie-policy/">
+  <Header />
+  <main class="wrap legal">
+    <span class="eyebrow">Last updated November 6, 2026</span>
+    <h1>Cookie Policy</h1>
+    <p class="lead">PuzzleFeels uses browser local storage to save your game progress and display preferences. Local storage works similarly to cookies by storing data on your device, but it is a distinct browser mechanism designed for local client-side data.</p>
+
+    <h2>What we store in your browser</h2>
+    <p>PuzzleFeels uses local storage keys exclusively to provide seamless gameplay and retain your preferences. We do not use these keys for tracking or advertising. The following keys are used by the site:</p>
+    <ul>
+      <li><strong><code>pf-number-sequence-v1</code>:</strong> Used by the Number Sequence Game to save your active session, current question index, difficulty mode, score, elapsed time, sound effects setting (on/off), personal best scores, up to 20 recent results, and daily challenge completion status.</li>
+      <li><strong><code>pf-color-flood-v1</code>:</strong> Used by the Color Flood Game to save your active board layout, current flood region, move count, move limit, selected difficulty, personal best scores, and daily challenge completion status.</li>
+      <li><strong><code>pf-picross-v1</code>:</strong> Used by the Picross Game Online to save your active puzzle marks (filled, empty, or unknown cells), elapsed timer, moves count, hint penalties, undo/redo move history, selected marking mode, mistake-checking toggle, personal best scores, and daily challenge completion status.</li>
+      <li><strong><code>pf-sliding-number-puzzle-v1</code>:</strong> Used by the Sliding Number Puzzle Game to save your active board layout, initial scrambled arrangement, move count, elapsed time, undo/redo move stacks, selected difficulty (Easy 3×3, Medium 4×4, Hard 5×5), personal best records, and audio preference.</li>
+      <li><strong><code>puzzlefeels-theme</code>:</strong> Used across all pages to remember your chosen visual theme (Light Mode or Dark Mode) so it remains consistent across visits and page reloads.</li>
+    </ul>
+
+    <h2>Cookies and third-party services</h2>
+    <p>PuzzleFeels does not set first-party advertising or analytics cookies. The site does not use third-party tracking scripts, advertising networks, or analytics suites. Web hosting and Content Delivery Network (CDN) providers may use necessary technical data (such as temporary network headers) to securely deliver pages to your browser.</p>
+
+    <h2>Managing and clearing stored data</h2>
+    <p>You can view or clear local storage data at any time through your web browser’s privacy or site settings. Please note that clearing local storage will reset your saved games, difficulty high scores, and theme preference on that browser.</p>
+
+    <h2>Updates to this policy</h2>
+    <p>We may update this policy if new puzzle games are introduced or if storage practices change. The date at the top of this page indicates when it was last revised.</p>
+    <p>For additional details regarding how information is handled, please review our <a href="/privacy-policy/">Privacy Policy</a>.</p>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .legal{padding:70px 0 100px;max-width:800px}
+  .legal h1{font-size:clamp(2.5rem,5vw,3.7rem);margin:14px 0}
+  .legal h2{font-size:20px;margin:32px 0 8px}
+  .legal p,.legal li{font-size:14px;line-height:1.8;color:#66748b}
+  .legal .lead{font-size:17px;max-width:700px;margin-bottom:32px}
+  .legal ul{padding-left:24px;margin:0 0 20px}
+  .legal li{padding-left:4px;margin:8px 0}
+  .legal code{background:#f1f4fb;border-radius:4px;padding:2px 6px;color:#17233b;font-size:13px}
+  .legal a{color:#315ee8;text-decoration:underline;text-underline-offset:3px}
+  :global(html[data-theme="dark"]) .legal p,
+  :global(html[data-theme="dark"]) .legal li{color:#b8c4dd}
+  :global(html[data-theme="dark"]) .legal code{background:#1b294b;color:#f1f5ff}
+  :global(html[data-theme="dark"]) .legal a{color:#a9bcff}
+  @media(max-width:640px){.legal{padding:56px 0 72px}}
+</style>

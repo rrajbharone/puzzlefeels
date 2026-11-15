@@ -1,0 +1,44 @@
+---
+interface Props { items: { question: string; answer: string }[] }
+const { items } = Astro.props;
+---
+<div class="faq-list">
+  {items.map(({ question, answer }) => <details><summary>{question}</summary><p>{answer}</p></details>)}
+</div>
+<style>
+  .faq-list details { border-bottom: 1px solid #e9ecf3; padding: 17px 0; }
+  .faq-list summary { list-style: none; cursor: pointer; font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; gap: 15px; color: #18243c; }
+  .faq-list summary::-webkit-details-marker { display: none; }
+  .faq-list summary::after { content: '+'; flex: 0 0 auto; font-size: 18px; line-height: 1; color: #315ee8; }
+  .faq-list details[open] summary::after { content: '−'; }
+  .faq-list summary:focus-visible { outline: 3px solid #9eb4ff; outline-offset: 4px; border-radius: 3px; }
+  .faq-list summary:hover { color: #315ee8; }
+  .faq-list p { font-size: 13px; line-height: 1.7; color: #718097; margin: 12px 28px 2px 0; }
+  @media (max-width: 560px) { .faq-list details { padding: 15px 0; } .faq-list summary { font-size: 13px; } .faq-list p { margin-right: 8px; } }
+
+  /* Keep theme variants in the component's scoped stylesheet. Astro adds
+     data-astro-cid attributes to these rules, so broad global selectors can
+     otherwise lose to the light-theme component selectors. */
+  :global(html[data-theme="dark"]) .faq-list details {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    background: var(--dark-card, #151f3d);
+    border: 1px solid var(--dark-border, #293858);
+    border-radius: 12px;
+    margin: 10px 0;
+    padding: 16px 18px;
+    color: var(--dark-text, #f1f5ff);
+    transition: background-color .18s ease, border-color .18s ease;
+  }
+  :global(html[data-theme="dark"]) .faq-list details:hover { border-color: #3b4e76; }
+  :global(html[data-theme="dark"]) .faq-list details[open] { background: var(--dark-raised, #1b294b); border-color: #394b71; }
+  :global(html[data-theme="dark"]) .faq-list summary { color: var(--dark-text, #f1f5ff); }
+  :global(html[data-theme="dark"]) .faq-list { min-width: 0; }
+  :global(html[data-theme="dark"]) .faq-list summary:hover { color: var(--dark-accent-hover, #a9bcff); }
+  :global(html[data-theme="dark"]) .faq-list summary::after { color: var(--dark-accent-hover, #a9bcff); }
+  :global(html[data-theme="dark"]) .faq-list p { color: var(--dark-secondary, #b8c4dd); }
+  :global(html[data-theme="dark"]) .faq-list summary:focus-visible { outline-color: #a9bcff; outline-offset: 4px; }
+  @media (max-width: 560px) {
+    :global(html[data-theme="dark"]) .faq-list details { padding: 15px 14px; }
+  }
+</style>

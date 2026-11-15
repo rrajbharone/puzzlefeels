@@ -1,0 +1,626 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+
+const title = 'Picross Game Online – Play Free Nonogram Puzzles | PuzzleFeels';
+const description = 'Play Picross Game Online for free. Use row and column clues to reveal pixel-art pictures, with beginner, medium, hard, and a daily nonogram puzzle.';
+const faqs = [
+  { question: 'What is Picross?', answer: 'Picross, also called Nonogram, is a logic puzzle where numbered clues show the runs of filled cells in each row and column. Use both sets of clues to uncover a picture.' },
+  { question: 'How do I play this Picross game?', answer: 'Choose Fill or Mark empty, then select cells on the board. A clue such as 3 1 means a run of three filled cells followed by a separate run of one, with at least one empty cell between them.' },
+  { question: 'What do the numbers beside a row or column mean?', answer: 'They list the lengths of consecutive filled-cell runs in order. Column clues are displayed from top to bottom.' },
+  { question: 'Do I have to mark every empty square?', answer: 'Yes. To complete a puzzle, every cell must be marked filled or empty, and all marks must match the solution.' },
+  { question: 'What happens if I make a mistake?', answer: 'You can enable Check mistakes to highlight incorrect marks. Mistakes do not end the puzzle, and you can change a mark or use Undo.' },
+  { question: 'Can I undo or redo a move?', answer: 'Yes. Use Undo and Redo to move through your recent board changes. Your current board and history are saved on this device.' },
+  { question: 'How does the Hint button work?', answer: 'Hint marks a cell that follows from the current row or column clue patterns when one is logically forced. If the visible marks do not force a cell, it reveals one solution cell. Hints reduce the final score.' },
+  { question: 'How is my Picross score calculated?', answer: 'The score starts with a difficulty-based amount, adds a time bonus up to the level target, and subtracts a fixed amount for each hint. The page explains the exact values.' },
+  { question: 'Does Picross save my progress?', answer: 'An unfinished standard or daily puzzle is saved in local browser storage on this device, including marks, timer, selected mode, and undo history. Clearing browser storage removes it.' },
+  { question: 'Is there a daily Picross challenge?', answer: 'Yes. The daily board is selected from the date in UTC, so everyone gets the same puzzle on that date. Completion is recorded locally on your device.' },
+  { question: 'Can I play Picross on my phone?', answer: 'Yes. The board and controls adapt to smaller screens, and cells can be operated with touch. You can switch between Fill and Mark empty modes.' },
+  { question: 'Is this Picross game free?', answer: 'Yes. The puzzles on PuzzleFeels are free to play in your browser and do not require an account or download.' },
+  { question: 'What is the difference between Beginner, Medium, and Hard?', answer: 'Beginner puzzles use 5-row boards, including one 5-by-10 board. Medium puzzles are 10 by 10. Hard puzzles are 15 by 15.' },
+  { question: 'Can I pause and continue later?', answer: 'Yes. Pause stops the timer, and your progress is saved. Continue returns to the saved board.' },
+  { question: 'Can I share my result?', answer: 'After solving a puzzle, use Share Result. Supported browsers open their share sheet; other browsers copy a result message to the clipboard when available.' },
+];
+const gameSchema = { '@context': 'https://schema.org', '@type': 'VideoGame', name: 'Picross Game Online', url: 'https://puzzlefeels.com/picross-game-online/', description, gamePlatform: 'Web browser', applicationCategory: 'Game', operatingSystem: 'Any', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } };
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Picross Game Online', item: 'https://puzzlefeels.com/picross-game-online/' }
+  ]
+};
+---
+<Base {title} {description} path="/picross-game-online/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+  </Fragment>
+  <Header />
+  <main class="picross-page" data-picross>
+    <nav class="picross-breadcrumb wrap" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Picross Game Online</span>
+    </nav>
+    <section class="picross-intro wrap">
+      <span class="eyebrow">Logic, one square at a time</span>
+      <h1>Picross Game Online – Play Free Nonogram Puzzles</h1>
+      <p>Use number clues to reveal a hidden pixel-art picture. Pick a difficulty, work through the rows and columns, and save your place automatically on this device.</p>
+    </section>
+
+    <section class="picross-shell wrap card" aria-label="Picross game">
+      <!-- Top header bar: Difficulty controls directly above the game board -->
+      <div class="picross-header-bar">
+        <div class="picross-difficulties-bar" role="group" aria-label="Select puzzle difficulty">
+          <button type="button" class="picross-diff-btn is-active" data-picross-difficulty="beginner" data-difficulty="easy" aria-pressed="true">
+            <strong>Easy</strong>
+            <span>5 × 5 and 5 × 10</span>
+          </button>
+          <button type="button" class="picross-diff-btn" data-picross-difficulty="medium" data-difficulty="medium" aria-pressed="false">
+            <strong>Medium</strong>
+            <span>10 × 10</span>
+          </button>
+          <button type="button" class="picross-diff-btn" data-picross-difficulty="hard" data-difficulty="hard" aria-pressed="false">
+            <strong>Hard</strong>
+            <span>15 × 15</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="picross-ready" class="picross-screen" hidden>
+        <div class="picross-ready-head"><span class="eyebrow" id="picross-ready-label">Choose a puzzle</span><span class="picross-daily-tag" id="picross-daily-status">TODAY’S UTC CHALLENGE</span></div>
+        <h2>Start a Picross puzzle</h2>
+        <p class="picross-muted">Read the clues, mark the cells, and reveal the picture.</p>
+        <fieldset class="picross-difficulties"><legend>Choose difficulty</legend>
+          <button type="button" class="picross-choice is-selected" data-picross-difficulty="beginner" aria-pressed="true"><strong>Easy</strong><span>5 × 5 and 5 × 10</span></button>
+          <button type="button" class="picross-choice" data-picross-difficulty="medium" aria-pressed="false"><strong>Medium</strong><span>10 × 10</span></button>
+          <button type="button" class="picross-choice" data-picross-difficulty="hard" aria-pressed="false"><strong>Hard</strong><span>15 × 15</span></button>
+        </fieldset>
+        <p class="picross-difficulty-summary" id="picross-difficulty-summary">5 × 5 and 5 × 10 · 4 original puzzles</p>
+        <div class="picross-ready-actions">
+          <button type="button" class="btn" id="picross-start">Start puzzle</button>
+          <button type="button" class="btn secondary" id="picross-continue" hidden>Continue game</button>
+          <button type="button" class="btn secondary" id="picross-daily">Play today’s Daily Challenge</button>
+        </div>
+      </div>
+
+      <div id="picross-play" class="picross-screen">
+        <div class="picross-game-top"><div><span class="picross-badge" id="picross-difficulty-label">Easy</span><h2 id="picross-puzzle-name">Puzzle</h2></div><div class="picross-top-actions"><span class="picross-stat"><small>Time</small><strong id="picross-timer">00:00</strong></span><button class="btn secondary picross-compact" type="button" id="picross-pause">Pause</button></div></div>
+        <div class="picross-stats"><div><small>Moves</small><strong id="picross-moves">0</strong></div><div><small>Board accuracy</small><strong id="picross-progress-value">0%</strong></div><div class="picross-progress" id="picross-progress" role="progressbar" aria-label="Correctly marked cells" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="picross-progress-fill"></span></div></div>
+        <div class="picross-tools">
+          <div class="picross-mark-modes" role="group" aria-label="Cell marking mode"><button type="button" id="picross-mode-fill" class="is-selected" aria-pressed="true">Fill</button><button type="button" id="picross-mode-empty" aria-pressed="false">Mark empty</button></div>
+          <div class="picross-utility-group">
+            <ZoomControl id="picross-zoom" label="Grid Zoom" targetSelector="#picross-board" zoomVar="--picross-zoom" />
+          </div>
+          <span class="picross-mode-help">Selected mode: <strong id="picross-mode-name">Fill</strong>. Keyboard: arrows move, F fills, X marks empty.</span>
+        </div>
+        <p class="picross-instruction">Use the row clues on the left and column clues above the grid. Mark every square as filled or empty.</p>
+        <div class="picross-play-area">
+          <div class="picross-board-column">
+            <div class="picross-board-scroll"><div id="picross-board" class="picross-board" role="grid" aria-label="Picross puzzle board"></div></div>
+            <div class="picross-board-meta"><span>Tap a marked cell again to clear it.</span></div>
+          </div>
+          <aside class="picross-side-controls" aria-label="Puzzle controls">
+            <label class="picross-check-label"><input id="picross-check-mistakes" type="checkbox" /> Check mistakes</label>
+            <div class="picross-actions">
+              <button type="button" class="btn secondary" id="picross-undo" disabled>Undo</button><button type="button" class="btn secondary" id="picross-redo" disabled>Redo</button><button type="button" class="btn secondary picross-hint-button" id="picross-hint">Hint</button>
+              <button type="button" class="btn secondary" id="picross-restart">Restart puzzle</button><button type="button" class="btn secondary" id="picross-new-puzzle">New puzzle</button>
+            </div>
+            <p class="picross-control-note">Use a hint if you need a nudge. Hints affect your final score.</p>
+          </aside>
+        </div>
+        <p class="picross-live" id="picross-status" aria-live="polite">Mark every cell to finish.</p>
+      </div>
+
+      <div id="picross-paused" class="picross-screen picross-center" hidden>
+        <span class="eyebrow">Your progress is saved</span><h2>Paused</h2><p class="picross-muted">The timer is stopped. Continue whenever you’re ready.</p>
+        <div class="picross-ready-actions"><button type="button" class="btn" id="picross-resume">Resume puzzle</button><button type="button" class="btn secondary" id="picross-paused-new">Back to puzzles</button></div>
+      </div>
+
+      <div id="picross-result" class="picross-screen picross-center" hidden>
+        <span class="eyebrow">Puzzle solved</span><h2>Picture revealed!</h2><p id="picross-result-message" class="picross-muted">Well done.</p>
+        <div id="picross-victory-art" class="picross-victory-art" role="img" aria-label="Completed pixel art"></div>
+        <div class="picross-results-grid"><div><small>Puzzle</small><strong id="picross-result-puzzle">—</strong></div><div><small>Difficulty</small><strong id="picross-result-difficulty">—</strong></div><div><small>Time</small><strong id="picross-result-time">—</strong></div><div><small>Hints used</small><strong id="picross-result-hints">0</strong></div><div><small>Score</small><strong id="picross-result-score">0</strong></div><div><small>Best score</small><strong id="picross-result-best">0</strong></div></div>
+        <p class="picross-score-note">Score = difficulty base + remaining time bonus (up to the level target) − hint penalties. Beginner: 300 base / 300-second target / 60 per hint; Medium: 700 / 900 / 120; Hard: 1,400 / 1,800 / 220. Minimum score: 100.</p>
+        <div class="picross-ready-actions"><button type="button" class="btn" id="picross-play-again">Play another puzzle</button><button type="button" class="btn secondary" id="picross-share">Share result</button><button type="button" class="btn secondary" id="picross-result-new">Choose difficulty</button></div><p id="picross-share-status" class="picross-live" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <article class="wrap game-article-content picross-article">
+      <h2>What Is Picross?</h2>
+      <p>Picross is a picture logic puzzle. It is also called a <em>Nonogram</em>, <em>Griddler</em>, or <em>Japanese crossword</em>; these names describe the same basic kind of puzzle. A grid hides a pixel-style picture, and number clues along its rows and columns tell you how many filled squares appear together in each line. Use the clues in both directions to work out the picture square by square.</p>
+      <p>Unlike an ordinary crossword, Picross clues are not word definitions. You do not need trivia or a vocabulary list. Each number is a precise constraint, so you can solve the puzzle by testing what arrangements are possible and comparing crossing lines. A good solve comes from deductions; guessing is rarely necessary.</p>
+
+      <h2>How to Play Picross: A Beginner’s Guide</h2>
+      <ol>
+        <li><strong>Find your grid.</strong> Each square can be filled, marked empty, or left unknown while you think.</li>
+        <li><strong>Read a row clue from left to right.</strong> Its numbers list consecutive groups of filled cells, in order.</li>
+        <li><strong>Read a column clue from top to bottom.</strong> The clues above the board are stacked in that same order.</li>
+        <li><strong>Leave a gap between groups.</strong> Two separate runs cannot touch; at least one empty square must divide them.</li>
+        <li><strong>Fill only what the clues prove.</strong> Choose Fill and mark a square that must belong to a run.</li>
+        <li><strong>Mark confirmed blanks.</strong> Choose Mark empty to place an X where the clues prove no filled square can go.</li>
+        <li><strong>Cross-check the other direction.</strong> Each square belongs to both one row and one column. A deduction in a row changes the possibilities for its column.</li>
+        <li><strong>Repeat until every square is known.</strong> This game accepts the board only when every square is marked and the full arrangement matches the picture.</li>
+      </ol>
+      <p>For example, the clue <strong>3 1</strong> on a five-square line has just enough room for three filled squares, a required gap, and one more filled square: <code>###.#</code>. If the line were longer, those groups could shift, so use crossing clues to find their positions.</p>
+
+      <h2>Understanding Picross Number Clues</h2>
+      <p>A clue describes the lengths of filled runs, not the exact locations of the runs. Here are four common examples:</p>
+      <ul>
+        <li><strong>5 on a five-cell line:</strong> all five cells must be filled: <code>#####</code>. The run uses the entire line, leaving no empty cells.</li>
+        <li><strong>3 1:</strong> first place a group of three, then at least one empty cell, then a single filled cell. The shortest possible line is five cells: <code>###.#</code>.</li>
+        <li><strong>1 2:</strong> one filled cell comes before a separate pair. On a four-cell line, the only pattern is <code>#.##</code>; on a longer line, the groups may shift.</li>
+        <li><strong>2 2:</strong> two filled cells, at least one empty separator, then two more filled cells. It needs at least five cells, with <code>##.##</code> as the exact five-cell pattern.</li>
+      </ul>
+      <p>Extra empty squares may sit before the first run, after the last run, or between runs beyond the required single gap. A dash in this game means the line has no filled cells. The clues still describe the same rule: every square in that line must be marked empty.</p>
+
+      <h2>Nonogram Solving Tips for Beginners</h2>
+      <ol>
+        <li><strong>Start with the biggest clues.</strong> Long runs have fewer places they can fit. A clue that nearly spans a line often gives you certain cells immediately.</li>
+        <li><strong>Look for completely determined lines.</strong> A clue equal to the line length fills every square. Several clues can also use every available space once the mandatory gaps are included.</li>
+        <li><strong>Use overlap.</strong> Imagine a ten-cell line with one run of seven. The run can start at cell 1, 2, 3, or 4. Compare its leftmost and rightmost placements: cells 4 through 7 are covered in every case, so those four cells are safe to fill before you know the run’s exact position.</li>
+        <li><strong>Count the minimum gaps.</strong> Clues 4 3 need at least eight cells: four filled, one empty, then three filled. Counting the gap prevents you from placing runs too close together.</li>
+        <li><strong>Switch between rows and columns.</strong> After marking a row, immediately inspect the crossing column. A mark that looks uncertain in one direction may be forced by the other clue.</li>
+        <li><strong>Mark confirmed empty cells.</strong> X marks separate possible runs and make the remaining unknown squares easier to reason about. Unknown means “not decided yet,” not “empty.”</li>
+        <li><strong>Avoid random guesses.</strong> When two placements seem possible, check the crossing clues and remove arrangements that cannot fit them. If neither is ruled out yet, solve another line first.</li>
+        <li><strong>Recheck completed clues.</strong> A line is complete only after every square is known and its runs match the clue. The green check is a useful signal; if it does not appear, recount the groups and gaps.</li>
+      </ol>
+
+      <h2>How to Solve a Nonogram Step by Step</h2>
+      <p>Try the following verified five-by-five example. The row clues from top to bottom are <strong>3, 5, 5, 3, 1</strong>. The column clues from left to right are <strong>2, 4, 5, 4, 2</strong>. Together, these clues have one solution:</p>
+      <figure class="picross-example"><pre aria-label="Five by five example solution">..###
+#####
+#####
+.###.
+..#..</pre><figcaption>Filled squares use #; dots are empty. The puzzle clues above describe this exact grid.</figcaption></figure>
+      <p>First, the second and third rows each have a clue of 5, so fill both complete rows. The middle column also has a clue of 5, so its five cells are filled. Now inspect the first column: its clue is 2, and the two filled cells in the middle rows already make that run. The remaining cells in that column must be empty. The last column works the same way.</p>
+      <p>The first row has a clue of 3, while its first and last cells are now empty. Its middle three cells must therefore be filled. Row four is also a run of three between two confirmed empty edge cells, so fill its middle. The final row has a clue of 1; the middle column is already filled, leaving the other four cells empty. Check every row and column again, then compare your marks with the diagram. This is the full solving loop: take an obvious line, record its consequences, switch directions, and repeat.</p>
+
+      <h2>Common Picross Mistakes and How to Fix Them</h2>
+      <ul>
+        <li><strong>Forgetting the required gap:</strong> separate clues such as 2 2 need an empty cell between the runs. Count the filled cells and minimum gaps before placing them.</li>
+        <li><strong>Reading groups as locations:</strong> “3 1” gives run lengths, not a command to start at the edge. Keep all valid placements until other clues narrow them down.</li>
+        <li><strong>Treating unknown as empty:</strong> leave uncertain cells unknown. Use an X only when the row and column support an empty mark.</li>
+        <li><strong>Filling too early:</strong> a possible square is not automatically a certain square. Use overlap or a crossing clue before committing.</li>
+        <li><strong>Ignoring columns:</strong> rows alone may allow several answers. Check the perpendicular clue after each useful deduction.</li>
+        <li><strong>Miscounting a run:</strong> adjacent filled cells belong to one group. Recount from the start of the line and check for a genuine empty separator.</li>
+        <li><strong>Assuming a line is finished:</strong> a run can match while other cells remain unresolved. Mark all squares, including the blanks, to earn the completion check.</li>
+        <li><strong>Guessing to get unstuck:</strong> switch to another row or column. New confirmed squares often remove the uncertainty without a guess.</li>
+      </ul>
+
+      <h2>Picross Difficulty Levels</h2>
+      <p><strong>Beginner</strong> has three 5 × 5 pictures and one 5 × 10 picture, so you can learn the clue system on small boards. <strong>Medium</strong> puzzles are 10 × 10, with more crossings and longer deduction chains. <strong>Hard</strong> puzzles are 15 × 15 and require tracking more clues at once. Each level has several fixed puzzles. The Daily Challenge uses one date-selected puzzle for everyone on the same UTC day.</p>
+
+      <h2>How to Use the Picross Game Controls</h2>
+      <ul>
+        <li><strong>Fill:</strong> marks a square as part of the picture.</li>
+        <li><strong>Mark empty:</strong> places an X in a square the clues show is blank. Tap a marked cell again to return it to unknown.</li>
+        <li><strong>Undo and Redo:</strong> step backward or forward through cell changes, including a hint. A new move after Undo clears the previous redo path.</li>
+        <li><strong>Hint:</strong> marks a cell forced by a row or column pattern when possible. If the visible marks force no cell, it reveals one solution cell. Hints count toward the score deduction.</li>
+        <li><strong>Check mistakes:</strong> optionally highlights marks that disagree with the solution. It does not change your board.</li>
+        <li><strong>Restart puzzle:</strong> clears marks and resets the timer for the current puzzle. The daily board cannot be restarted after play begins.</li>
+        <li><strong>New puzzle:</strong> starts another puzzle at the selected difficulty. Your unfinished standard puzzle is replaced after confirmation.</li>
+        <li><strong>Timer and progress:</strong> the timer tracks elapsed play time and stops while paused. Progress shows the percentage of cells currently marked correctly; correcting a mistake can change that percentage.</li>
+      </ul>
+
+      <h2>Why People Enjoy Picross</h2>
+      <p>Picross offers a clear, structured challenge: clues provide rules, and each deduction has a visible result. Solving a board can be a satisfying recreational activity that encourages careful observation, patience, and step-by-step problem solving. It also gives you a quiet alternative to word or arithmetic puzzles. People enjoy it for different reasons, and there is no performance target you need to meet.</p>
+
+      <h2>When Is a Good Time to Play Picross?</h2>
+      <p>A small Picross board can fit into a short break, relaxed time at home, or another quiet stretch of free time. Pause whenever you need to step away; your unfinished board is saved locally in this browser. Take breaks if you have been playing for a while, and never play while driving or doing anything that requires your full attention.</p>
+
+      <h2>Picross vs. Sudoku vs. Crossword</h2>
+      <p>Sudoku uses number placement rules in rows, columns, and boxes; Picross uses run-length clues to reveal a picture. A crossword asks you to find words from definitions and crossing letters. If you like visual logic and eliminating possible arrangements, try Picross. If number placement or spatial challenges appeal to you, explore our <a href="/number-sequence-game/">Number Sequence Game</a> or our <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>. For territory strategy, try our <a href="/color-flood-game/">Color Flood Game</a>, train your visual recall in our <a href="/memory-matching-game-online/">Memory Matching Game Online</a>, test quick response speed in our <a href="/reaction-time-challenge/">Reaction Time Challenge</a>, or browse the complete collection on the <a href="/games/">All Games page</a>.</p>
+
+      <h2>How to Get Better at Nonograms</h2>
+      <p>Begin with a 5 × 5 Beginner puzzle and practice finding full lines, tight clues, and overlaps. Before moving on, make a habit of checking the crossing line after every deduction. When a board is complete, review any mark you changed with Undo or Check mistakes and ask which clue resolved it. Then try the 5 × 10 Beginner board, progress to Medium, and move to Hard when you are comfortable following longer chains of clues. Use hints when you want an explanation-free nudge, and pause rather than forcing a guess. Repeating this routine gives you a dependable solving process across different pictures.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <FaqList items={faqs} />
+    </article>
+
+    <!-- Related Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep the fun going</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/number-sequence-game/">
+          <div class="related-visual sequence-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon sequence-icon"><span>3</span><span>?</span><span>9</span><span>27</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">NUMBER PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Number Sequence Game</h3>
+            <p class="muted">Find the missing number by spotting the hidden mathematical rule behind each sequence.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/color-flood-game/">
+          <div class="related-visual flood-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon flood-icon"><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">STRATEGY PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Color Flood Game</h3>
+            <p class="muted">Grow the connected region by choosing colors and flood the board within the move limit.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/sliding-number-puzzle-game/">
+          <div class="related-visual slide-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Sliding Number Puzzle Game</h3>
+            <p class="muted">Slide numbered tiles into ascending order in classic 8, 15, and 24-tile sliding challenges.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/word-ladder-game-online/">
+          <div class="related-visual ladder-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon ladder-icon"><span>W</span><span>O</span><span>R</span><span>D</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">WORD PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Word Ladder Game Online</h3>
+            <p class="muted">Change one letter at a time to transform words in Lewis Carroll's classic doublets puzzle.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+<script type="module" src="/scripts/picross.js"></script>
+<style is:global>
+  .picross-page{padding-bottom:24px}
+  .picross-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 0 6px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .picross-breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .picross-breadcrumb a:hover {
+    color: var(--blue);
+  }
+  .picross-breadcrumb [aria-current="page"] {
+    color: var(--ink);
+  }.picross-intro{text-align:center;padding:48px 0 26px}.picross-intro h1{font-size:clamp(2rem,5vw,3.2rem);margin:12px 0}.picross-intro p{max-width:680px;margin:0 auto;color:var(--muted);line-height:1.75}.picross-shell{max-width:920px;padding:clamp(20px,4vw,38px);margin:0 auto 72px}.picross-screen{min-width:0}.picross-ready-head,.picross-game-top,.picross-top-actions,.picross-board-meta,.picross-ready-actions,.picross-actions,.picross-tools{display:flex;align-items:center;justify-content:space-between;gap:12px}.picross-daily-tag,.picross-badge{display:inline-flex;padding:7px 10px;border-radius:99px;background:#edf2ff;color:#3152b9;font-size:10px;font-weight:800;letter-spacing:.06em}.picross-shell h2{font-size:clamp(1.5rem,3.3vw,2.15rem);margin:18px 0 8px}.picross-muted,.picross-instruction{color:var(--muted);line-height:1.7}.picross-difficulties{padding:0;border:0;margin:26px 0 0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.picross-difficulties legend{font-weight:700;font-size:14px;margin-bottom:10px}.picross-choice{min-width:0;display:grid;gap:6px;text-align:left;padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);cursor:pointer}.picross-choice span{font-size:12px;color:var(--muted)}.picross-choice.is-selected{border-color:var(--blue);box-shadow:0 0 0 2px color-mix(in srgb,var(--blue) 18%,transparent)}.picross-difficulty-summary{font-size:12px;color:var(--muted);margin:12px 0 20px}.picross-ready-actions{justify-content:flex-start;flex-wrap:wrap}.picross-ready-actions .btn{min-height:46px}.picross-game-top{align-items:flex-start}.picross-game-top h2{margin:10px 0 0}.picross-top-actions{align-items:flex-start}.picross-stat{display:grid;text-align:right;gap:3px}.picross-stat small,.picross-stats small,.picross-results-grid small{font-size:11px;color:var(--muted)}.picross-stat strong{font-variant-numeric:tabular-nums}.picross-compact{min-height:40px;padding:0 15px}.picross-stats{display:grid;grid-template-columns:100px 130px 1fr;gap:12px;align-items:center;margin:20px 0}.picross-stats>div:not(.picross-progress){display:grid;gap:4px}.picross-progress{height:9px;background:var(--wash);border-radius:20px;overflow:hidden}.picross-progress span{display:block;height:100%;width:0;background:var(--blue);transition:width .2s ease}.picross-tools{justify-content:flex-start;align-items:center;flex-wrap:wrap;gap:10px;margin:18px 0 8px}.picross-utility-group{display:inline-flex;align-items:center}.picross-mark-modes{display:flex;padding:4px;border-radius:12px;background:var(--wash);gap:3px}.picross-mark-modes button{border:0;background:transparent;color:var(--muted);border-radius:9px;padding:10px 15px;min-height:42px;font-weight:700;cursor:pointer}.picross-mark-modes button.is-selected{background:var(--paper);color:var(--ink);box-shadow:0 1px 5px #17233b16}.picross-mode-help{font-size:12px;color:var(--muted)}.picross-instruction{font-size:13px;margin:12px 0}.picross-board-scroll{max-width:100%;overflow-x:auto;padding:6px 2px 10px;display:flex;justify-content:center;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}.picross-board{--picross-zoom:1;--picross-size:5;--picross-clue-depth:1;display:grid;grid-template-columns:minmax(24px,34px) repeat(var(--picross-size),minmax(0,1fr));grid-template-rows:clamp(30px,5vw,48px) repeat(var(--picross-size),minmax(0,1fr));width:calc(min(100%,650px) * var(--picross-zoom, 1));max-width:none;flex-shrink:0;aspect-ratio:1.08/1;margin:0 auto;border-top:1px solid var(--line);border-left:1px solid var(--line);background:var(--paper);transition:width .15s ease}.picross-column-clue,.picross-row-clue,.picross-corner{position:relative;display:flex;align-items:center;justify-content:center;color:var(--ink);font-size:clamp(9px,1.5vw,12px);font-weight:700;font-variant-numeric:tabular-nums}.picross-column-clue{flex-direction:column-reverse;line-height:1.05;gap:2px}.picross-row-clue{justify-content:flex-end;padding-right:6px}.picross-clue-numbers{white-space:nowrap}.picross-clue-check{position:absolute;right:1px;top:0;font-size:9px;color:#18845c}.picross-cell{position:relative;min-width:0;min-height:0;padding:0;aspect-ratio:1;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper);color:var(--blue);cursor:pointer;touch-action:manipulation}.picross-cell:hover{background:var(--wash)}.picross-cell.is-filled{background:var(--blue)}.picross-cell.is-empty{background:color-mix(in srgb,var(--paper) 70%,var(--wash));color:var(--muted)}.picross-empty-mark{font-size:clamp(10px,2vw,18px);line-height:1}.picross-cell.is-mistake{box-shadow:inset 0 0 0 2px #e35454}.picross-cell.major-right{border-right:2px solid color-mix(in srgb,var(--muted) 45%,transparent)}.picross-cell.major-bottom{border-bottom:2px solid color-mix(in srgb,var(--muted) 45%,transparent)}.picross-board-meta{justify-content:space-between;color:var(--muted);font-size:12px;margin:8px 0 14px}.picross-board-meta label{display:flex;align-items:center;gap:8px;color:var(--ink);font-weight:600}.picross-board-meta input{width:17px;height:17px;accent-color:var(--blue)}.picross-actions{justify-content:flex-start;flex-wrap:wrap}.picross-actions .btn{min-height:42px;padding:0 15px}.picross-live{min-height:1.4em;margin:14px 0 0;color:var(--muted);font-size:13px}.picross-center{text-align:center;max-width:650px;margin-inline:auto}.picross-victory-art{display:grid;grid-template-columns:repeat(var(--art-width),1fr);width:min(170px,50vw);aspect-ratio:1;margin:18px auto}.picross-art-pixel{background:transparent}.picross-art-pixel.is-art-filled{background:var(--blue);border-radius:2px}.picross-results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.picross-results-grid>div{display:grid;gap:5px;padding:12px;background:var(--wash);border-radius:12px}.picross-results-grid strong{font-size:14px;overflow-wrap:anywhere}.picross-score-note{font-size:12px;line-height:1.6;color:var(--muted);text-align:left}.picross-center .picross-ready-actions{justify-content:center}.picross-article{margin-bottom:64px}.picross-article code{background:var(--wash);border-radius:5px;padding:2px 5px;color:var(--ink)}
+  html[data-theme="dark"] .picross-diff-btn{background:var(--dark-card,#151f3d);border-color:var(--dark-border,#293858);color:var(--dark-text,#f1f5ff)}
+  html[data-theme="dark"] .picross-diff-btn:hover{border-color:var(--dark-accent,#8ea8ff)}
+  html[data-theme="dark"] .picross-diff-btn.is-active,
+  html[data-theme="dark"] .picross-diff-btn.is-selected{background:#263960;border-color:#8ea8ff;color:#d5dfff}
+  html[data-theme="dark"] .picross-diff-btn.is-active span,
+  html[data-theme="dark"] .picross-diff-btn.is-selected span{color:#a9bcff}
+  html[data-theme="dark"] .picross-page{color:var(--dark-text,#f1f5ff)}html[data-theme="dark"] .picross-shell{background:var(--dark-card,#151f3d);border-color:var(--dark-border,#293858)}html[data-theme="dark"] .picross-daily-tag,html[data-theme="dark"] .picross-badge{background:#202f54;color:#c2d0ff}html[data-theme="dark"] .picross-choice{background:#111b36;border-color:#293858;color:#f1f5ff}html[data-theme="dark"] .picross-choice span,html[data-theme="dark"] .picross-mode-help,html[data-theme="dark"] .picross-board-meta span{color:#b8c4dd}html[data-theme="dark"] .picross-mark-modes{background:#0b132b}html[data-theme="dark"] .picross-mark-modes button.is-selected{background:#1b294b;color:#f1f5ff}html[data-theme="dark"] .picross-board{background:#111b36;border-color:#293858}html[data-theme="dark"] .picross-cell{background:#111b36;border-color:#293858}html[data-theme="dark"] .picross-cell:hover{background:#1b294b}html[data-theme="dark"] .picross-cell.is-filled{background:#8ea8ff}html[data-theme="dark"] .picross-cell.is-empty{background:#151f3d;color:#b8c4dd}html[data-theme="dark"] .picross-column-clue,html[data-theme="dark"] .picross-row-clue{color:#f1f5ff}html[data-theme="dark"] .picross-progress{background:#293858}html[data-theme="dark"] .picross-results-grid>div{background:#1b294b}html[data-theme="dark"] .picross-article code{background:#1b294b;color:#f1f5ff}
+  @media(max-width:640px){.picross-header-bar{justify-content:center;margin-bottom:16px}.picross-difficulties-bar{width:100%;justify-content:space-between}.picross-diff-btn{flex:1;padding:8px 6px;text-align:center;align-items:center}.picross-diff-btn strong{font-size:12px}.picross-diff-btn span{font-size:9px}.picross-intro{padding:35px 0 20px}.picross-shell{padding:18px;margin-bottom:52px}.picross-ready-head{align-items:flex-start;flex-direction:column}.picross-difficulties{gap:7px}.picross-choice{padding:11px 8px}.picross-choice strong{font-size:13px}.picross-choice span{font-size:10px}.picross-ready-actions .btn{flex:1 1 100%;width:100%}.picross-stats{grid-template-columns:1fr 1fr}.picross-progress{grid-column:1/-1}.picross-board{width:calc(100% * var(--picross-zoom, 1));max-width:none;flex-shrink:0;grid-template-columns:minmax(22px,28px) repeat(var(--picross-size),minmax(0,1fr));aspect-ratio:1.03/1}.picross-row-clue{padding-right:4px;font-size:9px}.picross-column-clue{font-size:9px}.picross-board-meta{align-items:flex-start;flex-direction:column}.picross-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.picross-actions .btn{width:100%;min-width:0;padding-inline:7px;font-size:13px}.picross-results-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:360px){.picross-shell{padding:14px}.picross-top-actions{gap:7px}.picross-compact{padding-inline:10px}.picross-mode-help{font-size:11px}.picross-board{grid-template-columns:minmax(20px,24px) repeat(var(--picross-size),minmax(0,1fr))}.picross-actions{grid-template-columns:1fr 1fr}.picross-actions .btn{font-size:12px}}
+  /* Tighter game proportions; the puzzle itself retains a readable minimum cell size. */
+  .picross-intro{padding:24px 0 12px}
+  .picross-intro h1{font-size:clamp(30px,3vw,36px);letter-spacing:-.04em;margin:8px 0}
+  .picross-intro p{font-size:14px;line-height:1.55}
+  .picross-shell{max-width:820px;padding:20px;margin-bottom:42px}
+  .picross-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .picross-difficulties-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .picross-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    transition: all .16s ease;
+  }
+  .picross-diff-btn strong { font-size: 13px; font-weight: 700; }
+  .picross-diff-btn span { font-size: 10px; color: var(--muted); }
+  .picross-diff-btn:hover { border-color: var(--blue); }
+  .picross-diff-btn.is-active, .picross-diff-btn.is-selected {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .picross-diff-btn.is-active span, .picross-diff-btn.is-selected span { color: var(--blue); opacity: .85; }
+  .picross-shell h2{font-size:22px;margin:10px 0 6px}
+  .picross-game-top h2{font-size:21px;margin-top:7px}
+  .picross-stats{margin:10px 0;gap:10px}
+  .picross-tools{margin:8px 0 4px;gap:10px}
+  .picross-mark-modes button{min-height:40px;padding:8px 13px}
+  .picross-instruction{font-size:12px;line-height:1.45;margin:7px 0}
+  .picross-board-scroll{display:flex;justify-content:center;padding:3px 2px 6px}
+  .picross-board{--picross-cell-size:clamp(28px,calc(2.5vw + 20px),36px);width:max-content;aspect-ratio:auto;grid-template-columns:34px repeat(var(--picross-size),var(--picross-cell-size));grid-template-rows:36px repeat(var(--picross-size),var(--picross-cell-size));margin:0 auto}
+  .picross-cell{width:var(--picross-cell-size);height:var(--picross-cell-size);aspect-ratio:auto}
+  .picross-row-clue{font-size:11px;padding-right:5px}
+  .picross-column-clue{font-size:10px}
+  .picross-empty-mark{font-size:16px}
+  .picross-board-meta{margin:5px 0 8px}
+  .picross-actions{gap:8px}
+  .picross-actions .btn{min-height:40px}
+  .picross-play-area{display:grid;grid-template-columns:minmax(0,1fr) 154px;gap:18px;align-items:center}
+  .picross-board-column{min-width:0}
+  .picross-side-controls{display:grid;gap:12px;align-content:center}
+  .picross-check-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink)}
+  .picross-check-label input{width:17px;height:17px;accent-color:var(--blue)}
+  .picross-side-controls .picross-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .picross-side-controls .picross-actions .btn{min-width:0;min-height:40px;padding-inline:5px;font-size:12px}
+  .picross-side-controls .picross-actions .picross-hint-button,.picross-side-controls .picross-actions button:nth-child(n+4){grid-column:1/-1}
+  .picross-control-note{font-size:11px;line-height:1.45;color:var(--muted);margin:0}
+  .picross-live{min-height:1.2em;margin:8px 0 0;font-size:12px}
+  .wrap.game-article-content.picross-article{width:min(780px,calc(100% - 40px));margin-bottom:48px;font-size:16px;line-height:1.72}
+  .wrap.game-article-content.picross-article h2{font-size:24px;line-height:1.25;letter-spacing:-.025em;margin:36px 0 12px;text-align:left}
+  .wrap.game-article-content.picross-article h2:first-child{margin-top:0}
+  .wrap.game-article-content.picross-article > p{font-size:16px;line-height:1.72;margin:0 0 14px}
+  .wrap.game-article-content.picross-article ol,.wrap.game-article-content.picross-article ul{padding-inline-start:24px;margin:0 0 16px}
+  .wrap.game-article-content.picross-article li{font-size:16px;line-height:1.65;margin:0 0 7px;padding-inline-start:2px}
+  .picross-example{display:flex;align-items:center;gap:18px;padding:14px 18px;margin:14px 0 18px;background:var(--wash);border:1px solid var(--line);border-radius:14px}
+  .picross-example pre{font:700 17px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em;margin:0;color:var(--ink)}
+  .picross-example figcaption{font-size:13px;line-height:1.55;color:var(--muted);max-width:320px}
+  .picross-article a{color:var(--blue);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+  html[data-theme="dark"] .picross-example{background:#111b36;border-color:#293858}
+  @media(max-width:640px){
+    .picross-intro{padding:20px 0 10px}
+    .picross-intro h1{font-size:30px}
+    .picross-shell{padding:16px;margin-bottom:34px}
+    .picross-shell h2{font-size:20px}
+    .picross-game-top{gap:8px}
+    .picross-game-top h2{font-size:19px}
+    .picross-top-actions{gap:8px}
+    .picross-stats{grid-template-columns:74px 1fr;gap:8px}
+    .picross-progress{grid-column:1/-1}
+    .picross-tools{align-items:flex-start}
+    .picross-mode-help{flex:1 1 150px;line-height:1.45}
+    .picross-play-area{grid-template-columns:minmax(0,1fr);gap:10px}
+    .picross-side-controls{grid-template-columns:1fr;gap:8px}
+    .picross-side-controls .picross-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .picross-side-controls .picross-actions .picross-hint-button{grid-column:auto}
+    .picross-side-controls .picross-actions button:nth-child(n+4){grid-column:auto}
+    .picross-control-note{display:none}
+    .picross-board-scroll{justify-content:flex-start}
+    .picross-board{margin-inline:auto}
+    .picross-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .picross-actions .btn{min-height:42px;padding-inline:8px;font-size:13px;white-space:normal;line-height:1.2}
+    .wrap.game-article-content.picross-article{width:calc(100% - 32px);margin-bottom:36px;font-size:15px}
+    .wrap.game-article-content.picross-article h2{font-size:21px;margin-top:28px}
+    .wrap.game-article-content.picross-article > p,.wrap.game-article-content.picross-article li{font-size:15px;line-height:1.68}
+    .picross-example{gap:12px;padding:12px;margin-inline:0}
+    .picross-example pre{font-size:15px}
+    .picross-example figcaption{font-size:12px}
+  }
+  @media(max-width:360px){
+    .picross-shell{padding:13px}
+    .picross-board{--picross-cell-size:28px;grid-template-columns:34px repeat(var(--picross-size),var(--picross-cell-size))}
+    .picross-row-clue{font-size:10px;padding-right:4px}
+    .picross-column-clue{font-size:9px}
+    .picross-actions .btn{font-size:12px;padding-inline:5px}
+  }
+  @media(prefers-reduced-motion:reduce){.picross-page *{scroll-behavior:auto!important;transition:none!important}}
+
+  /* Related Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+  .related-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.1);
+  }
+  .related-card:focus-visible {
+    outline: 3px solid #93abff;
+    outline-offset: 4px;
+  }
+  .related-visual {
+    height: 180px;
+    flex: none;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+  .related-orbit {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 54px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+  .related-icon span {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: white;
+    color: var(--blue);
+    font-size: 19px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
+  }
+  .sequence-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .sequence-icon span:nth-child(3) { background: #dff5ef; color: #16825d; }
+  .sequence-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+  .flood-icon span { border-radius: 14px; background: #ef6b67; }
+  .flood-icon span:nth-child(2) { background: #efa347; }
+  .flood-icon span:nth-child(3) { background: #48ad83; }
+  .flood-icon span:nth-child(4) { background: #5187dc; }
+  .picross-icon span:nth-child(1), .picross-icon span:nth-child(4) { background: #315ee8; color: #fff; }
+  .picross-icon span:nth-child(2), .picross-icon span:nth-child(3) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .slide-icon .slide-empty { background: transparent; border: 2px dashed #b9c8f5; box-shadow: none; }
+  .ladder-visual { background: linear-gradient(145deg, #eaf0ff, #f3eaff); }
+  .ladder-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .ladder-icon span:nth-child(2) { background: #e5eaff; color: #315ee8; }
+  .ladder-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .ladder-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+
+  .related-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 22px 22px;
+  }
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+  .related-card h3 {
+    font-size: 19px;
+    line-height: 1.25;
+    margin: 14px 0 8px;
+    letter-spacing: -.025em;
+  }
+  .related-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+    color: var(--muted);
+  }
+  .related-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .related-play span { transition: transform .18s ease; }
+  .related-card:hover .related-play span { transform: translateX(3px); }
+
+  /* Dark mode overrides */
+  html[data-theme="dark"] .related-games-section { border-color: var(--dark-border, #293858); }
+  html[data-theme="dark"] .related-card { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); }
+  html[data-theme="dark"] .related-card:hover { border-color: #52678f; box-shadow: 0 16px 38px rgba(3, 8, 23, 0.45); }
+  html[data-theme="dark"] .related-visual { background: linear-gradient(145deg, #1b294b, #222345); }
+  html[data-theme="dark"] .related-orbit { border-color: #35466c; }
+  html[data-theme="dark"] .related-icon span { background: #263553; color: #c2d0ff; box-shadow: 0 8px 20px rgba(3, 8, 23, 0.45); }
+  html[data-theme="dark"] .sequence-icon span:nth-child(2),
+  html[data-theme="dark"] .picross-icon span:nth-child(1),
+  html[data-theme="dark"] .picross-icon span:nth-child(4) { background: #8ea8ff; color: #0b132b; }
+  html[data-theme="dark"] .sequence-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  html[data-theme="dark"] .sequence-icon span:nth-child(4) { background: #493922; color: #ffd27d; }
+  html[data-theme="dark"] .picross-icon span:nth-child(2),
+  html[data-theme="dark"] .picross-icon span:nth-child(3) { background: #1b294b; color: #a9bcff; }
+  html[data-theme="dark"] .slide-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  html[data-theme="dark"] .slide-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
+  html[data-theme="dark"] .slide-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  html[data-theme="dark"] .slide-icon .slide-empty { border-color: #35466c; }
+  html[data-theme="dark"] .ladder-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  html[data-theme="dark"] .ladder-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
+  html[data-theme="dark"] .ladder-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  html[data-theme="dark"] .ladder-icon span:nth-child(4) { background: #423214; color: #fcd373; }
+  html[data-theme="dark"] .related-card h3 { color: var(--dark-text, #f1f5ff); }
+  html[data-theme="dark"] .related-card p { color: var(--dark-secondary, #b8c4dd); }
+  html[data-theme="dark"] .related-play { color: var(--dark-accent, #8ea8ff); }
+
+  @media (max-width: 900px) {
+    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  }
+
+  @media (max-width: 560px) {
+    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
+    .related-games-head { margin-bottom: 24px; }
+    .related-games-grid { grid-template-columns: 1fr; gap: 16px; }
+    .related-card { display: grid; grid-template-columns: 110px minmax(0, 1fr); min-height: 160px; border-radius: 16px; }
+    .related-visual { height: auto; min-height: 160px; }
+    .related-orbit { width: 90px; height: 90px; }
+    .related-icon { grid-template-columns: repeat(2, 34px); gap: 5px; }
+    .related-icon span { width: 34px; height: 34px; border-radius: 9px; font-size: 13px; }
+    .related-card-body { padding: 14px 12px; }
+    .related-card h3 { font-size: 16px; margin: 8px 0 4px; }
+    .related-card p { font-size: 12px; margin-bottom: 10px; }
+    .related-play { font-size: 12px; }
+  }
+</style>

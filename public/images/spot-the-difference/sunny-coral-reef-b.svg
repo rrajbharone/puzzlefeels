@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+  <defs>
+    <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3cb9d6"/>
+      <stop offset="40%" stop-color="#1f7ea1"/>
+      <stop offset="100%" stop-color="#0e3a54"/>
+    </linearGradient>
+    <linearGradient id="sandGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8d4a7"/>
+      <stop offset="100%" stop-color="#c4af81"/>
+    </linearGradient>
+    <linearGradient id="turtleShellA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#69964e"/>
+      <stop offset="100%" stop-color="#385426"/>
+    </linearGradient>
+    <linearGradient id="turtleShellB" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2a7873"/>
+      <stop offset="100%" stop-color="#134743"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ocean Water Depth -->
+  <rect width="800" height="520" fill="url(#oceanGrad)"/>
+
+  <!-- Sunbeams / Caustics -->
+  <g opacity="0.25" fill="#ffffff">
+    <polygon points="120,0 180,0 260,520 180,520"/>
+    <polygon points="340,0 420,0 520,520 400,520"/>
+    <polygon points="560,0 640,0 720,520 620,520"/>
+  </g>
+
+  <!-- Sea Bed Sand -->
+  <path d="M0,420 Q240,390 480,430 T800,410 L800,520 L0,520 Z" fill="url(#sandGrad)"/>
+
+  <!-- Background Coral Silhouettes -->
+  <g fill="#195573" opacity="0.6">
+    <path d="M40,430 C40,320 100,320 100,430 Z"/>
+    <path d="M90,430 C90,290 160,290 160,430 Z"/>
+    <path d="M680,420 C680,280 770,280 770,420 Z"/>
+  </g>
+
+  <!-- Colorful Foreground Corals -->
+  <!-- Left Purple Brain Coral -->
+  <g fill="#9351a6">
+    <ellipse cx="80" cy="450" rx="60" ry="45"/>
+    <ellipse cx="60" cy="420" rx="40" ry="35"/>
+    <ellipse cx="110" cy="430" rx="35" ry="30"/>
+  </g>
+
+  <!-- Center Orange Staghorn Coral -->
+  <g fill="#d95d30" stroke="#b8451c" stroke-width="2">
+    <path d="M440,430 C430,350 420,320 400,300 C415,320 440,370 450,430 Z"/>
+    <path d="M440,360 C460,320 480,290 500,280 C485,310 460,350 450,430 Z"/>
+    <path d="M450,330 C465,290 450,260 440,240 C455,270 470,310 460,430 Z"/>
+  </g>
+
+  <!-- Right Coral Mound & Anemone / Difference 4 -->
+  <g id="reefRight">
+    <ellipse cx="670" cy="440" rx="90" ry="50" fill="#d47997"/>
+    <!-- Anemone / Difference 4 -->
+    <g id="anemone" transform="translate(656, 322)">
+      
+      <!-- Bright Turquoise Tentacles in B -->
+      <g fill="#2dd4bf">
+        <path d="M-30,50 Q-40,20 -35,0 Q-25,25 -20,50 Z"/>
+        <path d="M-15,50 Q-20,10 -10,-10 Q-5,20 0,50 Z"/>
+        <path d="M0,50 Q10,15 15,-15 Q15,20 15,50 Z"/>
+        <path d="M15,50 Q25,20 35,5 Q25,30 25,50 Z"/>
+      </g>
+      
+    </g>
+  </g>
+
+  <!-- Sea Turtle / Difference 1 -->
+  <g id="seaTurtle" transform="translate(256, 182) rotate(-15)">
+    <!-- Flippers -->
+    <path d="M-10,-45 Q-20,-75 20,-65 Q10,-45 -5,-35 Z" fill="#4d7335"/>
+    <path d="M-10,35 Q-20,70 25,55 Q10,35 -5,25 Z" fill="#4d7335"/>
+    <!-- Back Flippers -->
+    <path d="M-40,-25 Q-60,-35 -55,-15 Z" fill="#3b5928"/>
+    <path d="M-40,20 Q-60,30 -55,10 Z" fill="#3b5928"/>
+    <!-- Head -->
+    <ellipse cx="50" cy="-5" rx="18" ry="12" fill="#5c8740"/>
+    <circle cx="56" cy="-8" r="3" fill="#1c2b13"/>
+    <!-- Shell -->
+    
+    <!-- Solid Plain Shell in B -->
+    <ellipse cx="0" cy="0" rx="46" ry="34" fill="url(#turtleShellB)"/>
+    
+  </g>
+
+  <!-- Clownfish Left / Difference 5 -->
+  <g id="clownfish" transform="translate(160, 343)">
+    <!-- Tail Fin -->
+    <polygon points="-24,0 -40,-12 -36,0 -40,12" fill="#f97316"/>
+    <!-- Body -->
+    <ellipse cx="0" cy="0" rx="26" ry="16" fill="#ea580c"/>
+    <!-- Eye -->
+    <circle cx="15" cy="-4" r="3" fill="#ffffff"/>
+    <circle cx="16" cy="-4" r="1.5" fill="#000000"/>
+    <!-- White Stripes -->
+    <path d="M8,-14 C12,-5 12,5 8,14" stroke="#ffffff" stroke-width="4" fill="none"/>
+    <path d="M-6,-15 C-2,-5 -2,5 -6,15" stroke="#ffffff" stroke-width="4" fill="none"/>
+    
+  </g>
+
+  <!-- Starfish on Seabed / Difference 2 -->
+  <g id="starfish" transform="translate(576, 436)">
+    
+    <!-- Golden Starfish in B -->
+    <polygon points="0,-18 5,-5 18,-5 8,4 12,17 0,9 -12,17 -8,4 -18,-5 -5,-5" fill="#facc15"/>
+    
+  </g>
+
+  <!-- Sea Shell on Sand Left -->
+  <g id="seashell" transform="translate(320, 445)">
+    <path d="M0,0 C15,-20 35,-15 40,0 C25,-5 15,-5 0,0 Z" fill="#fed7aa"/>
+    <line x1="20" y1="-14" x2="20" y2="-2" stroke="#ea580c" stroke-width="1.5"/>
+  </g>
+
+  <!-- Bubbles Floating / Difference 3 -->
+  <g id="bubbles" fill="#ffffff" opacity="0.6">
+    <circle cx="440" cy="190" r="7"/>
+    <circle cx="448" cy="150" r="9"/>
+    <circle cx="436" cy="130" r="6"/>
+    
+  </g>
+</svg>

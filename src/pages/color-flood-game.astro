@@ -1,0 +1,615 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+
+const title = 'Color Flood Game – Play Free Online | PuzzleFeels';
+const description = 'Play Color Flood free online. Connect the colors, flood the whole board within the move limit, and choose Easy, Medium, Hard, or today’s Daily Challenge.';
+const faqs = [
+  { question: 'What is a Color Flood Game?', answer: 'Color Flood is a strategy puzzle where you expand a connected region from the top-left corner by choosing colors. The aim is to make every cell part of that region before you run out of moves.' },
+  { question: 'How do you play Color Flood?', answer: 'Choose any color other than the current flood color. The region you already control changes to that color and absorbs neighboring cells of the same color. Only cells sharing an edge connect; diagonals do not.' },
+  { question: 'What is the objective of the game?', answer: 'Flood every cell on the board into one connected region before using the level’s move limit.' },
+  { question: 'How many moves do I get?', answer: 'Easy uses a 10 × 10 grid with 4 colors and 18 moves. Medium uses a 14 × 14 grid with 5 colors and 30 moves. Hard uses an 18 × 18 grid with 6 colors and 44 moves.' },
+  { question: 'What happens if I run out of moves?', answer: 'The round ends as a loss if the board is not fully flooded after your last permitted move. You can retry the same board or start a new game.' },
+  { question: 'Can I play Color Flood on my phone?', answer: 'Yes. The color controls are touch-friendly, and the board resizes to fit mobile screens as well as tablets and desktop browsers.' },
+  { question: 'Is Color Flood free to play?', answer: 'Yes. The game runs in your browser for free, with no account or download required.' },
+  { question: 'Does the game save my progress?', answer: 'An unfinished board and its move count are saved locally in this browser so you can continue after a refresh. Clearing browser storage removes that saved progress.' },
+  { question: 'Is there a Daily Challenge?', answer: 'Yes. The Daily Challenge uses a Medium board generated from the current UTC date. Everyone who opens the challenge on the same UTC date gets the same board. Completion is recorded on this device; there is no leaderboard.' },
+  { question: 'Can I restart the game?', answer: 'Yes. Restart returns the current board to its original layout. You can also start a different game or retry after a result.' },
+];
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Color Flood Game',
+  url: 'https://puzzlefeels.com/color-flood-game/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Puzzle game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' },
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Color Flood Game', item: 'https://puzzlefeels.com/color-flood-game/' },
+  ],
+};
+---
+<Base {title} {description} path="/color-flood-game/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+  </Fragment>
+  <Header />
+  <main>
+    <nav class="wrap flood-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Color Flood Game</span>
+    </nav>
+    <section class="wrap flood-intro">
+      <span class="eyebrow">A colorful logic puzzle</span>
+      <h1>Color Flood Game – Play Free Online</h1>
+      <p class="muted">Grow the color at the top-left corner, connect more of the board with every move, and try to flood every cell before the move limit runs out.</p>
+    </section>
+
+    <section class="wrap flood-shell card" data-color-flood aria-label="Color Flood game">
+      <!-- Top header bar: Difficulty controls directly above the board -->
+      <div class="flood-header-bar">
+        <div class="flood-difficulties" role="group" aria-label="Select board difficulty">
+          <button type="button" class="flood-diff-btn is-active" data-difficulty="easy" aria-pressed="true">
+            <strong>Easy</strong>
+            <span>10 × 10 · 4 Colors</span>
+          </button>
+          <button type="button" class="flood-diff-btn" data-difficulty="medium" aria-pressed="false">
+            <strong>Medium</strong>
+            <span>14 × 14 · 5 Colors</span>
+          </button>
+          <button type="button" class="flood-diff-btn" data-difficulty="hard" aria-pressed="false">
+            <strong>Hard</strong>
+            <span>18 × 18 · 6 Colors</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flood-screen flood-ready" id="flood-ready" hidden>
+        <span class="pill" id="flood-ready-label">THREE LEVELS · PLAY AT YOUR PACE</span>
+        <h2>How much of the board can you connect?</h2>
+        <p class="muted">Choose a difficulty, then select colors to expand your connected region. Only up, down, left, and right neighbors connect.</p>
+        <div class="flood-difficulties" role="group" aria-label="Choose Color Flood difficulty">
+          <button class="flood-difficulty is-selected" type="button" data-difficulty="easy" aria-pressed="true"><strong>Easy</strong><span>10 × 10 · 4 colors</span><small>18 moves</small></button>
+          <button class="flood-difficulty" type="button" data-difficulty="medium" aria-pressed="false"><strong>Medium</strong><span>14 × 14 · 5 colors</span><small>30 moves</small></button>
+          <button class="flood-difficulty" type="button" data-difficulty="hard" aria-pressed="false"><strong>Hard</strong><span>18 × 18 · 6 colors</span><small>44 moves</small></button>
+        </div>
+        <p class="flood-selected-settings" id="flood-selected-settings" aria-live="polite">10 × 10 grid · 4 colors · 18 moves</p>
+        <div class="flood-start-actions">
+          <button class="btn" id="flood-start" type="button">Start a new game <span aria-hidden="true">→</span></button>
+          <button class="btn secondary" id="flood-continue" type="button" hidden>Continue game</button>
+          <button class="btn secondary flood-daily-button" id="flood-daily-start" type="button">Play today’s Daily Challenge <span aria-hidden="true">✦</span></button>
+        </div>
+        <p class="flood-daily-status" id="flood-daily-status" aria-live="polite">TODAY’S UTC CHALLENGE · READY TO PLAY</p>
+        <p class="flood-save-note">Progress saves in this browser · no account needed</p>
+      </div>
+
+      <div class="flood-screen flood-play" id="flood-play">
+        <div class="flood-toolbar">
+          <span class="pill" id="flood-level-label">Easy</span>
+          <div class="flood-toolbar-actions">
+            <ZoomControl id="flood-zoom" label="Grid Zoom" targetSelector="#flood-board" zoomVar="--flood-zoom" />
+            <button class="flood-small-button" id="flood-pause-button" type="button">Pause</button>
+          </div>
+        </div>
+        <div class="flood-stats" aria-label="Game status">
+          <div><span>Moves used</span><strong id="flood-moves-used">0</strong></div>
+          <div><span>Moves left</span><strong id="flood-moves-remaining">18</strong></div>
+          <div><span>Move limit</span><strong id="flood-moves-limit">18</strong></div>
+        </div>
+        <div class="flood-progress-row">
+          <span>Board progress</span><strong id="flood-progress-value">1% flooded</strong>
+        </div>
+        <div class="flood-progress" id="flood-progress" role="progressbar" aria-label="Board flooded" aria-valuemin="0" aria-valuemax="100" aria-valuenow="1"><span id="flood-progress-fill"></span></div>
+        <div class="flood-board-wrap">
+          <div class="flood-board" id="flood-board" role="img" aria-label="Color Flood game grid"></div>
+        </div>
+        <p class="flood-current-label">Current flood color: <span class="flood-current-indicator"><span class="flood-current-swatch" id="flood-current-swatch" aria-hidden="true"></span><strong id="flood-current-color">Coral</strong></span></p>
+        <p class="flood-control-label">Choose a color to flood next</p>
+        <div class="flood-palette" id="flood-palette" role="group" aria-label="Choose a flood color"></div>
+        <p class="flood-rule-note">Each color choice uses one move. Only squares that share a side connect.</p>
+        <p class="flood-feedback" id="flood-feedback" aria-live="polite"></p>
+        <div class="flood-play-actions">
+          <button class="btn secondary flood-control-button" id="flood-restart-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 11a8 8 0 0 1 13.7-5.7L20 7.5M20 3.5v4h-4M20 13a8 8 0 0 1-13.7 5.7L4 16.5m0 4v-4h4" /></svg>
+            <span>Restart this board</span>
+          </button>
+          <button class="btn flood-control-button flood-new-game" id="flood-new-game" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" /></svg>
+            <span>New game</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flood-screen flood-pause" id="flood-pause" hidden>
+        <span class="flood-pause-icon" aria-hidden="true">Ⅱ</span>
+        <h2>Game paused</h2>
+        <p class="muted">Your board and moves are saved. Pick up where you left off whenever you’re ready.</p>
+        <div class="flood-start-actions">
+          <button class="btn" id="flood-resume-button" type="button">Resume game</button>
+          <button class="btn secondary" id="flood-pause-new-game" type="button">New game</button>
+        </div>
+      </div>
+
+      <div class="flood-screen flood-result" id="flood-result" hidden>
+        <span class="flood-result-icon" aria-hidden="true">✦</span>
+        <span class="eyebrow" id="flood-result-kicker">ROUND COMPLETE</span>
+        <h2 id="flood-result-title">Board flooded. Nicely done!</h2>
+        <p class="muted" id="flood-result-message"></p>
+        <div class="flood-result-stats">
+          <div><span>Difficulty</span><strong id="flood-result-difficulty"></strong></div>
+          <div><span>Moves used</span><strong id="flood-result-moves"></strong></div>
+          <div><span>Moves remaining</span><strong id="flood-result-remaining"></strong></div>
+          <div id="flood-result-score-wrap"><span>Score</span><strong id="flood-result-score"></strong></div>
+          <div id="flood-result-best-wrap"><span>Best score</span><strong id="flood-result-best"></strong></div>
+        </div>
+        <p class="flood-score-note" id="flood-score-note">A completed score starts with a difficulty bonus, plus points for every move you saved.</p>
+        <div class="flood-start-actions">
+          <button class="btn" id="flood-play-again" type="button">Play again</button>
+          <button class="btn secondary" id="flood-share" type="button">Share score</button>
+          <button class="btn secondary" id="flood-result-new-game" type="button">New game</button>
+        </div>
+        <p class="flood-share-status" id="flood-share-status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <article class="wrap game-article-content flood-article" aria-labelledby="flood-about-heading">
+      <h2 id="flood-about-heading">What Is Color Flood?</h2>
+      <p>Color Flood is a compact strategy puzzle played on a board of colored squares. Your starting territory sits in the upper-left corner. On each turn, you pick a new color; your territory changes to that color and absorbs any matching squares that touch it along an edge. The goal is to make the entire board one connected territory before the move counter reaches zero. The puzzle is easy to understand, but choosing an efficient route takes a little planning.</p>
+
+      <h2>How to Play Color Flood</h2>
+      <p>Start by looking at the square in the top-left corner. That square, and any same-colored squares connected to it horizontally or vertically, form your first region. Choose one of the color buttons beneath the board. Every square in your region changes to the color you chose, then any neighboring squares of that color join the region. The newly expanded region can now reach more squares on later turns.</p>
+      <p>Continue choosing colors until the whole board belongs to your region. You cannot choose the color you currently have, because doing so would not expand the board. Each valid color choice uses one move, even when it absorbs several separate-looking patches at once. Diagonal contact does not count: two squares connect only when they share a side.</p>
+
+      <h2>Color Flood Game Rules</h2>
+      <p>The game tracks the cells connected to the top-left starting region. A move recolors that entire region and adds every touching cell with the selected color, including matching cells reachable through other newly added cells. The game checks the board after each move. You win as soon as all cells are in the region. If the move limit is reached first, the round ends and you can retry the same layout or start another board.</p>
+      <p>Every standard board has a fixed size, color set, and move limit. Easy is a 10 × 10 grid with four colors and 18 moves. Medium is 14 × 14 with five colors and 30 moves. Hard is 18 × 18 with six colors and 44 moves. A win score uses a difficulty base of 300, 600, or 1,000 points, then adds 20, 35, or 50 points per unused move for Easy, Medium, or Hard. A lost round receives no completion score. Your personal best is saved on this device.</p>
+
+      <h2>Tips and Strategies to Win</h2>
+      <ul>
+        <li><strong>Look ahead before choosing.</strong> Check the colors touching your current region and consider what each choice could expose next.</li>
+        <li><strong>Think about connections.</strong> A color may appear in multiple places, but only matching squares reachable from your region through shared edges will join.</li>
+        <li><strong>Notice larger patches.</strong> A move that connects to a broad area can be more useful than a move that picks up one isolated square.</li>
+        <li><strong>Keep future access in mind.</strong> A smaller gain can open a path toward a larger patch of another color on the next turn.</li>
+        <li><strong>Use the move counter.</strong> Check how many moves remain and avoid spending one without a reason. You can pause to study the board without a timer.</li>
+        <li><strong>Plan flexibly.</strong> Several colors may offer similar gains. Choose a promising route, then adjust as the flooded region reveals new options.</li>
+      </ul>
+
+      <h2>Choose Your Difficulty</h2>
+      <p>Easy is a smaller board with four colors, giving new players a comfortable place to learn how the connected region grows. Medium adds more cells, another color, and a tighter move budget. Hard offers the largest board and six colors, so there are more possible routes to consider. These settings change the board and the points awarded for a win; the game has no timer, so you can take the time you need.</p>
+
+      <h2>Why Play Color Flood?</h2>
+      <p>Color Flood makes a satisfying short break: each turn is simple, while the order of your choices shapes what becomes reachable later. You can play casually or focus on completing a board with moves to spare. It is a recreational puzzle about observation and planning, without claims about guaranteed effects on health or intelligence. If you enjoy number challenges, spatial puzzles, or visual memory exercises, try our pattern-based <a href="/number-sequence-game/">Number Sequence Game</a>, flip cards in our <a href="/memory-matching-game-online/">Memory Matching Game Online</a>, slide tiles into place in our <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>, reveal hidden pixel pictures with <a href="/picross-game-online/">Picross Game Online</a>, or test your speed in our <a href="/reaction-time-challenge/">Reaction Time Challenge</a>.</p>
+
+      <h2>Play Color Flood Online for Free</h2>
+      <p>The game runs directly in your browser, with no download or account required. Its board and controls adapt to phones, tablets, and desktop screens. Unfinished standard games and the current Daily Challenge progress are stored locally in this browser, so you can refresh and continue on the same device. The Daily Challenge uses the UTC calendar date to generate one shared Medium puzzle for that day; your completion is stored locally, and there is no global leaderboard. Visit our <a href="/games/">All Games directory</a> or the <a href="/">PuzzleFeels homepage</a> to explore our complete puzzle collection.</p>
+    </article>
+
+    <section class="wrap flood-faq" aria-labelledby="flood-faq-heading">
+      <div class="flood-faq-heading"><span class="eyebrow">Good to know</span><h2 id="flood-faq-heading">Color Flood Game FAQs</h2><p class="muted">Quick answers before your next move.</p></div>
+      <FaqList items={faqs} />
+    </section>
+
+    <!-- Related Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep the fun going</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/number-sequence-game/">
+          <div class="related-visual sequence-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon sequence-icon"><span>3</span><span>?</span><span>9</span><span>27</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">NUMBER PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Number Sequence Game</h3>
+            <p class="muted">Find the missing number by spotting the hidden mathematical rule behind each sequence.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/sliding-number-puzzle-game/">
+          <div class="related-visual slide-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Sliding Number Puzzle Game</h3>
+            <p class="muted">Slide numbered tiles into ascending order in classic 8, 15, and 24-tile sliding challenges.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/picross-game-online/">
+          <div class="related-visual picross-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
+            <h3>Picross Game Online</h3>
+            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram puzzle.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/word-ladder-game-online/">
+          <div class="related-visual ladder-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon ladder-icon"><span>W</span><span>O</span><span>R</span><span>D</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">WORD PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Word Ladder Game Online</h3>
+            <p class="muted">Change one letter at a time to transform words in Lewis Carroll's classic doublets puzzle.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+<script type="module" src="/scripts/color-flood.js"></script>
+<style>
+  .flood-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 0 6px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .flood-breadcrumbs a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .flood-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+  .flood-breadcrumbs [aria-current="page"] {
+    color: var(--ink);
+  }
+  .flood-intro{text-align:center;padding:27px 0 30px}.flood-intro h1{font-size:clamp(2rem,4vw,3rem);margin:12px auto;letter-spacing:-.04em}.flood-intro p{max-width:660px;margin:0 auto}
+  .flood-shell{position:relative;max-width:790px;min-width:0;margin:0 auto 72px;padding:clamp(16px,3.5vw,32px);overflow-wrap:anywhere}
+
+  /* Color flood difficulty header bar */
+  .flood-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .flood-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    transition: all .16s ease;
+  }
+  .flood-diff-btn strong { font-size: 13px; font-weight: 700; }
+  .flood-diff-btn span { font-size: 10px; color: var(--muted); }
+  .flood-diff-btn:hover { border-color: var(--blue); }
+  .flood-diff-btn.is-active, .flood-diff-btn.is-selected {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .flood-diff-btn.is-active span, .flood-diff-btn.is-selected span { color: var(--blue); opacity: .85; }
+
+  .flood-screen{min-width:0;max-width:100%;min-height:420px}.flood-ready,.flood-result,.flood-pause{text-align:center;padding:22px 12px}
+  .flood-ready h2,.flood-pause h2,.flood-result h2{font-size:clamp(1.5rem,3.4vw,1.9rem);line-height:1.2;margin:18px auto 10px}
+  .flood-ready>.muted,.flood-pause>.muted,.flood-result>.muted{max-width:590px;margin:0 auto 24px}
+  .flood-difficulties{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;max-width:600px;margin:0 auto 13px}
+  .flood-difficulty{min-width:0;min-height:104px;padding:13px 9px;border:1px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;justify-content:center;gap:5px;transition:background-color .15s,border-color .15s,transform .15s}
+  .flood-difficulty strong{font-size:15px}.flood-difficulty span,.flood-difficulty small{font-size:11px;color:var(--muted)}.flood-difficulty:hover{border-color:#9aafff;transform:translateY(-1px)}
+  .flood-difficulty.is-selected{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 9%,var(--paper));box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 12%,transparent)}
+  .flood-selected-settings{min-height:20px;margin:0 0 20px;color:var(--muted);font-size:12px}
+  .flood-start-actions{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.flood-start-actions .btn{min-width:0}
+  .flood-daily-button{border-color:#e4e8f0}.flood-daily-button.daily-highlight{border-color:var(--blue)}
+  .flood-daily-status{margin:20px 0 5px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.09em}
+  .flood-save-note{margin:8px 0 0;color:var(--muted);font-size:11px}
+  .flood-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+  .flood-toolbar-actions{display:flex;align-items:center;gap:8px}
+  .flood-small-button{min-height:34px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s ease}
+  .flood-small-button:hover{border-color:var(--blue);background:var(--wash)}
+  .flood-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:21px}
+  .flood-stats>div{display:flex;flex-direction:column;gap:4px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--wash);text-align:center}
+  .flood-stats span,.flood-progress-row{font-size:11px;color:var(--muted)}.flood-stats strong{font-size:20px;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .flood-progress-row{display:flex;justify-content:space-between;gap:10px;margin:0 auto 7px;max-width:620px}.flood-progress-row strong{color:var(--ink)}
+  .flood-progress{width:min(100%,620px);height:8px;margin:0 auto 19px;border-radius:99px;background:var(--line);overflow:hidden}
+  .flood-progress span{display:block;height:100%;width:1%;border-radius:inherit;background:var(--blue);transition:width .18s ease}
+  .flood-board-wrap{display:flex;justify-content:center;max-width:100%;margin:0 auto;overflow-x:auto;padding:6px 2px;-webkit-overflow-scrolling:touch}
+  .flood-board{--flood-zoom:1;--board-size:10;display:grid;grid-template-columns:repeat(var(--board-size),minmax(0,1fr));grid-template-rows:repeat(var(--board-size),minmax(0,1fr));gap:2px;width:calc(min(100%,620px) * var(--flood-zoom, 1));max-width:none;flex-shrink:0;aspect-ratio:1;border-radius:12px;padding:3px;background:var(--line);overflow:hidden;transition:width .15s ease}
+  @media(min-width:701px){.flood-board{width:calc(min(100%,550px) * var(--flood-zoom, 1))}}
+  .flood-board :global(.flood-cell){display:block;width:100%;height:100%;min-width:0;min-height:0;border-radius:2px;background-color:var(--cell-color);transition:background-color .16s ease}
+  .flood-current-label{text-align:center;margin:16px 0 5px;font-size:13px;color:var(--muted)}.flood-current-label strong{color:var(--ink)}
+  .flood-current-indicator{display:inline-flex;align-items:center;gap:7px}
+  .flood-current-swatch{display:inline-block;width:14px;height:14px;border:1px solid #17233b30;border-radius:4px;vertical-align:middle}
+  .flood-control-label{text-align:center;margin:0 0 12px;font-size:12px;font-weight:700;color:var(--ink)}
+  .flood-palette{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;width:min(100%,390px);margin:0 auto}
+  :global(.flood-color-choice){appearance:none;box-sizing:border-box;flex:0 0 58px;width:58px;min-width:58px;min-height:58px;padding:5px 2px;border:1px solid var(--line);border-radius:12px;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);font:inherit;font-size:11px;line-height:1.15;text-align:center;white-space:nowrap;transition:background-color .15s,border-color .15s,transform .15s}
+  :global(.flood-color-choice:hover:not(:disabled)){transform:translateY(-2px);border-color:var(--blue)}
+  :global(.flood-color-choice:active:not(:disabled)){transform:scale(.96)}
+  :global(.flood-color-choice.is-current){border-color:var(--blue);background:color-mix(in srgb,var(--blue) 8%,var(--paper))}
+  :global(.flood-color-choice:disabled){cursor:default;opacity:1}
+  :global(.flood-swatch){display:block;flex:0 0 25px;width:25px;height:25px;border:1px solid #17233b20;border-radius:7px;box-shadow:inset 0 0 0 1px #ffffff24}
+  :global(.flood-color-choice.is-current .flood-swatch){box-shadow:inset 0 0 0 2px #fff,0 0 0 2px var(--blue)}
+  :global(.flood-color-name){display:block;font-size:9px;line-height:1.1;white-space:nowrap}
+  .flood-rule-note{margin:11px 0 0;text-align:center;color:var(--muted);font-size:11px;line-height:1.5}
+  .flood-feedback{min-height:22px;margin:12px 0 0;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
+  .flood-play-actions{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:15px;border-top:1px solid var(--line);padding-top:14px}
+  .flood-control-button{min-height:48px;padding:0 18px;gap:9px;white-space:nowrap}
+  .flood-control-button svg{display:block;width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .flood-new-game{min-width:136px}
+  .flood-control-button:disabled{cursor:not-allowed;opacity:.55;transform:none;box-shadow:none}
+  .flood-pause{display:flex;min-height:420px;flex-direction:column;align-items:center;justify-content:center}
+  .flood-pause-icon,.flood-result-icon{width:54px;height:54px;margin:0 auto 13px;border-radius:18px;background:color-mix(in srgb,var(--blue) 12%,var(--paper));color:var(--blue);display:grid;place-items:center;font-size:23px;font-weight:800}
+  .flood-result{display:flex;min-height:420px;flex-direction:column;align-items:center;justify-content:center}
+  .flood-result .eyebrow{margin-top:3px}
+  .flood-result-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;width:min(100%,460px);margin:4px auto 12px}
+  .flood-result-stats>div{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--wash);text-align:left}
+  .flood-result-stats span{font-size:11px;color:var(--muted)}.flood-result-stats strong{font-size:14px;color:var(--ink);text-align:right}
+  .flood-score-note,.flood-share-status{min-height:18px;margin:0 0 12px;color:var(--muted);font-size:11px;line-height:1.5}
+  .flood-article{padding-top:0;padding-bottom:26px}
+  .flood-article h2{margin:30px 0 12px;font-size:clamp(1.35rem,2.5vw,1.65rem);line-height:1.25}
+  .flood-article h2:first-child{margin-top:0}
+  .flood-article li strong{color:var(--ink)}
+  .flood-article a{color:var(--blue);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .flood-faq{display:grid;grid-template-columns:minmax(190px,.7fr) minmax(0,1.3fr);gap:48px;padding:28px 0 78px}
+  .flood-faq-heading h2{margin:12px 0;font-size:clamp(1.65rem,3vw,2.15rem)}
+  .flood-faq-heading p{margin:0}
+  @media(max-width:700px){.flood-faq{grid-template-columns:1fr;gap:16px}}
+  @media(max-width:560px){
+    .flood-breadcrumbs{padding-top:17px}.flood-intro{padding:20px 0 24px}.flood-intro h1{font-size:clamp(1.8rem,8vw,2.5rem)}
+    .flood-shell{margin-bottom:48px;padding:13px}.flood-screen{min-height:0}.flood-ready,.flood-result,.flood-pause{padding:20px 0}
+    .flood-difficulties{gap:7px}.flood-difficulty{min-height:96px;padding:9px 4px}.flood-difficulty strong{font-size:14px}.flood-difficulty span,.flood-difficulty small{font-size:10px}
+    .flood-start-actions{gap:8px}.flood-start-actions .btn{width:100%}
+    .flood-stats{gap:6px;margin-bottom:16px}.flood-stats>div{padding:9px 4px}.flood-stats span{font-size:10px}.flood-stats strong{font-size:18px}
+    .flood-board{gap:1px;padding:2px;border-radius:9px}.flood-board :global(.flood-cell){border-radius:1px}
+    .flood-palette{gap:7px}
+    :global(.flood-color-choice){min-height:54px;flex-basis:58px}
+    .flood-current-label{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px}
+    .flood-play-actions{gap:9px;padding-top:12px}.flood-control-button{padding-inline:13px;font-size:12px;gap:7px}.flood-new-game{min-width:118px}
+    .flood-result-stats{gap:7px}.flood-result-stats>div{padding:10px}
+    .flood-article{padding-bottom:15px}.flood-article h2{margin-top:26px}.flood-faq{padding-bottom:58px}
+  }
+  @media(max-width:360px){
+    .flood-shell{width:calc(100% - 24px);padding:11px}
+    .flood-difficulty span,.flood-difficulty small{font-size:9px}
+    .flood-toolbar .pill{font-size:10px}
+    .flood-play-actions{flex-direction:column;align-items:stretch}
+    .flood-control-button{width:100%;min-height:50px}
+    .flood-new-game{min-width:0}
+  }
+  @media(prefers-reduced-motion:reduce){.flood-board :global(.flood-cell),.flood-progress span,.flood-difficulty,:global(.flood-color-choice){transition:none}}
+
+  /* Related Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+  .related-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.1);
+  }
+  .related-card:focus-visible {
+    outline: 3px solid #93abff;
+    outline-offset: 4px;
+  }
+  .related-visual {
+    height: 180px;
+    flex: none;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+  .related-orbit {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 54px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+  .related-icon span {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: white;
+    color: var(--blue);
+    font-size: 19px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
+  }
+  .sequence-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .sequence-icon span:nth-child(3) { background: #dff5ef; color: #16825d; }
+  .sequence-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+  .flood-icon span { border-radius: 14px; background: #ef6b67; }
+  .flood-icon span:nth-child(2) { background: #efa347; }
+  .flood-icon span:nth-child(3) { background: #48ad83; }
+  .flood-icon span:nth-child(4) { background: #5187dc; }
+  .picross-icon span:nth-child(1), .picross-icon span:nth-child(4) { background: #315ee8; color: #fff; }
+  .picross-icon span:nth-child(2), .picross-icon span:nth-child(3) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .slide-icon .slide-empty { background: transparent; border: 2px dashed #b9c8f5; box-shadow: none; }
+  .ladder-visual { background: linear-gradient(145deg, #eaf0ff, #f3eaff); }
+  .ladder-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .ladder-icon span:nth-child(2) { background: #e5eaff; color: #315ee8; }
+  .ladder-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .ladder-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+
+  .related-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 22px 22px;
+  }
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+  .related-card h3 {
+    font-size: 19px;
+    line-height: 1.25;
+    margin: 14px 0 8px;
+    letter-spacing: -.025em;
+  }
+  .related-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+    color: var(--muted);
+  }
+  .related-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .related-play span { transition: transform .18s ease; }
+  .related-card:hover .related-play span { transform: translateX(3px); }
+
+  /* Dark mode overrides */
+  :global(html[data-theme="dark"]) .flood-diff-btn { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); color: var(--dark-text, #f1f5ff); }
+  :global(html[data-theme="dark"]) .flood-diff-btn:hover { border-color: var(--dark-accent, #8ea8ff); }
+  :global(html[data-theme="dark"]) .flood-diff-btn.is-active,
+  :global(html[data-theme="dark"]) .flood-diff-btn.is-selected { background: #263960; border-color: #8ea8ff; color: #d5dfff; }
+  :global(html[data-theme="dark"]) .flood-diff-btn.is-active span,
+  :global(html[data-theme="dark"]) .flood-diff-btn.is-selected span { color: #a9bcff; }
+  :global(html[data-theme="dark"]) .related-games-section { border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card:hover { border-color: #52678f; box-shadow: 0 16px 38px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .related-visual { background: linear-gradient(145deg, #1b294b, #222345); }
+  :global(html[data-theme="dark"]) .related-orbit { border-color: #35466c; }
+  :global(html[data-theme="dark"]) .related-icon span { background: #263553; color: #c2d0ff; box-shadow: 0 8px 20px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .sequence-icon span:nth-child(2),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(1),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(4) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .sequence-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .sequence-icon span:nth-child(4) { background: #493922; color: #ffd27d; }
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(2),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(3) { background: #1b294b; color: #a9bcff; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .slide-icon .slide-empty { border-color: #35466c; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(4) { background: #423214; color: #fcd373; }
+  :global(html[data-theme="dark"]) .related-card h3 { color: var(--dark-text, #f1f5ff); }
+  :global(html[data-theme="dark"]) .related-card p { color: var(--dark-secondary, #b8c4dd); }
+  :global(html[data-theme="dark"]) .related-play { color: var(--dark-accent, #8ea8ff); }
+
+  @media (max-width: 900px) {
+    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  }
+
+  @media (max-width: 640px) {
+    .flood-header-bar { justify-content: center; margin-bottom: 16px; }
+    .flood-difficulties { width: 100%; justify-content: space-between; }
+    .flood-diff-btn { flex: 1; padding: 8px 6px; text-align: center; align-items: center; }
+    .flood-diff-btn strong { font-size: 12px; }
+    .flood-diff-btn span { font-size: 9px; }
+  }
+
+  @media (max-width: 560px) {
+    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
+    .related-games-head { margin-bottom: 24px; }
+    .related-games-grid { grid-template-columns: 1fr; gap: 16px; }
+    .related-card { display: grid; grid-template-columns: 110px minmax(0, 1fr); min-height: 160px; border-radius: 16px; }
+    .related-visual { height: auto; min-height: 160px; }
+    .related-orbit { width: 90px; height: 90px; }
+    .related-icon { grid-template-columns: repeat(2, 34px); gap: 5px; }
+    .related-icon span { width: 34px; height: 34px; border-radius: 9px; font-size: 13px; }
+    .related-card-body { padding: 14px 12px; }
+    .related-card h3 { font-size: 16px; margin: 8px 0 4px; }
+    .related-card p { font-size: 12px; margin-bottom: 10px; }
+    .related-play { font-size: 12px; }
+  }
+</style>

@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+  <defs>
+    <linearGradient id="magicSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#091e1d"/>
+      <stop offset="50%" stop-color="#113833"/>
+      <stop offset="100%" stop-color="#1f5445"/>
+    </linearGradient>
+    <linearGradient id="creekGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Mystical Twilight Forest Background -->
+  <rect width="800" height="520" fill="url(#magicSky)"/>
+
+  <!-- Sun Dappled Beams -->
+  <g opacity="0.15" fill="#fef08a">
+    <polygon points="180,0 240,0 360,520 280,520"/>
+    <polygon points="420,0 480,0 600,520 520,520"/>
+  </g>
+
+  <!-- Winding Crystal Creek -->
+  <path d="M480,280 Q560,340 540,420 Q520,500 800,520 L800,280 Z" fill="url(#creekGrad)" opacity="0.75"/>
+
+  <!-- Mossy Forest Floor -->
+  <path d="M0,280 Q250,260 480,300 Q580,520 0,520 Z" fill="#143823"/>
+
+  <!-- Ancient Hollow Oak Tree Trunk -->
+  <g id="ancientOak">
+    <path d="M120,520 Q180,240 240,160 L360,160 Q340,320 420,520 Z" fill="#3b2512"/>
+    <!-- Hollow Opening -->
+    <ellipse cx="280" cy="340" rx="35" ry="60" fill="#140a04"/>
+    <!-- Bark Grain Knot / Difference 9 -->
+    <g id="barkKnot" transform="translate(240, 291)">
+      <ellipse cx="0" cy="0" rx="8" ry="14" fill="#29180a"/>
+      
+    </g>
+    <!-- Heavy Branches -->
+    <path d="M240,160 Q280,100 480,120" stroke="#3b2512" stroke-width="28" fill="none" stroke-linecap="round"/>
+    <path d="M220,170 Q140,120 80,130" stroke="#3b2512" stroke-width="20" fill="none" stroke-linecap="round"/>
+    <!-- Oak Leaf Foliage Canopy -->
+    <g fill="#1b4d2e">
+      <circle cx="160" cy="110" r="70"/>
+      <circle cx="280" cy="80" r="90"/>
+      <circle cx="440" cy="90" r="80"/>
+      <circle cx="560" cy="120" r="60"/>
+    </g>
+    <!-- Twig Foliage / Difference 7 -->
+    <g id="oakTwig" transform="translate(176, 166)">
+      <line x1="0" y1="0" x2="-25" y2="15" stroke="#3b2512" stroke-width="3"/>
+      <!-- Leaves: Golden in A, Green in B -->
+      <circle cx="-28" cy="12" r="8" fill="#15803d"/>
+      <circle cx="-35" cy="20" r="6" fill="#15803d"/>
+    </g>
+  </g>
+
+  <!-- Glowing Crystal Lantern / Difference 1 -->
+  <g id="magicLantern" transform="translate(280, 177)">
+    <line x1="0" y1="-50" x2="0" y2="0" stroke="#d4af37" stroke-width="2"/>
+    <rect x="-8" y="0" width="16" height="4" fill="#854d0e"/>
+    <!-- Crystal Body & Glow / Difference 1 -->
+    <polygon points="0,4 12,18 0,32 -12,18" fill="#fbbf24"/>
+    <circle cx="0" cy="18" r="14" fill="#fbbf24" opacity="0.4" filter="blur(4px)"/>
+  </g>
+
+  <!-- Barn Owl on Branch / Difference 2 -->
+  <g id="barnOwl" transform="translate(464, 135)">
+    <!-- Body -->
+    <ellipse cx="0" cy="6" rx="14" ry="20" fill="#a16207"/>
+    <ellipse cx="0" cy="8" rx="10" ry="14" fill="#fef3c7"/>
+    <!-- Head -->
+    <circle cx="0" cy="-12" r="12" fill="#d97706"/>
+    <!-- Eyes / Difference 2 -->
+    
+    <!-- One Eye Winking in B -->
+    <circle cx="-4" cy="-12" r="3.5" fill="#000000"/>
+    <line x1="1" y1="-12" x2="7" y2="-12" stroke="#000" stroke-width="2"/>
+    
+    <polygon points="0,-8 -2,-5 2,-5" fill="#ea580c"/>
+  </g>
+
+  <!-- Fairy Stone Bridge & Rune / Difference 4 -->
+  <g id="stoneBridge" transform="translate(520, 322)">
+    <path d="M-60,40 Q0,-15 60,40 L60,55 Q0,5 -60,55 Z" fill="#64748b"/>
+    <!-- Keystone Rune / Difference 4 -->
+    
+  </g>
+
+  <!-- Sleeping Fawn Deer / Difference 5 -->
+  <g id="fawn" transform="translate(368, 385)">
+    <!-- Body -->
+    <ellipse cx="0" cy="8" rx="28" ry="16" fill="#b45309"/>
+    <!-- Head tucked -->
+    <circle cx="-18" cy="2" r="10" fill="#b45309"/>
+    <!-- Ears -->
+    <polygon points="-24,-8 -18,-8 -20,-1" fill="#78350f"/>
+    <!-- Dappled Spots / Difference 5 -->
+    <circle cx="-4" cy="4" r="2" fill="#ffffff"/>
+    <circle cx="4" cy="6" r="2" fill="#ffffff"/>
+    <circle cx="12" cy="4" r="2" fill="#ffffff"/>
+    
+  </g>
+
+  <!-- Red Fairy Mushroom / Difference 3 -->
+  <g id="mushrooms" transform="translate(192, 405)">
+    <rect x="-4" y="0" width="8" height="18" fill="#f8fafc"/>
+    <path d="M-20,0 Q0,-22 20,0 Z" fill="#dc2626"/>
+    <!-- White spots / Difference 3 -->
+    
+  </g>
+
+  <!-- Creek Water Lily / Difference 6 -->
+  <g id="waterLily" transform="translate(608, 416)">
+    <!-- Lily Pad -->
+    <ellipse cx="0" cy="5" rx="18" ry="8" fill="#15803d"/>
+    <!-- Blossom / Difference 6 -->
+    <circle cx="0" cy="0" r="6" fill="#f472b6"/>
+    <circle cx="0" cy="0" r="2.5" fill="#facc15"/>
+  </g>
+
+  <!-- Floating Fireflies / Difference 8 -->
+  <g id="fireflies" fill="#facc15">
+    <circle cx="320" cy="240" r="3"/>
+    <circle cx="340" cy="260" r="2.5"/>
+    <circle cx="350" cy="235" r="3"/>
+    
+  </g>
+
+  <!-- Wild Bluebell Flower Stem / Difference 10 -->
+  <g id="bluebells" transform="translate(704, 364)">
+    <path d="M0,35 Q-10,10 0,-15" stroke="#16a34a" stroke-width="2" fill="none"/>
+    <ellipse cx="-4" cy="20" rx="4" ry="6" fill="#3b82f6"/>
+    <ellipse cx="-7" cy="6" rx="4" ry="6" fill="#3b82f6"/>
+    <ellipse cx="-4" cy="-8" rx="4" ry="6" fill="#3b82f6"/>
+    <ellipse cx="2" cy="-14" rx="4" ry="6" fill="#3b82f6"/>
+    
+    <!-- 5th Floret in B -->
+    <ellipse cx="-1" cy="28" rx="4" ry="6" fill="#3b82f6"/>
+    
+  </g>
+</svg>

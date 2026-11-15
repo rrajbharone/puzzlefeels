@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'Privacy Policy | PuzzleFeels';
+const description = 'See what PuzzleFeels currently stores in your browser, how Google Fonts is used, and what would change if advertising is added in the future.';
+---
+
+<Base {title} {description} path="/privacy-policy/">
+  <Header />
+  <main class="wrap legal">
+    <span class="eyebrow">Last updated November 6, 2026</span>
+    <h1>Privacy Policy</h1>
+    <p class="lead">This policy describes the information handled when you visit PuzzleFeels.com and play its current games. The site currently requires no account registration, features no user tracking or analytics integrations, and displays no third-party advertisements.</p>
+
+    <h2>1. Scope and who operates the site</h2>
+    <p>“PuzzleFeels,” “we,” and “our” refer to the PuzzleFeels website and its operator. You can reach out with inquiries or feedback via email at <a href="mailto:hello@puzzlefeels.com">hello@puzzlefeels.com</a> or visit our <a href="/contact/">Contact page</a>.</p>
+
+    <h2>2. Information you provide</h2>
+    <p>You do not need to register, submit your name or email address, or make a payment to play any game on PuzzleFeels. The site does not maintain user accounts or request sensitive personal details. If you choose to share your score after completing a puzzle, your device may open its native sharing interface with a preformatted score message and link. The recipient or platform you select receives the content you choose to share; PuzzleFeels does not collect or transmit your shared messages.</p>
+
+    <h2>3. Information handled when pages load</h2>
+    <p>Like all websites, the web server and content delivery infrastructure that serves PuzzleFeels pages may automatically log technical connection details, such as IP addresses, requested URLs, browser and operating system details, and timestamps. PuzzleFeels does not execute client-side analytics scripts or build visitor tracking profiles.</p>
+    <p>PuzzleFeels loads the Inter typeface from Google Fonts. When your browser requests the font stylesheets and font files, it connects directly to Google’s servers, transmitting the technical network headers needed to receive the files (such as your IP address and browser user-agent). You can learn more about how Google handles this data in the <a href="https://policies.google.com/privacy">Google Privacy Policy</a>.</p>
+
+    <h2>4. Local storage, game progress, and preferences</h2>
+    <p>The site uses browser <strong>local storage</strong> rather than cookies to persist your progress and preferences. This data remains on your device in your browser profile and is never sent to a PuzzleFeels server or third party.</p>
+    <ul>
+      <li><strong><code>pf-number-sequence-v1</code>:</strong> Stores active game session state (current question index, difficulty, score, answers chosen, and elapsed time), difficulty best scores, up to 20 recent scores, audio toggle preference (sound on/off), and daily challenge completion status.</li>
+      <li><strong><code>pf-color-flood-v1</code>:</strong> Stores the active board layout, currently flooded region, moves used, moves limit, game difficulty, best scores, and daily challenge completion status.</li>
+      <li><strong><code>pf-picross-v1</code>:</strong> Stores the active Nonogram board cell marks (filled, empty, or unknown), timer, move count, hint penalties, undo/redo move history, selected mark mode, check mistakes setting, difficulty best scores, and daily challenge completion status.</li>
+      <li><strong><code>pf-sliding-number-puzzle-v1</code>:</strong> Stores the active sliding puzzle board layout, original shuffled arrangement, current move count, elapsed timer, undo/redo move stacks, selected difficulty (Easy 3×3, Medium 4×4, Hard 5×5), difficulty personal best records (time and moves), and audio preference (sound on/off).</li>
+      <li><strong><code>puzzlefeels-theme</code>:</strong> Remembers your chosen visual appearance (Light Mode or Dark Mode) across page reloads and visits.</li>
+    </ul>
+    <p>This data remains stored locally until you clear your browser site data or use in-game reset buttons where provided. You can clear local storage anytime through your browser’s privacy or storage settings, though doing so will reset your saved games and high scores.</p>
+
+    <h2>5. Cookies and similar technologies</h2>
+    <p>PuzzleFeels does not intentionally set first-party cookies, advertising cookies, or analytics tracking cookies. Gameplay persistence and theme preferences rely entirely on browser local storage as described above. You can manage or disable local storage in your browser settings if desired.</p>
+
+    <h2>6. Advertising and Google AdSense</h2>
+    <p>Google AdSense and other advertising services are <strong>not currently integrated</strong> into PuzzleFeels. No ads are currently displayed on this website. If advertising is introduced in a future release, this policy will be updated prior to activation to detail the specific providers, technologies, and user consent choices available.</p>
+    <aside class="policy-note">
+      <h3>Advertising consent notice</h3>
+      <p>No consent management platform (CMP) is currently active because no advertising or tracking scripts are loaded on the site. If advertising services are added in the future, a certified consent solution will be deployed in compliance with regional privacy regulations (such as GDPR in the EEA/UK).</p>
+    </aside>
+
+    <h2>7. How long information is kept</h2>
+    <p>Data stored in your browser's local storage persists until you clear your browser cache/storage or reset it within the game. PuzzleFeels does not operate a user database or store visitor gameplay history on external servers.</p>
+
+    <h2>8. Security</h2>
+    <p>Because game data and theme settings are kept entirely in local storage on your client device, no personal credentials or account passwords exist to be compromised. We encourage users to use modern, up-to-date web browsers on trusted devices.</p>
+
+    <h2>9. Children’s privacy</h2>
+    <p>PuzzleFeels is intended for general casual entertainment. We do not require registration or collect personal identifying information from visitors of any age.</p>
+
+    <h2>10. Third-party services and links</h2>
+    <p>Aside from Google Fonts for typography, the site links to its own game pages and external resources for informational purposes. External sites operate under their own privacy practices and terms.</p>
+
+    <h2>11. Privacy choices and rights</h2>
+    <p>Because PuzzleFeels does not collect personal identities, emails, or accounts, we do not maintain personal profiles that can be accessed or modified on a server. You have complete control over your local browser data and can delete it directly through your browser at any time.</p>
+
+    <h2>12. Changes to this policy</h2>
+    <p>We may update this Privacy Policy as our puzzle offerings or web technologies develop. The revision date at the top indicates when updates take effect.</p>
+
+    <h2>13. Contacting us</h2>
+    <p>If you have any questions or feedback regarding this Privacy Policy, please email us at <a href="mailto:hello@puzzlefeels.com">hello@puzzlefeels.com</a> or visit our <a href="/contact/">Contact page</a>.</p>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .legal{padding:70px 0 100px;max-width:800px}
+  .legal h1{font-size:clamp(2.5rem,5vw,3.7rem);margin:14px 0}
+  .legal h2{font-size:20px;margin:32px 0 8px}
+  .legal h3{font-size:16px;margin:0 0 8px}
+  .legal p,.legal li{font-size:14px;line-height:1.8;color:#66748b}
+  .legal .lead{font-size:17px;max-width:700px;margin-bottom:32px}
+  .legal ul{padding-left:24px;margin:0 0 20px}
+  .legal li{padding-left:4px;margin:8px 0}
+  .legal li strong{color:#17233b}
+  .legal code{font:600 .92em ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;background:#f1f4fb;border-radius:4px;padding:2px 6px;color:#17233b}
+  .legal a{color:#315ee8;text-decoration:underline;text-underline-offset:3px}
+  .policy-note{margin:24px 0;padding:22px 24px;border:1px solid #dbe3f8;border-radius:16px;background:#f2f5ff}
+  .policy-note p:last-child{margin-bottom:0}
+  :global(html[data-theme="dark"]) .legal p,
+  :global(html[data-theme="dark"]) .legal li{color:#b8c4dd}
+  :global(html[data-theme="dark"]) .legal li strong{color:#f1f5ff}
+  :global(html[data-theme="dark"]) .legal code{background:#1b294b;color:#f1f5ff}
+  :global(html[data-theme="dark"]) .legal a{color:#a9bcff}
+  :global(html[data-theme="dark"]) .policy-note{background:#151f3d;border-color:#293858}
+  :global(html[data-theme="dark"]) .policy-note h3{color:#f1f5ff}
+  @media(max-width:640px){.legal{padding:56px 0 72px}.policy-note{padding:19px}}
+</style>

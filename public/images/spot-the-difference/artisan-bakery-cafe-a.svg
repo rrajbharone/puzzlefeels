@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+  <defs>
+    <linearGradient id="wallBakery" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#faebd7"/>
+      <stop offset="100%" stop-color="#ebd3b7"/>
+    </linearGradient>
+    <linearGradient id="counterWood" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#82512d"/>
+      <stop offset="100%" stop-color="#a3693d"/>
+    </linearGradient>
+    <linearGradient id="chalkboardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a382c"/>
+      <stop offset="100%" stop-color="#182419"/>
+    </linearGradient>
+    <linearGradient id="croissantGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5ba53"/>
+      <stop offset="100%" stop-color="#bd721a"/>
+    </linearGradient>
+    <linearGradient id="breadGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e3a759"/>
+      <stop offset="100%" stop-color="#8a4d1a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Bakery Background Wall -->
+  <rect width="800" height="520" fill="url(#wallBakery)"/>
+
+  <!-- Tiled Floor -->
+  <g fill="#c9b295" stroke="#b0997e" stroke-width="2">
+    <rect x="0" y="440" width="800" height="80"/>
+    <line x1="0" y1="440" x2="40" y2="520"/><line x1="100" y1="440" x2="140" y2="520"/><line x1="200" y1="440" x2="240" y2="520"/><line x1="300" y1="440" x2="340" y2="520"/><line x1="400" y1="440" x2="440" y2="520"/><line x1="500" y1="440" x2="540" y2="520"/><line x1="600" y1="440" x2="640" y2="520"/><line x1="700" y1="440" x2="740" y2="520"/>
+  </g>
+
+  <!-- Cafe Canopy / Difference 3: Awning Stripe -->
+  <g id="awning">
+    <polygon points="0,0 800,0 800,85 0,85" fill="#fcf6ec"/>
+    <!-- Red & Cream Stripes -->
+    
+      <polygon points="0,0 40,0 40,85 0,85" fill="#c43b2f"/>
+    
+      <polygon points="80,0 120,0 120,85 80,85" fill="#c43b2f"/>
+    
+      <polygon points="160,0 200,0 200,85 160,85" fill="#c43b2f"/>
+    
+      <polygon points="240,0 280,0 280,85 240,85" fill="#c43b2f"/>
+    
+      <polygon points="320,0 360,0 360,85 320,85" fill="#c43b2f"/>
+    
+      <polygon points="480,0 520,0 520,85 480,85" fill="#c43b2f"/>
+    
+      <polygon points="560,0 600,0 600,85 560,85" fill="#c43b2f"/>
+    
+      <polygon points="640,0 680,0 680,85 640,85" fill="#c43b2f"/>
+    
+      <polygon points="720,0 760,0 760,85 720,85" fill="#c43b2f"/>
+    
+    <!-- Center stripe difference at x=400 -->
+    
+    <polygon points="400,0 440,0 440,85 400,85" fill="#c43b2f"/>
+    
+    <!-- Scalloped Awning Edge -->
+    
+      <circle cx="25" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="75" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="125" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="175" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="225" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="275" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="325" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="375" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="425" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="475" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="525" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="575" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="625" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="675" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="725" cy="85" r="14" fill="#fcf6ec"/>
+    
+      <circle cx="775" cy="85" r="14" fill="#fcf6ec"/>
+    
+  </g>
+
+  <!-- Chalkboard Menu / Difference 5 -->
+  <g id="menuBoard">
+    <rect x="90" y="120" width="110" height="150" rx="6" fill="#52361b"/>
+    <rect x="98" y="128" width="94" height="134" rx="4" fill="url(#chalkboardGrad)"/>
+    <!-- Menu text lines -->
+    <text x="145" y="148" font-family="sans-serif" font-size="11" font-weight="bold" fill="#fff" text-anchor="middle">MENU</text>
+    <line x1="108" y1="156" x2="182" y2="156" stroke="#9bb89c" stroke-dasharray="2,2"/>
+    <text x="110" y="172" font-family="sans-serif" font-size="9" fill="#e0e8e0">Croissant $3</text>
+    <text x="110" y="188" font-family="sans-serif" font-size="9" fill="#e0e8e0">Espresso $2</text>
+    <text x="110" y="204" font-family="sans-serif" font-size="9" fill="#e0e8e0">Baguette $4</text>
+    <!-- Doodle / Difference 5 -->
+    
+    <!-- Cupcake doodle in A -->
+    <g transform="translate(144, 235)">
+      <polygon points="-10,0 10,0 7,14 -7,14" fill="#e39191"/>
+      <circle cx="0" cy="-4" r="9" fill="#ffffff"/>
+      <circle cx="0" cy="-12" r="3" fill="#d62222"/>
+    </g>
+    
+  </g>
+
+  <!-- Wall Clock / Difference 1 -->
+  <g id="wallClock" transform="translate(624, 125)">
+    <circle cx="0" cy="0" r="42" fill="#784724"/>
+    <circle cx="0" cy="0" r="36" fill="#fffef5"/>
+    <!-- Hour marks -->
+    <circle cx="0" cy="-28" r="2.5" fill="#4a301b"/>
+    <circle cx="28" cy="0" r="2.5" fill="#4a301b"/>
+    <circle cx="0" cy="28" r="2.5" fill="#4a301b"/>
+    <circle cx="-28" cy="0" r="2.5" fill="#4a301b"/>
+    <circle cx="0" cy="0" r="4" fill="#c43b2f"/>
+    
+    <!-- 10:10 in A -->
+    <line x1="0" y1="0" x2="-14" y2="-14" stroke="#222" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="16" y2="-16" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+    
+  </g>
+
+  <!-- Bakery Counter -->
+  <g id="mainCounter">
+    <rect x="180" y="320" width="620" height="150" fill="url(#counterWood)" rx="4"/>
+    <rect x="170" y="310" width="630" height="18" fill="#523118" rx="3"/>
+  </g>
+
+  <!-- Glass Pastry Display Case -->
+  <g id="pastryCase">
+    <rect x="380" y="190" width="370" height="120" rx="4" fill="#e8f4fc" opacity="0.6" stroke="#a0bed4" stroke-width="3"/>
+    <!-- Glass shelves -->
+    <line x1="380" y1="245" x2="750" y2="245" stroke="#a0bed4" stroke-width="3"/>
+    
+    <!-- Top Shelf: Croissants / Difference 4 -->
+    <!-- Croissant 1 (Left) -->
+    <path d="M410,238 Q425,220 445,238 Q430,230 410,238 Z" fill="url(#croissantGrad)"/>
+    <!-- Croissant 2 (Center) / Difference 4 -->
+    
+    <path d="M485,238 Q500,220 520,238 Q505,230 485,238 Z" fill="url(#croissantGrad)"/>
+    
+    <!-- Croissant 3 (Right) -->
+    <path d="M560,238 Q575,220 595,238 Q580,230 560,238 Z" fill="url(#croissantGrad)"/>
+    <!-- Berry Tart (Far Right) -->
+    <ellipse cx="670" cy="236" rx="20" ry="7" fill="#d97e29"/>
+    <circle cx="664" cy="232" r="4" fill="#a81938"/>
+    <circle cx="670" cy="230" r="4" fill="#a81938"/>
+    <circle cx="676" cy="232" r="4" fill="#a81938"/>
+
+    <!-- Bottom Shelf: Bread Loaves -->
+    <ellipse cx="430" cy="290" rx="32" ry="14" fill="url(#breadGrad)"/>
+    <ellipse cx="510" cy="290" rx="28" ry="14" fill="url(#breadGrad)"/>
+    <ellipse cx="580" cy="290" rx="30" ry="14" fill="url(#breadGrad)"/>
+    <!-- Chocolate Eclair -->
+    <rect x="640" y="284" width="46" height="12" rx="6" fill="#401f0c"/>
+    <line x1="646" y1="290" x2="680" y2="290" stroke="#fcead2" stroke-width="2"/>
+  </g>
+
+  <!-- Coffee Machine On Counter Left -->
+  <g id="espressoMachine">
+    <rect x="220" y="240" width="68" height="72" rx="4" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="2"/>
+    <rect x="230" y="250" width="48" height="20" fill="#2c3e50"/>
+    <circle cx="240" cy="260" r="3" fill="#2ecc71"/>
+    <circle cx="254" cy="260" r="3" fill="#e74c3c"/>
+    <rect x="246" y="285" width="16" height="14" fill="#7f8c8d"/>
+  </g>
+
+  <!-- Coffee Mug / Difference 2 -->
+  <g id="coffeeCup">
+    
+    <!-- Teal Mug in A -->
+    <rect x="294" y="318" width="22" height="24" rx="3" fill="#1b8a82"/>
+    <path d="M316,322 C324,322 324,334 316,334" stroke="#1b8a82" stroke-width="3" fill="none"/>
+    
+    <!-- Steam rising -->
+    <path d="M300,314 Q304,306 300,298" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+    <path d="M308,314 Q312,306 308,298" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Flower Vase Left Floor -->
+  <g id="flowerPot">
+    <polygon points="50,490 85,490 78,410 57,410" fill="#cc6b49"/>
+    <!-- Green Leaves -->
+    <circle cx="60" cy="390" r="16" fill="#3b7a3b"/>
+    <circle cx="76" cy="385" r="18" fill="#4d994d"/>
+    <circle cx="68" cy="370" r="14" fill="#2c5c2c"/>
+    <!-- Yellow Flower Bloom -->
+    <circle cx="68" cy="360" r="8" fill="#ffd700"/>
+    <circle cx="68" cy="360" r="4" fill="#d97706"/>
+  </g>
+</svg>

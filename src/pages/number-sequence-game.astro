@@ -1,0 +1,606 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+
+const title = 'Number Sequence Game - Play Free Number Puzzles Online | PuzzleFeels';
+const description = 'Play free number sequence puzzles online. Find missing numbers, solve number patterns, challenge your brain, and improve your puzzle-solving skills.';
+
+const gameFaqs = [
+  { question: 'Is the Number Sequence Game free?', answer: 'Yes. You can play all three standard difficulty levels in your browser for free, with no account or download required.' },
+  { question: 'How many questions are in a game?', answer: 'Each round has ten questions. You can see your progress, score, and elapsed time as you play.' },
+  { question: 'Can I pause and resume later?', answer: 'Yes. Pause with the pause control or leave the page; your current question, answers, score, difficulty, and elapsed time are saved locally in this browser.' },
+  { question: 'How does the Daily Challenge work?', answer: 'The Daily Challenge selects a repeatable number puzzle from the current calendar date, uses Medium difficulty, and saves completion on this device. It is not a global leaderboard.' },
+  { question: 'How are points awarded?', answer: 'A correct answer earns 100 base points: Easy awards 100, Medium 125, and Hard 150 points. There is no speed bonus or penalty.' },
+  { question: 'Which number patterns will I see?', answer: 'The question set includes arithmetic and geometric sequences, squares and cubes, alternating rules, growing differences, and other clearly explained patterns.' },
+  { question: 'Does the game work on phones?', answer: 'Yes. The page and answer choices adapt to narrow screens and can be used with touch, mouse, or keyboard.' }
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Number Sequence Game',
+  url: 'https://puzzlefeels.com/number-sequence-game/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Puzzle game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Number Sequence Game', item: 'https://puzzlefeels.com/number-sequence-game/' }
+  ]
+};
+---
+
+<Base {title} {description} path="/number-sequence-game/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main>
+    <nav class="wrap breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Number Sequence Game</span>
+    </nav>
+
+    <section class="game-intro wrap">
+      <span class="eyebrow">Free online number puzzle</span>
+      <h1>Play Number Sequence Game Online</h1>
+      <p class="muted">Find the pattern, choose the missing number, and give your brain a satisfying little workout. No account or download needed.</p>
+    </section>
+
+    <section class="wrap game-shell card" aria-label="Number Sequence game">
+      <!-- Top header bar: Difficulty controls directly above the game board -->
+      <div class="seq-header-bar">
+        <div class="seq-difficulties" role="group" aria-label="Select puzzle difficulty">
+          <button type="button" class="seq-diff-btn is-active" data-difficulty="easy" aria-pressed="true">
+            <strong>Easy</strong>
+            <span>Warm up</span>
+          </button>
+          <button type="button" class="seq-diff-btn" data-difficulty="medium" aria-pressed="false">
+            <strong>Medium</strong>
+            <span>Think it through</span>
+          </button>
+          <button type="button" class="seq-diff-btn" data-difficulty="hard" aria-pressed="false">
+            <strong>Hard</strong>
+            <span>Take it up a notch</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="play-screen" class="screen play-screen">
+        <div class="game-toolbar">
+          <span id="mode-label" class="pill">EASY</span>
+          <div class="toolbar-right">
+            <span id="timer">00:00</span>
+            <ZoomControl id="seq-zoom" label="Board Zoom" targetSelector="#sequence-board-container" zoomVar="--seq-zoom" />
+            <button id="sound-toggle" class="icon-button" aria-label="Mute sound">♫</button>
+            <button id="pause-button" class="icon-button" aria-label="Pause game">Ⅱ</button>
+          </div>
+        </div>
+        <div id="pause-overlay" class="pause-overlay" hidden>
+          <div>
+            <h2>Game paused</h2>
+            <p>Your progress is saved.</p>
+            <button id="resume-button" class="btn">Resume game</button>
+          </div>
+        </div>
+        <div class="progress-meta">
+          <span id="question-label">Question 1 of 10</span>
+          <span id="score-label">0 points</span>
+        </div>
+        <div class="progress-track"><span id="progress-bar"></span></div>
+        <div class="question-area">
+          <p class="question-kicker">WHAT NUMBER COMES NEXT?</p>
+          <div class="sequence-board-scroll">
+            <div class="sequence-board-container" id="sequence-board-container">
+              <div id="sequence" class="sequence-display" aria-live="polite"></div>
+              <p id="pattern-hint" class="muted">Choose the number that completes the pattern.</p>
+              <div id="answers" class="answer-grid" role="group" aria-label="Answer choices"></div>
+            </div>
+          </div>
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+          <button id="next-question" class="btn" hidden>Next question →</button>
+        </div>
+        <div class="game-bottom">
+          <button id="restart-game" class="text-button">↺ Restart game</button>
+          <button id="reset-stats" class="text-button">Reset statistics</button>
+          <span>Tip: look for how each number changes.</span>
+        </div>
+      </div>
+
+      <div id="result-screen" class="screen result-screen" hidden>
+        <div class="result-icon">✦</div>
+        <span class="eyebrow">PUZZLE COMPLETE</span>
+        <h2>Look at you, pattern pro.</h2>
+        <p class="muted">A little focus goes a long way.</p>
+        <div class="result-score"><strong id="final-score">0</strong><span>POINTS</span></div>
+        <div class="result-stats">
+          <div><span>ACCURACY</span><b id="final-accuracy">0%</b></div>
+          <div><span>TIME</span><b id="final-time">00:00</b></div>
+          <div><span>BEST SCORE</span><b id="best-score">0</b></div>
+          <div><span>DIFFICULTY</span><b id="final-mode">Easy</b></div>
+        </div>
+        <div class="result-actions">
+          <button id="share-score" class="btn">Share score ↗</button>
+          <button id="play-again" class="btn secondary">Play again</button>
+        </div>
+        <p id="share-status" class="share-status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="instructions wrap game-article-content" aria-labelledby="number-sequences-heading">
+      <div class="instructions-head"><h2 id="number-sequences-heading">Number Sequence Puzzles: A Helpful Guide</h2></div>
+      <p class="muted">A number sequence is a list of numbers arranged according to a rule. In a number pattern game, you study the values, work out what changes from one to the next, and use that rule to find the missing number. The rule may involve a steady step, repeated multiplication, or a pattern that becomes more complex as you go.</p>
+      <h3>How to Play the Number Sequence Game</h3>
+      <ol class="how-to-list">
+        <li><strong>Look carefully.</strong> Read the displayed sequence from left to right and note whether the values rise, fall, or alternate.</li>
+        <li><strong>Test a rule.</strong> Compare neighboring numbers. Check the gaps first, then try multiplication, division, or two alternating steps.</li>
+        <li><strong>Find the missing number.</strong> Continue the rule one step to work out the value that completes the sequence.</li>
+        <li><strong>Choose an answer.</strong> Tap, click, or use the number keys 1–4 to select one of the four options.</li>
+        <li><strong>Review the explanation.</strong> The game tells you whether your choice was correct and explains the pattern before you continue.</li>
+        <li><strong>Finish all ten questions.</strong> Follow your score and progress, then see your accuracy, elapsed time, and best score on the results screen. Choose Easy, Medium, or Hard before a new round. You can pause and resume a saved game.</li>
+      </ol>
+      <h3>Why Play Number Sequence Puzzles?</h3>
+      <p>These puzzles turn everyday numbers into a small mystery. It can be satisfying to test an idea, spot a relationship, and discover why the next value fits. Some people enjoy the mathematical curiosity; others like a focused challenge during a short break. The game offers a recreational way to practice reasoning without a lesson, account, or time pressure.</p>
+      <h3>Patterns You May Encounter</h3>
+      <p>The question set uses several concrete rules. Addition and subtraction move by a fixed amount, as in 5, 10, 15, 20. Multiplication and division scale each term, as in 3, 6, 12, 24. Square and cube sequences build on powers, such as 1, 4, 9, 16 or 1, 8, 27, 64. In increasing-difference patterns, the gap changes each time: 1, 3, 6, 10 adds 2, then 3, then 4. Alternating patterns switch between two operations or two related number tracks. Some questions combine familiar operations, and their answer feedback states the intended rule.</p>
+      <p>For example, in 2, 4, 8, 16, the gaps do not stay fixed, but each value doubles, so the next is 32. In 1, 3, 6, 10, the gaps are 2, 3, and 4; adding 5 gives 15. Writing the differences down can make a hidden rule easier to see. Test your idea across the full sequence instead of relying only on its last pair. A consistent rule should account for every step. If a puzzle surprises you, its answer explanation offers a worked example for the next round.</p>
+      <h3>Tips for Finding the Rule</h3>
+      <ul class="tips-list">
+        <li>Subtract consecutive terms to compare their differences.</li>
+        <li>If the gaps change, compare the gaps themselves and look for a steady increase or doubling.</li>
+        <li>Check whether each value is multiplied or divided by the same number.</li>
+        <li>Look at every other term when the sequence may alternate between two patterns.</li>
+        <li>Start with simple explanations before considering a combination of operations.</li>
+      </ul>
+      <h3>Practice at Your Own Pace</h3>
+      <p>Easy is a gentle start, Medium introduces changing or alternating rules, and Hard includes longer sequences and less obvious relationships. The Daily Challenge uses a date-based selection at Medium difficulty; completion is saved on your device, and there is no global leaderboard. Your local game progress and scores stay in this browser unless its stored data is cleared.</p>
+      <p>Playing can give you a chance to practice logical reasoning, recognize numerical patterns, build confidence with basic math, and concentrate on one problem at a time. These are reasonable goals for a recreational puzzle, not promises of a measurable or medical outcome. If you want to challenge different problem-solving skills, explore the visual recall in our <a href="/memory-matching-game-online/">Memory Matching Game Online</a>, the spatial mechanics of our <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>, the grid strategy of our <a href="/color-flood-game/">Color Flood Game</a>, the nonogram logic of <a href="/picross-game-online/">Picross Game Online</a>, or test your speed in our <a href="/reaction-time-challenge/">Reaction Time Challenge</a> on the <a href="/games/">All Games page</a>. No download is needed: open any game in a modern browser on your phone, tablet, or computer and play for free.</p>
+      <section class="game-faq" aria-labelledby="game-faq-heading"><h2 id="game-faq-heading">Number Sequence Game FAQs</h2><FaqList items={gameFaqs} /></section>
+    </section>
+
+    <!-- Related Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep the fun going</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/sliding-number-puzzle-game/">
+          <div class="related-visual slide-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Sliding Number Puzzle Game</h3>
+            <p class="muted">Slide numbered tiles into ascending order in classic 8, 15, and 24-tile sliding challenges.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/color-flood-game/">
+          <div class="related-visual flood-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon flood-icon"><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">STRATEGY PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Color Flood Game</h3>
+            <p class="muted">Grow the connected region by choosing colors and flood the board within the move limit.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/picross-game-online/">
+          <div class="related-visual picross-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
+            <h3>Picross Game Online</h3>
+            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram puzzle.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/word-ladder-game-online/">
+          <div class="related-visual ladder-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon ladder-icon"><span>W</span><span>O</span><span>R</span><span>D</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">WORD PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Word Ladder Game Online</h3>
+            <p class="muted">Change one letter at a time to transform words in Lewis Carroll's classic doublets puzzle.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<script is:inline src="/scripts/game.js"></script>
+
+<style>
+  .breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 18px 0 6px;
+  }
+  .breadcrumbs a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .breadcrumbs a:hover {
+    color: var(--blue);
+  }
+  .breadcrumbs [aria-current="page"] {
+    color: var(--ink);
+  }
+
+  .game-intro { text-align: center; padding: 27px 0 30px; }
+  .game-intro h1 { font-size: clamp(2rem, 4vw, 3rem); margin: 12px auto 12px; letter-spacing: -.04em; }
+  .game-intro p { max-width: 640px; margin: 0 auto; }
+  .game-shell { position: relative; max-width: 790px; min-height: 500px; margin: 0 auto 75px; padding: 32px; }
+  .screen { min-height: 430px; }
+
+  /* Sequence difficulty header bar */
+  .seq-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .seq-difficulties {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .seq-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    transition: all .16s ease;
+  }
+  .seq-diff-btn strong { font-size: 13px; font-weight: 700; }
+  .seq-diff-btn span { font-size: 10px; color: var(--muted); }
+  .seq-diff-btn:hover { border-color: var(--blue); }
+  .seq-diff-btn.is-active, .seq-diff-btn.selected {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .seq-diff-btn.is-active span, .seq-diff-btn.selected span { color: var(--blue); opacity: .85; }
+
+  .start-screen { text-align: center; padding: 25px 25px 15px; }
+  .start-screen h2, .result-screen h2 { font-size: 29px; margin: 18px 0 9px; }
+  .start-screen > .muted { margin-bottom: 27px; }
+  .difficulty-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; justify-content: center; margin: 0 auto 23px; max-width: 510px; }
+  .difficulty { width: auto; min-width: 0; min-height: 76px; border: 1px solid #e7eaf1; border-radius: 14px; background: white; color: #33435e; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .difficulty small { display: block; font-size: 10px; line-height: 1.35; color: #8993a5; font-weight: 500; margin-top: 6px; }
+  .difficulty.selected { border-color: #7590f1; background: #f4f6ff; color: #315ee8; box-shadow: 0 0 0 3px #315ee812; }
+  .start-actions { display: flex; justify-content: center; gap: 10px; }
+  .save-note { font-size: 11px; color: #8993a5; margin: 20px 0 10px; }
+  .text-button { border: 0; background: none; color: #758197; font-size: 12px; text-decoration: underline; cursor: pointer; padding: 10px; min-height: 44px; }
+  .game-toolbar, .progress-meta { display: flex; justify-content: space-between; align-items: center; }
+  .toolbar-right { display: flex; align-items: center; gap: 10px; color: #67758e; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .icon-button { width: 44px; height: 44px; border: 1px solid #e7eaf1; border-radius: 11px; background: white; color: #4c5c76; cursor: pointer; }
+  .progress-meta { margin: 28px 0 10px; font-size: 12px; color: #748198; }
+  .progress-track { height: 5px; background: #eff1f6; border-radius: 5px; overflow: hidden; }
+  .progress-track span { display: block; height: 100%; width: 10%; background: #315ee8; transition: width .2s; }
+  .question-area { text-align: center; padding: 25px 0 10px; }
+  .question-kicker { font-size: 10px; letter-spacing: .15em; color: #8d98aa; font-weight: 700; }
+  .sequence-board-scroll { width: 100%; overflow-x: auto; display: flex; justify-content: center; padding: 6px 2px; -webkit-overflow-scrolling: touch; }
+  .sequence-board-container { --seq-zoom: 1; width: calc(min(100%, 540px) * var(--seq-zoom, 1)); max-width: none; flex-shrink: 0; transition: width .15s ease; }
+  .sequence-display { display: flex; align-items: center; justify-content: center; gap: calc(clamp(7px, 2vw, 18px) * var(--seq-zoom, 1)); margin: calc(20px * var(--seq-zoom, 1)) 0; }
+  .sequence-display :global(.sequence-number) { min-width: calc(clamp(45px, 8vw, 72px) * var(--seq-zoom, 1)); height: calc(clamp(52px, 9vw, 74px) * var(--seq-zoom, 1)); padding: 0 7px; display: grid; place-items: center; border-radius: calc(15px * var(--seq-zoom, 1)); background: #f2f5fc; color: #283a5e; font-size: calc(clamp(20px, 4vw, 30px) * var(--seq-zoom, 1)); font-weight: 800; transition: all .15s ease; }
+  .sequence-display :global(.sequence-number.missing) { background: #eaf0ff; color: #315ee8; border: 1px dashed #a3b7ff; }
+  .sequence-display :global(.sequence-arrow) { color: #b8c1d5; font-size: calc(13px * var(--seq-zoom, 1)); }
+  .question-area > .muted { font-size: 13px; margin: 0 0 18px; }
+  .answer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(10px * var(--seq-zoom, 1)); max-width: calc(490px * var(--seq-zoom, 1)); margin: 0 auto; transition: all .15s ease; }
+  .answer-grid :global(.answer-option) { height: calc(52px * var(--seq-zoom, 1)); min-width: 0; border: 1px solid #e4e8f0; background: white; border-radius: calc(12px * var(--seq-zoom, 1)); color: #293b5d; font-size: calc(17px * var(--seq-zoom, 1)); font-weight: 700; cursor: pointer; transition: all .15s ease; }
+  .answer-grid :global(.answer-option:hover), .answer-grid :global(.answer-option.selected) { border-color: #849af0; background: #f3f5ff; color: #315ee8; }
+  .answer-grid :global(.answer-option:disabled) { cursor: default; }
+  .answer-grid :global(.answer-option.correct) { border-color: #71c6a2; background: #eaf8f1; color: #12734e; }
+  .answer-grid :global(.answer-option.incorrect) { border-color: #efa3a3; background: #fff0f0; color: #bd4848; }
+  .feedback { min-height: 48px; padding: 12px 0 2px; color: #597087; font-size: 12px; line-height: 1.5; }
+  .feedback.good { color: #16845d; }
+  .feedback.bad { color: #b45b50; }
+  .question-area #next-question { margin: 7px auto 0; }
+  .game-bottom { border-top: 1px solid #edf0f5; display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; }
+  .game-bottom span { font-size: 10px; color: #a0a9b8; }
+  .pause-overlay { position: absolute; inset: 0; background: #fffffff0; z-index: 3; display: grid; place-items: center; text-align: center; border-radius: inherit; }
+  .pause-overlay h2 { margin: 0 0 8px; }
+  .pause-overlay p { color: #758197; font-size: 13px; }
+  .result-screen { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 20px; }
+  .result-icon { width: 46px; height: 46px; border-radius: 15px; background: #edf2ff; color: #315ee8; display: grid; place-items: center; font-size: 23px; margin-bottom: 15px; }
+  .result-screen h2 { margin: 8px 0; }
+  .result-screen > .muted { font-size: 13px; margin-bottom: 14px; }
+  .result-score { display: flex; align-items: baseline; gap: 10px; color: #315ee8; }
+  .result-score strong { font-size: 52px; letter-spacing: -.05em; }
+  .result-score span { font-size: 10px; letter-spacing: .12em; font-weight: 700; }
+  .result-stats { width: min(420px, 100%); display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 23px; }
+  .result-stats div { padding: 12px 5px; background: #f7f8fc; border-radius: 11px; }
+  .result-stats span { display: block; font-size: 8px; color: #8993a5; letter-spacing: .1em; margin-bottom: 7px; }
+  .result-stats b { font-size: 13px; color: #354560; }
+  .result-actions { display: flex; gap: 10px; }
+  .share-status { min-height: 18px; color: #69758c; font-size: 11px; margin: 12px 0 0; }
+  .instructions { max-width: 800px; padding-bottom: 40px; }
+  .instructions-head { text-align: left; }
+  .instructions h2 { font-size: 25px; }
+  .instructions > p { max-width: none; margin: 0 0 20px; text-align: left; }
+  .instructions-head + p { text-align: left; }
+  .instructions h3 { font-size: 18px; margin: 32px 0 10px; }
+  .instructions p, .instructions li { font-size: 14px; line-height: 1.8; color: #718097; }
+  .how-to-list, .tips-list { max-width: none; margin: 0 0 24px; padding-left: 24px; }
+  .how-to-list li, .tips-list li { padding: 5px 0; }
+  .how-to-list strong { color: #354560; }
+  .game-faq { max-width: none; margin: 56px 0 0; }
+  .game-faq h2 { text-align: left; margin-bottom: 22px; }
+
+  /* Related Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    align-items: stretch;
+  }
+  .related-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.1);
+  }
+  .related-card:focus-visible {
+    outline: 3px solid #93abff;
+    outline-offset: 4px;
+  }
+  .related-visual {
+    height: 180px;
+    flex: none;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+  .related-orbit {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 54px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+  .related-icon span {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: white;
+    color: var(--blue);
+    font-size: 19px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
+  }
+  .sequence-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .sequence-icon span:nth-child(3) { background: #dff5ef; color: #16825d; }
+  .sequence-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+  .flood-icon span { border-radius: 14px; background: #ef6b67; }
+  .flood-icon span:nth-child(2) { background: #efa347; }
+  .flood-icon span:nth-child(3) { background: #48ad83; }
+  .flood-icon span:nth-child(4) { background: #5187dc; }
+  .picross-icon span:nth-child(1), .picross-icon span:nth-child(4) { background: #315ee8; color: #fff; }
+  .picross-icon span:nth-child(2), .picross-icon span:nth-child(3) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .slide-icon .slide-empty { background: transparent; border: 2px dashed #b9c8f5; box-shadow: none; }
+  .ladder-visual { background: linear-gradient(145deg, #eaf0ff, #f3eaff); }
+  .ladder-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .ladder-icon span:nth-child(2) { background: #e5eaff; color: #315ee8; }
+  .ladder-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .ladder-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+
+  .related-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px 22px 22px;
+  }
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+  .related-card h3 {
+    font-size: 19px;
+    line-height: 1.25;
+    margin: 14px 0 8px;
+    letter-spacing: -.025em;
+  }
+  .related-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+    color: var(--muted);
+  }
+  .related-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+    color: var(--blue);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .related-play span { transition: transform .18s ease; }
+  .related-card:hover .related-play span { transform: translateX(3px); }
+
+  /* Dark mode overrides */
+  :global(html[data-theme="dark"]) .seq-diff-btn { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); color: var(--dark-text, #f1f5ff); }
+  :global(html[data-theme="dark"]) .seq-diff-btn:hover { border-color: var(--dark-accent, #8ea8ff); }
+  :global(html[data-theme="dark"]) .seq-diff-btn.is-active,
+  :global(html[data-theme="dark"]) .seq-diff-btn.selected { background: #263960; border-color: #8ea8ff; color: #d5dfff; }
+  :global(html[data-theme="dark"]) .seq-diff-btn.is-active span,
+  :global(html[data-theme="dark"]) .seq-diff-btn.selected span { color: #a9bcff; }
+  :global(html[data-theme="dark"]) .related-games-section { border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card:hover { border-color: #52678f; box-shadow: 0 16px 38px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .related-visual { background: linear-gradient(145deg, #1b294b, #222345); }
+  :global(html[data-theme="dark"]) .related-orbit { border-color: #35466c; }
+  :global(html[data-theme="dark"]) .related-icon span { background: #263553; color: #c2d0ff; box-shadow: 0 8px 20px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .sequence-icon span:nth-child(2),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(1),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(4) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .sequence-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .sequence-icon span:nth-child(4) { background: #493922; color: #ffd27d; }
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(2),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(3) { background: #1b294b; color: #a9bcff; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
+  :global(html[data-theme="dark"]) .slide-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .slide-icon .slide-empty { border-color: #35466c; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
+  :global(html[data-theme="dark"]) .ladder-icon span:nth-child(4) { background: #423214; color: #fcd373; }
+  :global(html[data-theme="dark"]) .related-card h3 { color: var(--dark-text, #f1f5ff); }
+  :global(html[data-theme="dark"]) .related-card p { color: var(--dark-secondary, #b8c4dd); }
+  :global(html[data-theme="dark"]) .related-play { color: var(--dark-accent, #8ea8ff); }
+
+  @media (max-width: 900px) {
+    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  }
+
+  @media (max-width: 600px) {
+    .game-intro { padding: 20px 0; }
+    .game-shell { width: calc(100% - 24px); padding: 20px 14px; margin-bottom: 55px; min-height: 480px; }
+    .seq-header-bar { justify-content: center; margin-bottom: 16px; }
+    .seq-difficulties { width: 100%; justify-content: space-between; }
+    .seq-diff-btn { flex: 1; padding: 8px 6px; text-align: center; align-items: center; }
+    .seq-diff-btn strong { font-size: 12px; }
+    .seq-diff-btn span { font-size: 9px; }
+    .screen { min-height: 435px; }
+    .start-screen { padding: 22px 0 8px; }
+    .start-screen h2, .result-screen h2 { font-size: 23px; }
+    .difficulty-options { gap: 8px; }
+    .difficulty { width: auto; min-height: 72px; font-size: 12px; }
+    .difficulty small { font-size: 9px; }
+    .start-actions { flex-wrap: wrap; }
+    .start-actions .btn { width: 100%; }
+    .sequence-display { gap: 0; }
+    .sequence-display :global(.sequence-number) { min-width: calc(clamp(34px, 10vw, 43px) * var(--seq-zoom, 1)); height: calc(49px * var(--seq-zoom, 1)); padding: 0 1px; border-radius: calc(10px * var(--seq-zoom, 1)); font-size: calc(clamp(14px, 4.7vw, 20px) * var(--seq-zoom, 1)); }
+    .sequence-display :global(.sequence-arrow) { width: 5px; font-size: calc(8px * var(--seq-zoom, 1)); display: inline-flex; justify-content: center; }
+    .answer-grid { gap: calc(7px * var(--seq-zoom, 1)); }
+    .answer-grid :global(.answer-option) { height: calc(49px * var(--seq-zoom, 1)); }
+    .game-bottom { align-items: flex-start; }
+    .game-bottom span { max-width: 130px; text-align: right; }
+    .result-stats { grid-template-columns: repeat(2, 1fr); max-width: 300px; }
+    .result-score strong { font-size: 44px; }
+    .instructions { padding-bottom: 30px; }
+    .instructions h3 { font-size: 16px; }
+    .how-to-list, .tips-list { padding-left: 20px; }
+    .game-faq { margin-top: 48px; }
+  }
+
+  @media (max-width: 560px) {
+    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
+    .related-games-head { margin-bottom: 24px; }
+    .related-games-grid { grid-template-columns: 1fr; gap: 16px; }
+    .related-card { display: grid; grid-template-columns: 110px minmax(0, 1fr); min-height: 160px; border-radius: 16px; }
+    .related-visual { height: auto; min-height: 160px; }
+    .related-orbit { width: 90px; height: 90px; }
+    .related-icon { grid-template-columns: repeat(2, 34px); gap: 5px; }
+    .related-icon span { width: 34px; height: 34px; border-radius: 9px; font-size: 13px; }
+    .related-card-body { padding: 14px 12px; }
+    .related-card h3 { font-size: 16px; margin: 8px 0 4px; }
+    .related-card p { font-size: 12px; margin-bottom: 10px; }
+    .related-play { font-size: 12px; }
+  }
+
+  @media (max-width: 360px) {
+    .result-actions { display: grid; grid-template-columns: 1fr; width: min(100%, 260px); }
+    .result-actions .btn { width: 100%; }
+  }
+</style>

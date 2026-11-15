@@ -1,0 +1,2408 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+
+const title = 'Word Ladder Game Online – Play Free Word Transformation Puzzles | PuzzleFeels';
+const description = 'Play Word Ladder Game Online for free. Transform words one letter at a time from start to target. Enjoy daily word ladder challenges, easy, medium, and hard puzzles with no downloads.';
+
+const faqs = [
+  {
+    question: 'What is a Word Ladder game?',
+    answer: 'A Word Ladder is a classic word puzzle where players transform a starting word into a target word by changing exactly one letter at a time. Each intermediate step must form a legitimate, recognized English word of the exact same length without rearranging or adding any letters.'
+  },
+  {
+    question: 'How do you play Word Ladder?',
+    answer: 'To play, look at the starting word and the goal word. Type in a valid English word that changes exactly one letter from the current word. For example, from CAT you can enter COT, then DOT, and finally DOG. Continue submitting valid single-letter transformations until you reach the target word.'
+  },
+  {
+    question: 'What are the official rules of Word Ladder?',
+    answer: 'The core rules require that every entered word must be a real English dictionary word, each step must alter exactly one letter while preserving all other letters in their exact positions, words cannot change length, anagrams or letter scrambles are prohibited, and repeating an earlier word in the same ladder is not allowed.'
+  },
+  {
+    question: 'Can you change more than one letter at a time in Word Ladder?',
+    answer: 'No. The defining rule of a Word Ladder puzzle is single-letter substitution. Changing two or more letters in a single turn is strictly invalid. If you need to change multiple letters, you must navigate through intermediate words one step at a time.'
+  },
+  {
+    question: 'Do all words in a ladder have to be the exact same length?',
+    answer: 'Yes. Word length remains strictly constant throughout any individual puzzle. A 4-letter puzzle requires every step to have exactly 4 letters, while a 5-letter challenge requires exclusively 5-letter words. Adding or deleting letters is not permitted.'
+  },
+  {
+    question: 'Are proper nouns or abbreviations allowed in Word Ladder?',
+    answer: 'Standard Word Ladder rules exclude proper nouns (such as names of people, cities, or brands), acronyms, initialisms, and hyphenated terms. All acceptable entries must be standard English vocabulary recognized in common dictionaries.'
+  },
+  {
+    question: 'How do you solve a difficult Word Ladder when you get stuck?',
+    answer: 'When stuck, try working backward from the target word to see what words can lead directly into it. Another effective technique is vowel swapping—changing vowels (A, E, I, O, U) often unlocks common consonant clusters. You can also use the in-game Hint button to reveal the next step.'
+  },
+  {
+    question: 'Is Word Ladder Game Online free to play?',
+    answer: 'Yes, Word Ladder Game Online on PuzzleFeels is 100% free. There are no paywalls, subscriptions, required accounts, or hidden limits. You can play as many puzzles as you want directly in your web browser.'
+  },
+  {
+    question: 'Can I play Word Ladder on my smartphone or tablet?',
+    answer: 'Yes. The game is fully responsive and optimized for mobile devices, tablets, and desktop computers. The touch keyboard and mobile input layout adapt comfortably to screen sizes from 320px wide up to full 4K monitors.'
+  },
+  {
+    question: 'What is the Daily Word Ladder Challenge?',
+    answer: 'The Daily Challenge is a shared, synchronized puzzle that unlocks every day at midnight UTC. Players all over the world receive the same daily challenge on that calendar date. You can solve today’s puzzle, track your completion streak, and share your results with friends.'
+  },
+  {
+    question: 'How does the Hint feature work in this game?',
+    answer: 'Clicking the Hint button analyzes the current word ladder and suggests a valid next step along the shortest mathematical path to the target word. It provides a helpful nudge without spoiling the remaining puzzle steps.'
+  },
+  {
+    question: 'Can I play Word Ladder without downloading an app or creating an account?',
+    answer: 'Yes. PuzzleFeels games run entirely client-side in your modern web browser. No apps, downloads, or sign-ups are needed. Your game progress, personal records, and daily challenge completion save privately on your device.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Word Ladder Game Online',
+  url: 'https://puzzlefeels.com/word-ladder-game-online/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Word puzzle game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Word Ladder Game Online', item: 'https://puzzlefeels.com/word-ladder-game-online/' }
+  ]
+};
+---
+
+<Base {title} {description} path="/word-ladder-game-online/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="ladder-page">
+    <nav class="wrap ladder-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Word Ladder Game Online</span>
+    </nav>
+
+    <section class="wrap ladder-intro">
+      <span class="eyebrow">Classic word transformation challenge</span>
+      <h1>Word Ladder Game Online</h1>
+      <p class="muted">Challenge your vocabulary and problem-solving skills with our free online Word Ladder Game. Transform the starting word into the target word by changing one letter at a time. Play daily challenges, easy, medium, and hard puzzles on any device with no downloads required.</p>
+    </section>
+
+    <!-- Main Game Shell -->
+    <section class="wrap ladder-shell card" data-word-ladder aria-label="Word ladder game">
+      <!-- Difficulty selection & sound toolbar -->
+      <div class="ladder-header-bar">
+        <div class="ladder-difficulties" role="group" aria-label="Select game difficulty">
+          <button type="button" class="ladder-diff-btn is-active" data-difficulty="easy" aria-pressed="true">
+            <strong>Easy</strong>
+            <span>4 Letters</span>
+          </button>
+          <button type="button" class="ladder-diff-btn" data-difficulty="medium" aria-pressed="false">
+            <strong>Medium</strong>
+            <span>5 Letters</span>
+          </button>
+          <button type="button" class="ladder-diff-btn" data-difficulty="hard" aria-pressed="false">
+            <strong>Hard</strong>
+            <span>6 Letters</span>
+          </button>
+          <button type="button" class="ladder-diff-btn ladder-daily-btn" data-difficulty="daily" aria-pressed="false">
+            <strong>✦ Daily</strong>
+            <span>UTC Challenge</span>
+          </button>
+        </div>
+
+        <div class="ladder-header-actions">
+          <ZoomControl id="ladder-zoom" label="Ladder Zoom" targetSelector="#ladder-board-container" zoomVar="--ladder-zoom" />
+          <button type="button" class="btn secondary ladder-sound-btn" id="ladder-sound-toggle" aria-label="Toggle sound effects" aria-pressed="true">
+            <svg class="sound-on-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <svg class="sound-off-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <span id="ladder-sound-label">Sound: On</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Daily Challenge Difficulty Subbar -->
+      <div class="ladder-daily-subbar" id="ladder-daily-subbar" hidden>
+        <span class="daily-badge-pill">✦ TODAY'S DAILY CHALLENGE</span>
+        <div class="daily-diff-tabs" role="group" aria-label="Daily challenge difficulty">
+          <button type="button" class="daily-tab-btn is-active" data-daily-diff="easy" aria-pressed="true">Easy (4 Letters)</button>
+          <button type="button" class="daily-tab-btn" data-daily-diff="medium" aria-pressed="false">Medium (5 Letters)</button>
+          <button type="button" class="daily-tab-btn" data-daily-diff="hard" aria-pressed="false">Hard (6 Letters)</button>
+        </div>
+      </div>
+
+      <!-- Live statistics track -->
+      <div class="ladder-stats-bar">
+        <div class="ladder-stat-item">
+          <small>Your Steps</small>
+          <strong id="ladder-moves">0</strong>
+        </div>
+        <div class="ladder-stat-item">
+          <small>Shortest Path</small>
+          <strong id="ladder-target-moves">4</strong>
+        </div>
+        <div class="ladder-stat-item">
+          <small>Hints (Penalty)</small>
+          <strong id="ladder-hints">0</strong>
+        </div>
+        <div class="ladder-stat-item">
+          <small>Time</small>
+          <strong id="ladder-timer">00:00</strong>
+        </div>
+      </div>
+
+      <!-- Play Area with Ladder Board & Input -->
+      <div class="ladder-play-area">
+        <!-- Interactive Word Ladder Display -->
+        <div class="ladder-board-container" id="ladder-board-container" aria-label="Word ladder sequence" role="region">
+          <div class="ladder-node start-node" id="ladder-start-node" aria-label="Starting word">
+            <div class="node-meta"><span class="node-badge start-badge">START WORD</span></div>
+            <div class="node-letters" id="ladder-start-letters"></div>
+          </div>
+
+          <div class="ladder-steps" id="ladder-steps" role="list" aria-label="Ladder intermediate steps">
+            <!-- Dynamic steps added here -->
+          </div>
+
+          <div class="ladder-node active-slot" id="ladder-active-slot" aria-label="Next step slot">
+            <div class="node-meta"><span class="node-badge active-badge">NEXT STEP</span></div>
+            <div class="node-letters slot-letters" id="ladder-slot-letters"></div>
+          </div>
+
+          <div class="ladder-connector-line" aria-hidden="true"></div>
+
+          <div class="ladder-node target-node" id="ladder-target-node" aria-label="Target goal word">
+            <div class="node-meta"><span class="node-badge target-badge">TARGET GOAL</span></div>
+            <div class="node-letters" id="ladder-target-letters"></div>
+          </div>
+        </div>
+
+        <!-- Word Input and Validation Controls -->
+        <div class="ladder-input-panel">
+          <div class="input-card">
+            <label for="ladder-word-input" class="input-label">Enter Next Word (Change 1 Letter):</label>
+            <div class="input-row">
+              <input
+                type="text"
+                id="ladder-word-input"
+                class="ladder-input"
+                placeholder="TYPE WORD..."
+                autocomplete="off"
+                autocorrect="off"
+                spellcheck="false"
+                maxlength="6"
+                aria-label="Enter next valid word"
+              />
+              <button type="button" class="btn" id="ladder-submit-btn">
+                <span>Submit</span>
+                <span aria-hidden="true">↵</span>
+              </button>
+            </div>
+            <div id="ladder-feedback" class="ladder-feedback" role="status" aria-live="polite">
+              Change one letter from the word above to begin.
+            </div>
+          </div>
+
+          <!-- Game Action Toolbar -->
+          <div class="ladder-controls" role="group" aria-label="Game controls">
+            <button type="button" class="btn secondary" id="ladder-new">New Game</button>
+            <button type="button" class="btn secondary" id="ladder-hint">Hint</button>
+            <button type="button" class="btn secondary" id="ladder-undo" disabled>Undo</button>
+            <button type="button" class="btn secondary" id="ladder-solution">Solution</button>
+            <button type="button" class="btn secondary" id="ladder-restart">Restart</button>
+            <button type="button" class="btn secondary" id="ladder-pause">Pause</button>
+          </div>
+        </div>
+
+        <!-- Paused screen overlay -->
+        <div id="ladder-paused" class="ladder-overlay" hidden>
+          <div class="ladder-overlay-box">
+            <span class="eyebrow">Game Paused</span>
+            <h2>Take a Breather</h2>
+            <p class="muted">The timer is stopped and your word ladder progress is safe. Resume whenever you are ready to continue.</p>
+            <button type="button" class="btn" id="ladder-resume">Resume Game <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Victory completion modal -->
+        <div id="ladder-victory" class="ladder-overlay" hidden>
+          <div class="ladder-overlay-box victory-box">
+            <span class="pill victory-pill">✦ WORD LADDER SOLVED!</span>
+            <h2>Congratulations!</h2>
+            <p class="muted">You successfully navigated the word ladder to reach the target word.</p>
+
+            <div class="victory-medal-card" id="victory-medal-card">
+              <div class="victory-medal-icon" id="victory-medal-icon">🥇</div>
+              <div class="victory-medal-text">
+                <h3 id="victory-medal-title">Gold Medal Winner!</h3>
+                <p id="victory-medal-desc" class="muted">Solved in the minimum possible number of steps (4 steps)!</p>
+              </div>
+            </div>
+
+            <div id="ladder-pb-badge" class="ladder-pb-badge" hidden>
+              <span>★ New Personal Best!</span>
+            </div>
+
+            <div class="victory-stats-grid">
+              <div>
+                <small>Mode</small>
+                <strong id="victory-diff-label">Easy</strong>
+              </div>
+              <div>
+                <small>Time</small>
+                <strong id="victory-time">00:00</strong>
+              </div>
+              <div>
+                <small>Steps Taken</small>
+                <strong id="victory-moves">0</strong>
+              </div>
+              <div>
+                <small>Shortest Path</small>
+                <strong id="victory-target-moves">0</strong>
+              </div>
+              <div>
+                <small>Hints (Penalty)</small>
+                <strong id="victory-hints-used">0</strong>
+              </div>
+              <div>
+                <small>Medal Score</small>
+                <strong id="victory-effective-score">0</strong>
+              </div>
+            </div>
+
+            <div class="victory-ladder-summary" id="victory-ladder-summary"></div>
+
+            <div class="victory-actions">
+              <button type="button" class="btn" id="ladder-play-again">Play Again <span>→</span></button>
+              <button type="button" class="btn secondary" id="ladder-share">Share Result</button>
+            </div>
+            <p id="ladder-share-status" class="ladder-share-status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ladder-footer-meta">
+        <p class="ladder-help-text"><strong>How to play:</strong> Change exactly one letter from the previous word to form a new valid English word. Reach the target word in as few moves as possible.</p>
+        <p class="ladder-save-note">Progress, daily completions, and best records save automatically in this browser.</p>
+      </div>
+
+      <p id="ladder-live" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <!-- Comprehensive Educational Content Section -->
+    <article class="wrap game-article-content ladder-article">
+      <h2>What Is a Word Ladder Game?</h2>
+      <p>A <strong>Word Ladder</strong>, historically known as <em>Doublets</em> or word golf, is an iconic linguistic logic puzzle invented by the celebrated author and mathematician <strong>Lewis Carroll</strong> (Charles Lutwidge Dodgson) in 1877. The premise is delightfully simple yet intellectually engaging: players are given two distinct words of equal length—a starting word and a goal or target word. The mission is to build a vertical ladder of intermediate English words that transforms the first word into the final word through a sequence of single-letter substitutions.</p>
+      <p>Every single step on the ladder must be a valid, dictionary-recognized English word. You cannot rearrange letters, you cannot add or subtract characters, and you cannot use made-up abbreviations. For example, if you start with the word <strong>CAT</strong> and wish to reach the word <strong>DOG</strong>, you might slide through <strong>COT</strong> and <strong>DOT</strong> before concluding at <strong>DOG</strong>. In this classic four-word sequence, three single-letter substitutions bridge the gap between two completely unrelated concepts.</p>
+      <p>What makes Word Ladders so enduringly popular across generations is their blend of vocabulary breadth, spatial deduction, and lateral thinking. Much like finding numerical patterns in our <a href="/number-sequence-game/">Number Sequence Game</a>, strategically planning tile maneuvers in our <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>, or deducing pixel grids in <a href="/picross-game-online/">Picross Game Online</a>, solving a Word Ladder rewards solvers who look ahead and plan several moves in advance.</p>
+
+      <h2>How to Play Word Ladder Online</h2>
+      <p>Playing Word Ladder Online on PuzzleFeels is completely free, touch-friendly, and requires no downloads or account registration. Here is the step-by-step gameplay process:</p>
+      <ul>
+        <li><strong>Inspect the Endpoints:</strong> When a new game loads, observe the green <strong>START WORD</strong> at the top of the ladder and the purple <strong>TARGET GOAL</strong> at the bottom. Note the word length and compare the letters that differ between them.</li>
+        <li><strong>Formulate an Intermediate Step:</strong> Think of a legitimate English word of the exact same length that differs from the starting word by precisely one letter. Enter your word into the input box and press <kbd>Enter</kbd> or click <strong>Submit</strong>.</li>
+        <li><strong>Watch the Ladder Grow:</strong> If the submitted word is recognized in the dictionary and matches the single-letter rule, it locks into the ladder as a verified step. The letter that changed is highlighted for quick visual reference.</li>
+        <li><strong>Continue Bridging the Words:</strong> Repeat the process from your new position on the ladder. At each turn, you only need to differ by one letter from the most recently accepted word.</li>
+        <li><strong>Reach the Target Word to Win:</strong> Once your current word is one letter away from the target goal, type the target word to complete the puzzle, reveal your completion statistics, and celebrate your victory.</li>
+      </ul>
+
+      <h2>Official Word Ladder Rules</h2>
+      <p>To ensure fair play and authentic puzzle integrity, our online game strictly enforces the classic rules established in puzzle literature:</p>
+      <ol>
+        <li><strong>Exact Word Length:</strong> The length of every submitted word must match the puzzle's word length. If the puzzle uses 4-letter words, every rung of the ladder must have exactly 4 letters.</li>
+        <li><strong>Single-Letter Substitution:</strong> Exactly one letter may change between consecutive rungs. The other letters must stay in their identical relative positions. Changing two letters simultaneously is an illegal move.</li>
+        <li><strong>Legitimate English Dictionary Vocabulary:</strong> Every intermediate word must exist in our bundled English dictionary. Slang, arbitrary letter combinations, abbreviations, and foreign words are not accepted.</li>
+        <li><strong>No Proper Nouns:</strong> Capitalized names of individuals, commercial brand names, and geographic locations are disallowed unless they also function as standard lowercase vocabulary.</li>
+        <li><strong>No Duplicate Words:</strong> You cannot submit a word that already appears earlier in the active ladder. Solvers must progress forward without looping back to previously used steps.</li>
+        <li><strong>Goal Achievement:</strong> The puzzle is successfully completed the moment the target word is legally connected as the final step of the ladder.</li>
+      </ol>
+
+      <h2>Step-by-Step Solving Example: CAT to DOG</h2>
+      <p>To understand the mechanics clearly, let us analyze the most famous 3-letter word ladder in history: transforming <strong>CAT</strong> into <strong>DOG</strong> in three moves.</p>
+      <figure class="ladder-example">
+        <pre aria-label="CAT to DOG Word Ladder example">
+[C] [A] [T]  (Start Word)
+     ↓  Change 'A' to 'O'
+[C] [O] [T]  (Valid English Word: a small portable bed)
+     ↓  Change 'C' to 'D'
+[D] [O] [T]  (Valid English Word: a tiny round mark)
+     ↓  Change 'T' to 'G'
+[D] [O] [G]  (Target Word Reached!)
+        </pre>
+        <figcaption>Each intermediate word alters exactly one letter at a specific position while keeping all other characters steady.</figcaption>
+      </figure>
+      <p>Notice how methodically the transformation occurs. In step one, the solver targets the middle vowel, shifting from 'A' to 'O' to produce <strong>COT</strong>. In step two, the initial consonant 'C' becomes 'D' to create <strong>DOT</strong>. In step three, the final consonant 'T' changes to 'G' to achieve the goal <strong>DOG</strong>. Alternative routes also exist: for instance, changing <strong>CAT</strong> into <strong>BAT</strong>, then <strong>BAG</strong>, <strong>BOG</strong>, and finally <strong>DOG</strong> (a 4-step path). Our game engine flexibly accepts any valid path you discover!</p>
+
+      <h2>Tips and Strategies for Finding the Next Word</h2>
+      <p>When you encounter a challenging ladder, keep these practical, speed-tested strategies in mind to find the winning path:</p>
+      <ul>
+        <li><strong>Work Backward from the Target:</strong> If you find yourself in a dead-end moving forward from the start word, flip your thinking. Ask yourself: <em>"What words can transition directly into the target word?"</em> Finding a word that connects to the goal often illuminates the bridge from the start.</li>
+        <li><strong>Cycle Through the Vowels:</strong> Vowels (A, E, I, O, U) provide the greatest flexibility in short words. Changing a vowel frequently changes the word family without altering consonant scaffolding (e.g., BALL → BELL → BILL → BOLL → BULL).</li>
+        <li><strong>Target Common Consonants:</strong> Highly versatile English consonants like R, S, T, L, N, and D offer numerous valid mutations. Swapping less common letters for versatile consonants opens up branching paths.</li>
+        <li><strong>Use the Undo Button Freely:</strong> If a path leads to an obscure branch with no onward moves, click <strong>Undo</strong> to step back and explore an alternative branch. There is no penalty for reconsidering your approach.</li>
+        <li><strong>Leverage the Hint Button:</strong> When you need a subtle nudge, our built-in <strong>Hint</strong> feature evaluates the graph of valid English words and points you toward an optimal next step.</li>
+      </ul>
+
+      <h2>Easy, Medium, and Hard Word Ladder Challenges</h2>
+      <p>PuzzleFeels offers three structured difficulty tiers to accommodate players of all skill levels, from curious beginners to seasoned word puzzle masters:</p>
+      <ul>
+        <li><strong>Easy (4 Letters, 2–4 Steps):</strong> Features short, everyday 4-letter words with intuitive phonemic bridges. Perfect for warm-ups, younger solvers, and casual breaks.</li>
+        <li><strong>Medium (5 Letters, 3–5 Steps):</strong> Expands to richer 5-letter vocabulary with moderate branching complexity. Requires solvers to navigate intermediate words that may not share obvious semantic connections with the endpoints.</li>
+        <li><strong>Hard (6 Letters, 4–6 Steps):</strong> Designed for word aficionados seeking a deep challenge. Involves longer 6-letter words, subtle phonetic transitions, and strategic foresight across 4 to 6 transformations.</li>
+      </ul>
+
+      <h2>Cognitive Benefits of Playing Word Puzzles</h2>
+      <p>Engaging in word puzzles like Word Ladder is a stimulating mental exercise that provides genuine cognitive benefits. Regular puzzle play activates working memory, exercises lexical retrieval, and fosters creative problem solving as you mentally visualize letter substitutions. In an era filled with passive digital scrolling, solving a word ladder offers a focused, screen-friendly moment of concentration that encourages a calm, meditative flow state—similar to our visual recall puzzle <a href="/memory-matching-game-online/">Memory Matching Game Online</a>, the territory strategy of <a href="/color-flood-game/">Color Flood Game</a>, and the numerical logic of <a href="/number-sequence-game/">Number Sequence Game</a>. For players seeking a quick contrast of speed and reflex alertness, our <a href="/reaction-time-challenge/">Reaction Time Challenge</a> offers an engaging companion test.</p>
+
+      <h2>The Daily Word Ladder Challenge</h2>
+      <p>In addition to on-demand puzzles, PuzzleFeels features a synchronized <strong>Daily Word Ladder Challenge</strong>. Every day at 00:00 UTC, a fresh challenge unlocks for players worldwide. Because the daily puzzle is pegged to the global calendar date, you and your friends solve the exact same board regardless of time zone. Your daily streak, completion time, and move count are recorded privately in your browser, and you can share your results using the one-click share button.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <FaqList items={faqs} />
+    </article>
+
+    <!-- Related Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep the fun going</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/number-sequence-game/">
+          <div class="related-visual sequence-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon sequence-icon"><span>3</span><span>?</span><span>9</span><span>27</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">NUMBER PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Number Sequence Game</h3>
+            <p class="muted">Find the missing number by spotting the hidden mathematical rule behind each sequence.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/picross-game-online/">
+          <div class="related-visual picross-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
+            <h3>Picross Game Online</h3>
+            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram puzzle.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/sliding-number-puzzle-game/">
+          <div class="related-visual slide-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Sliding Number Puzzle Game</h3>
+            <p class="muted">Slide numbered tiles into ascending order in classic 8, 15, and 24-tile sliding challenges.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  .ladder-page { padding-bottom: 70px; }
+  .ladder-breadcrumbs { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 18px 0 6px; flex-wrap: wrap; }
+  .ladder-breadcrumbs a:hover { color: var(--blue); }
+  .ladder-intro {
+    padding: 16px 0 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .ladder-intro .eyebrow {
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .ladder-intro h1 {
+    margin: 8px auto 14px;
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    letter-spacing: -.035em;
+    text-align: center;
+    max-width: 820px;
+    overflow-wrap: break-word;
+  }
+  .ladder-intro p {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.7;
+    text-align: center;
+    overflow-wrap: break-word;
+  }
+
+  /* Game Shell */
+  .ladder-shell {
+    max-width: 840px;
+    width: 100%;
+    margin: 0 auto 60px;
+    padding: 30px 32px 34px;
+    border-radius: 24px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 40px rgba(24, 36, 68, 0.06);
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  /* Header Bar */
+  .ladder-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .ladder-difficulties {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ladder-diff-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 9px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--wash);
+    color: var(--ink);
+    cursor: pointer;
+    transition: all .18s ease;
+  }
+  .ladder-diff-btn strong {
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .ladder-diff-btn span {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .ladder-diff-btn:hover {
+    border-color: #9cb5ff;
+    background: #f1f4ff;
+  }
+  .ladder-diff-btn.is-active {
+    background: #315ee8;
+    border-color: #315ee8;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(49, 94, 232, 0.3);
+  }
+  .ladder-diff-btn.is-active span {
+    color: #e2e9ff;
+  }
+  .ladder-daily-btn.is-active {
+    background: #6a35d9;
+    border-color: #6a35d9;
+    box-shadow: 0 4px 14px rgba(106, 53, 217, 0.3);
+  }
+
+  /* Daily Challenge Subbar */
+  .ladder-daily-subbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #f7f4fe;
+    border: 1px solid #e2d9fc;
+    padding: 10px 16px;
+    border-radius: 14px;
+    margin-bottom: 22px;
+  }
+  .daily-badge-pill {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .05em;
+    color: #6a35d9;
+    text-transform: uppercase;
+  }
+  .daily-diff-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .daily-tab-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 10px;
+    border: 1px solid #d4c5f9;
+    background: #ffffff;
+    color: #5523b8;
+    cursor: pointer;
+    transition: all .16s ease;
+  }
+  .daily-tab-btn:hover {
+    background: #f0e6ff;
+  }
+  .daily-tab-btn.is-active {
+    background: #6a35d9;
+    border-color: #6a35d9;
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(106, 53, 217, 0.25);
+  }
+
+  /* Sound Button */
+  .ladder-sound-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 12px;
+    min-height: 42px;
+  }
+  .ladder-sound-btn svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Live Stats Track */
+  .ladder-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 14px 18px;
+    margin-bottom: 26px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    text-align: center;
+  }
+  .ladder-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .ladder-stat-item small {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .ladder-stat-item strong {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Play Area Layout */
+  .ladder-play-area {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 32px;
+    position: relative;
+    margin-bottom: 24px;
+    align-items: start;
+  }
+
+  .ladder-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Word Ladder Board */
+  :global(.ladder-board-container) {
+    --ladder-zoom: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(14px * var(--ladder-zoom, 1));
+    position: relative;
+    padding: calc(20px * var(--ladder-zoom, 1)) calc(14px * var(--ladder-zoom, 1));
+    background: #fafbfe;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+    transition: gap .15s ease, padding .15s ease;
+  }
+  :global(.ladder-node) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: calc(7px * var(--ladder-zoom, 1));
+    z-index: 2;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  :global(.node-meta) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  :global(.node-badge) {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    padding: 3px 10px;
+    border-radius: 99px;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+  :global(.start-badge) { background: #dff5ef; color: #16825d; }
+  :global(.target-badge) { background: #f0e6ff; color: #6a35d9; }
+  :global(.step-badge) { background: #edf2ff; color: #315ee8; }
+  :global(.active-badge) { background: #fff1d9; color: #c28b2f; }
+
+  :global(.ladder-steps) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: calc(14px * var(--ladder-zoom, 1));
+    width: 100%;
+    z-index: 2;
+    transition: gap .15s ease;
+  }
+
+  /* Single horizontal row layout for all words */
+  :global(.node-letters) {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: calc(8px * var(--ladder-zoom, 1));
+    width: auto !important;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    white-space: nowrap !important;
+    transition: gap .15s ease;
+  }
+
+  /* Individual letter-box design (matching reference screenshot) */
+  :global(.node-tile) {
+    width: calc(48px * var(--ladder-zoom, 1));
+    height: calc(50px * var(--ladder-zoom, 1));
+    min-width: calc(48px * var(--ladder-zoom, 1));
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: calc(12px * var(--ladder-zoom, 1));
+    font-size: calc(22px * var(--ladder-zoom, 1));
+    font-weight: 800;
+    line-height: 1;
+    color: #0f172a;
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05);
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    text-transform: uppercase;
+    user-select: none;
+    transition: width .15s ease, height .15s ease, font-size .15s ease, border-radius .15s ease, transform .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+
+  :global(.start-node .node-tile) {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
+
+  :global(.target-node .node-tile) {
+    background: #faf7ff;
+    border-color: #c4b5fd;
+    color: #6a35d9;
+    box-shadow: 0 2px 6px rgba(106, 53, 217, 0.08);
+  }
+
+  :global(.node-tile.is-changed) {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    transform: scale(1.02);
+  }
+
+  /* Green letter highlight for target matches (matching Screenshot 2 [D][O]) */
+  :global(.node-tile.is-target-match) {
+    background: #ecfdf5;
+    border-color: #10b981;
+    color: #047857;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.18);
+  }
+
+  :global(.node-tile.is-changed.is-target-match) {
+    background: #ecfdf5;
+    border-color: #10b981;
+    color: #047857;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);
+    transform: scale(1.02);
+  }
+
+  :global(.active-slot .node-tile) {
+    background: #ffffff;
+    border: 2px dashed #93c5fd;
+    color: #3b82f6;
+    box-shadow: none;
+    animation: slotPulse 1.8s infinite ease-in-out;
+  }
+  @keyframes slotPulse {
+    0%, 100% { border-color: #93c5fd; }
+    50% { border-color: #315ee8; transform: scale(1.02); }
+  }
+
+  /* Input Panel */
+  .ladder-input-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+  }
+  .input-card {
+    padding: 20px;
+    border-radius: 18px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    min-width: 0;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .input-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--ink);
+    word-break: break-word;
+  }
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    width: 100%;
+    min-width: 0;
+    align-items: stretch;
+  }
+  .ladder-input {
+    flex: 1 1 0%;
+    min-width: 0;
+    width: 0;
+    height: 48px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    transition: border-color .18s, box-shadow .18s;
+    box-sizing: border-box;
+  }
+  .ladder-input:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(49, 94, 232, 0.18);
+  }
+  .input-row .btn,
+  #ladder-submit-btn {
+    flex-shrink: 0;
+    min-height: 48px;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    border-radius: 12px;
+    box-sizing: border-box;
+  }
+
+  /* Feedback Toast */
+  .ladder-feedback {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+    min-height: 20px;
+    transition: color .18s ease;
+    word-break: break-word;
+  }
+  .ladder-feedback.is-error {
+    color: #e03131;
+    font-weight: 700;
+    animation: shakeFeedback 0.35s ease;
+  }
+  .ladder-feedback.is-success {
+    color: #16825d;
+    font-weight: 700;
+  }
+  @keyframes shakeFeedback {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
+  }
+
+  /* Controls Toolbar */
+  .ladder-controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .ladder-controls .btn {
+    min-width: 0;
+    min-height: 42px;
+    padding: 0 8px;
+    font-size: 13px;
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Overlays */
+  .ladder-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 19, 43, 0.72);
+    backdrop-filter: blur(6px);
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    border-radius: 24px;
+    z-index: 20;
+    animation: fadeInOverlay .2s ease;
+    box-sizing: border-box;
+  }
+  .ladder-overlay[hidden] { display: none !important; }
+  @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+
+  .ladder-overlay-box {
+    max-width: 440px;
+    width: 100%;
+    background: var(--paper);
+    padding: 32px 28px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  }
+  .ladder-overlay-box h2 {
+    font-size: 26px;
+    margin: 12px 0 8px;
+  }
+  .ladder-overlay-box p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+
+  /* Victory Modal Details */
+  .victory-pill {
+    background: #dff5ef;
+    color: #16825d;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .victory-medal-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, rgba(49, 94, 232, 0.08), rgba(245, 158, 11, 0.12));
+    border: 1px solid var(--line);
+    padding: 14px 16px;
+    border-radius: 16px;
+    margin: 14px 0 16px;
+    text-align: left;
+  }
+  .victory-medal-icon {
+    font-size: 40px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .victory-medal-text h3 {
+    font-size: 16px;
+    font-weight: 800;
+    margin: 0 0 2px;
+    color: var(--ink);
+  }
+  .victory-medal-text p {
+    font-size: 12px;
+    line-height: 1.45;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .victory-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    background: var(--wash);
+    padding: 12px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+  }
+  .victory-stats-grid small {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .victory-stats-grid strong {
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 800;
+  }
+  .victory-ladder-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--blue);
+    background: #f1f4ff;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .victory-ladder-summary span {
+    color: var(--muted);
+  }
+  .victory-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .victory-actions .btn {
+    flex: 1;
+    min-height: 46px;
+  }
+  .ladder-pb-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: #fff3df;
+    color: #b37310;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+  .ladder-share-status {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--blue);
+    min-height: 18px;
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  /* Footer Meta */
+  .ladder-footer-meta {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .ladder-help-text { margin: 0; max-width: 520px; line-height: 1.5; }
+  .ladder-save-note { margin: 0; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+  /* Educational Article Typography */
+  .wrap.game-article-content.ladder-article {
+    width: min(780px, calc(100% - 40px));
+    margin-top: 68px;
+    margin-bottom: 48px;
+    font-size: 16px;
+    line-height: 1.72;
+    text-align: left;
+  }
+  .wrap.game-article-content.ladder-article h2 {
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: -.025em;
+    margin: 36px 0 12px;
+    text-align: left;
+  }
+  .wrap.game-article-content.ladder-article h2:first-child { margin-top: 0; }
+  .wrap.game-article-content.ladder-article > p {
+    font-size: 16px;
+    line-height: 1.72;
+    margin: 0 0 16px;
+    text-align: left;
+  }
+  .wrap.game-article-content.ladder-article ol,
+  .wrap.game-article-content.ladder-article ul {
+    padding-inline-start: 24px;
+    margin: 0 0 20px;
+  }
+  .wrap.game-article-content.ladder-article li {
+    font-size: 16px;
+    line-height: 1.68;
+    margin: 0 0 8px;
+    padding-inline-start: 2px;
+  }
+  .wrap.game-article-content.ladder-article a {
+    color: var(--blue);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .ladder-example {
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .ladder-example pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 8px;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .ladder-example figcaption {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Explore More Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+  }
+  .related-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.08);
+  }
+  .related-visual {
+    height: 160px;
+    flex: none;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+  .related-orbit {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 48px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+  .related-icon span {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: #fff;
+    color: #315ee8;
+    font-size: 17px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
+  }
+  .sequence-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .sequence-icon span:nth-child(3) { background: #dff5ef; color: #16825d; }
+  .sequence-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+  .flood-icon span { border-radius: 12px; background: #ef6b67; }
+  .flood-icon span:nth-child(2) { background: #efa347; }
+  .flood-icon span:nth-child(3) { background: #48ad83; }
+  .flood-icon span:nth-child(4) { background: #5187dc; }
+  .picross-icon span:nth-child(1), .picross-icon span:nth-child(4) { background: #315ee8; color: #fff; }
+  .picross-icon span:nth-child(2), .picross-icon span:nth-child(3) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .slide-icon .slide-empty { background: transparent; border: 2px dashed #b9c8f5; box-shadow: none; }
+
+  .related-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 20px 20px;
+  }
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+  .related-card h3 {
+    font-size: 18px;
+    line-height: 1.25;
+    margin: 12px 0 6px;
+    letter-spacing: -.025em;
+  }
+  .related-card p {
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+    color: var(--muted);
+  }
+  .related-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* Dark Theme Overrides */
+  :global(html[data-theme="dark"]) .ladder-shell {
+    background: var(--dark-card, #151f3d);
+    border-color: var(--dark-border, #293858);
+  }
+  :global(html[data-theme="dark"]) .ladder-stats-bar,
+  :global(html[data-theme="dark"]) .input-card,
+  :global(html[data-theme="dark"]) .ladder-example {
+    background: #0e172e;
+    border-color: #263654;
+  }
+  :global(html[data-theme="dark"]) .ladder-stat-item strong,
+  :global(html[data-theme="dark"]) .input-label,
+  :global(html[data-theme="dark"]) .ladder-example pre {
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"] .ladder-board-container) {
+    background: #0f172a;
+    border-color: #1e293b;
+  }
+  :global(html[data-theme="dark"] .node-tile) {
+    background: #111827;
+    border-color: #374151;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+  :global(html[data-theme="dark"] .start-node .node-tile) {
+    background: #111827;
+    border-color: #374151;
+    color: #ffffff;
+  }
+  :global(html[data-theme="dark"] .target-node .node-tile) {
+    background: #19142f;
+    border-color: #5b3fa3;
+    color: #d8b4fe;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.18);
+  }
+  :global(html[data-theme="dark"] .node-tile.is-changed) {
+    background: #1e293b;
+    border-color: #3b82f6;
+    color: #60a5fa;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+  }
+  :global(html[data-theme="dark"] .node-tile.is-target-match) {
+    background: #052116;
+    border-color: #22c55e;
+    color: #22c55e;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.22);
+  }
+  :global(html[data-theme="dark"] .node-tile.is-changed.is-target-match) {
+    background: #052116;
+    border-color: #22c55e;
+    color: #22c55e;
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.32);
+  }
+  :global(html[data-theme="dark"]) .ladder-daily-subbar {
+    background: #19142f;
+    border-color: #36255c;
+  }
+  :global(html[data-theme="dark"]) .daily-badge-pill {
+    color: #c4b5fd;
+  }
+  :global(html[data-theme="dark"]) .daily-tab-btn {
+    background: #251c41;
+    border-color: #493375;
+    color: #e9d5ff;
+  }
+  :global(html[data-theme="dark"]) .daily-tab-btn:hover {
+    background: #34265a;
+  }
+  :global(html[data-theme="dark"]) .daily-tab-btn.is-active {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #ffffff;
+  }
+  :global(html[data-theme="dark"]) .victory-medal-card {
+    background: #1a223f;
+    border-color: #2b3960;
+  }
+  :global(html[data-theme="dark"]) .victory-medal-text h3 {
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"] .active-slot .node-tile) {
+    background: #111827;
+    border-color: #3b82f6;
+    color: #60a5fa;
+  }
+  :global(html[data-theme="dark"]) .ladder-diff-btn {
+    background: #101a35;
+    border-color: #263654;
+    color: #f1f5ff;
+  }
+  :global(html[data-theme="dark"]) .ladder-diff-btn:hover {
+    border-color: #435b8c;
+    background: #1b294b;
+  }
+  :global(html[data-theme="dark"]) .ladder-diff-btn.is-active {
+    background: #4f75f2;
+    border-color: #4f75f2;
+    color: #fff;
+  }
+  :global(html[data-theme="dark"]) .ladder-diff-btn.is-active span {
+    color: #d5e0ff;
+  }
+  :global(html[data-theme="dark"]) .ladder-daily-btn.is-active {
+    background: #7d44e8;
+    border-color: #7d44e8;
+  }
+  :global(html[data-theme="dark"]) .ladder-input {
+    background: #151f3d;
+    border-color: #293858;
+    color: #f1f5ff;
+  }
+  :global(html[data-theme="dark"]) .ladder-overlay-box {
+    background: var(--dark-card, #151f3d);
+    border-color: var(--dark-border, #293858);
+  }
+  :global(html[data-theme="dark"]) .victory-stats-grid {
+    background: #0e172e;
+  }
+  :global(html[data-theme="dark"]) .victory-stats-grid strong {
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"]) .victory-ladder-summary {
+    background: #19274c;
+    color: #8ea8ff;
+  }
+  :global(html[data-theme="dark"]) .related-games-section { border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card:hover { border-color: #52678f; box-shadow: 0 16px 38px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .related-visual { background: linear-gradient(145deg, #1b294b, #222345); }
+  :global(html[data-theme="dark"]) .related-orbit { border-color: #35466c; }
+  :global(html[data-theme="dark"]) .related-icon span { background: #263553; color: #c2d0ff; box-shadow: 0 8px 20px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .related-card h3 { color: var(--dark-text, #f1f5ff); }
+  :global(html[data-theme="dark"]) .related-card p { color: var(--dark-secondary, #b8c4dd); }
+  :global(html[data-theme="dark"]) .related-play { color: var(--dark-accent, #8ea8ff); }
+
+  /* Responsive Rules */
+  @media (max-width: 960px) {
+    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  }
+  @media (max-width: 760px) {
+    .ladder-play-area { grid-template-columns: 1fr; gap: 20px; min-width: 0; }
+    .ladder-shell { padding: 22px 16px 26px; margin-bottom: 40px; }
+    .ladder-stats-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; padding: 12px; }
+    .ladder-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .ladder-controls .btn { min-height: 40px; padding: 0 8px; font-size: 12px; }
+    .input-card { padding: 16px 14px; }
+    :global(.node-tile) { width: calc(44px * var(--ladder-zoom, 1)); height: calc(46px * var(--ladder-zoom, 1)); min-width: calc(44px * var(--ladder-zoom, 1)); font-size: calc(20px * var(--ladder-zoom, 1)); border-radius: calc(10px * var(--ladder-zoom, 1)); }
+    :global(.node-letters) { gap: calc(7px * var(--ladder-zoom, 1)); }
+  }
+  @media (max-width: 640px) {
+    .ladder-shell { padding: 18px 12px 22px; }
+    .ladder-intro { padding: 20px 0 16px; }
+    .ladder-intro h1 { font-size: clamp(24px, 6vw, 30px); }
+    .ladder-header-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+    .ladder-difficulties { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .ladder-diff-btn { width: 100%; padding: 8px 6px; text-align: center; align-items: center; min-width: 0; }
+    .ladder-diff-btn strong { font-size: 12px; }
+    .ladder-diff-btn span { font-size: 9px; }
+    .ladder-daily-subbar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 10px; }
+    .daily-diff-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+    .daily-tab-btn { padding: 6px 4px; font-size: 11px; text-align: center; }
+    .ladder-header-actions { width: 100%; justify-content: center; }
+    .ladder-sound-btn { flex: 1; justify-content: center; }
+    :global(.node-letters) { gap: calc(clamp(4px, 1.4vw, 6px) * var(--ladder-zoom, 1)); }
+    :global(.node-tile) { width: calc(clamp(34px, 8vw, 42px) * var(--ladder-zoom, 1)); height: calc(clamp(38px, 9vw, 46px) * var(--ladder-zoom, 1)); min-width: calc(clamp(34px, 8vw, 42px) * var(--ladder-zoom, 1)); font-size: calc(clamp(16px, 4vw, 19px) * var(--ladder-zoom, 1)); border-radius: calc(8px * var(--ladder-zoom, 1)); }
+    .input-card { padding: 14px 12px; }
+    .ladder-input { height: 44px; padding: 0 10px; font-size: 15px; letter-spacing: .06em; }
+    .input-row .btn, #ladder-submit-btn { min-height: 44px; padding: 0 12px; font-size: 13px; gap: 5px; }
+    .ladder-overlay-box { padding: 24px 16px; }
+    .victory-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .wrap.game-article-content.ladder-article { width: calc(100% - 32px); margin-top: 48px; margin-bottom: 36px; font-size: 15px; }
+    .wrap.game-article-content.ladder-article h2 { font-size: 21px; margin-top: 28px; }
+    .wrap.game-article-content.ladder-article > p,
+    .wrap.game-article-content.ladder-article li { font-size: 15px; line-height: 1.68; }
+    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
+    .related-games-head { margin-bottom: 24px; }
+    .related-games-grid { grid-template-columns: 1fr; gap: 14px; }
+    .related-card { display: grid; grid-template-columns: 110px minmax(0, 1fr); min-height: 150px; border-radius: 16px; }
+    .related-visual { height: auto; min-height: 150px; }
+    .related-orbit { width: 90px; height: 90px; }
+    .related-icon { grid-template-columns: repeat(2, 34px); gap: 5px; }
+    .related-icon span { width: 34px; height: 34px; border-radius: 9px; font-size: 13px; }
+    .related-card-body { padding: 14px 12px; }
+    .related-card h3 { font-size: 16px; margin: 8px 0 4px; }
+    .related-card p { font-size: 12px; margin-bottom: 10px; }
+    .related-play { font-size: 12px; }
+  }
+  @media (max-width: 360px) {
+    .ladder-shell { padding: 12px 8px 16px; border-radius: 18px; }
+    .ladder-overlay { border-radius: 18px; }
+    .input-card { padding: 10px 8px; border-radius: 14px; }
+    :global(.node-letters) { gap: 4px; }
+    :global(.node-tile) { width: 33px; height: 37px; min-width: 33px; font-size: 14px; border-radius: 7px; }
+    .ladder-input { font-size: 13px; height: 42px; padding: 0 8px; letter-spacing: .03em; }
+    .input-row .btn, #ladder-submit-btn { min-height: 42px; font-size: 12px; padding: 0 8px; gap: 4px; }
+    .ladder-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+    .ladder-controls .btn { min-height: 38px; padding: 0 4px; font-size: 11px; }
+    .related-card { grid-template-columns: 92px minmax(0, 1fr); }
+    .related-orbit { width: 76px; height: 76px; }
+    .related-icon { grid-template-columns: repeat(2, 28px); gap: 4px; }
+    .related-icon span { width: 28px; height: 28px; font-size: 11px; border-radius: 7px; }
+    .related-card-body { padding: 10px 8px; }
+    .related-card h3 { font-size: 15px; margin: 6px 0 3px; }
+    .related-card p { font-size: 11px; line-height: 1.5; margin-bottom: 8px; }
+  }
+  @media (max-width: 320px) {
+    :global(.node-letters) { gap: 3px; }
+    :global(.node-tile) { width: 30px; height: 35px; min-width: 30px; font-size: 13px; border-radius: 6px; }
+  }
+</style>
+
+<script>
+  import {
+    PUZZLES_EASY,
+    PUZZLES_MEDIUM,
+    PUZZLES_HARD,
+    DAILY_PUZZLES,
+    isValidWord,
+    isOneLetterDiff,
+    getChangedIndex,
+    getDailyPuzzle,
+    findShortestPath,
+    findNextHintWord,
+    calculateMedal,
+    type WordLadderPuzzle
+  } from '../data/wordLadderData';
+
+  interface SavedPuzzleState {
+    version: number;
+    difficulty: 'easy' | 'medium' | 'hard' | 'daily';
+    dailyDiff?: 'easy' | 'medium' | 'hard';
+    puzzleId: string;
+    startWord: string;
+    targetWord: string;
+    ladder: string[];
+    moves: number;
+    hintsUsed: number;
+    minMoves: number;
+    elapsedSeconds: number;
+    isWon: boolean;
+    isSolutionRevealed?: boolean;
+  }
+
+  interface GlobalStats {
+    soundEnabled: boolean;
+    bests: Record<string, { moves: number; time: number; medal?: string }>;
+    dailyCompleted: Record<string, { moves: number; time: number; medal?: string }>;
+  }
+
+  const REGULAR_STORAGE_KEY = 'pf-word-ladder-regular-state';
+  const GLOBAL_STATS_KEY = 'pf-word-ladder-stats';
+
+  function getDailyStorageKey(dateStr: string, diff: string): string {
+    return `pf-word-ladder-daily-${dateStr}-${diff}`;
+  }
+
+  function getUtcDateKey(): string {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  // Active Game State
+  let currentDiff: 'easy' | 'medium' | 'hard' | 'daily' = 'easy';
+  let currentDailyDiff: 'easy' | 'medium' | 'hard' = 'easy';
+  let currentPuzzle: WordLadderPuzzle = PUZZLES_EASY[0];
+  let optimalPath: string[] = [];
+  let minMoves = 4;
+  let ladder: string[] = [];
+  let moves = 0;
+  let hintsUsed = 0;
+  let elapsedSeconds = 0;
+  let timerInterval: number | null = null;
+  let isTimerRunning = false;
+  let isPaused = false;
+  let isWon = false;
+  let isSolutionRevealed = false;
+  let soundEnabled = true;
+  let bests: Record<string, { moves: number; time: number; medal?: string }> = {};
+  let dailyCompleted: Record<string, { moves: number; time: number; medal?: string }> = {};
+
+  // Audio Context Synthesizer
+  let audioCtx: AudioContext | null = null;
+  function getAudioContext(): AudioContext | null {
+    if (!audioCtx && typeof window !== 'undefined') {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) audioCtx = new AudioCtx();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playValidWordSound() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.08);
+    } catch {}
+  }
+
+  function playErrorSound() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.12);
+    } catch {}
+  }
+
+  function playVictorySound() {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25]; // C4, E4, G4, C5, E5
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = freq;
+        const startTime = ctx.currentTime + idx * 0.09;
+        gain.gain.setValueAtTime(0.12, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.32);
+      });
+    } catch {}
+  }
+
+  // DOM Elements
+  const movesEl = document.getElementById('ladder-moves');
+  const targetMovesEl = document.getElementById('ladder-target-moves');
+  const hintsEl = document.getElementById('ladder-hints');
+  const timerEl = document.getElementById('ladder-timer');
+  const soundToggleBtn = document.getElementById('ladder-sound-toggle');
+  const soundLabel = document.getElementById('ladder-sound-label');
+  const soundOnIcon = document.querySelector('.sound-on-icon');
+  const soundOffIcon = document.querySelector('.sound-off-icon');
+
+  const dailySubbar = document.getElementById('ladder-daily-subbar');
+  const dailyTabButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.daily-tab-btn'));
+
+  const startLettersEl = document.getElementById('ladder-start-letters');
+  const stepsContainer = document.getElementById('ladder-steps');
+  const targetLettersEl = document.getElementById('ladder-target-letters');
+  const slotLettersEl = document.getElementById('ladder-slot-letters');
+
+  const wordInput = document.getElementById('ladder-word-input') as HTMLInputElement | null;
+  const submitBtn = document.getElementById('ladder-submit-btn');
+  const feedbackEl = document.getElementById('ladder-feedback');
+
+  const newGameBtn = document.getElementById('ladder-new');
+  const hintBtn = document.getElementById('ladder-hint');
+  const undoBtn = document.getElementById('ladder-undo') as HTMLButtonElement | null;
+  const solutionBtn = document.getElementById('ladder-solution');
+  const restartBtn = document.getElementById('ladder-restart');
+  const pauseBtn = document.getElementById('ladder-pause');
+  const resumeBtn = document.getElementById('ladder-resume');
+  const pausedOverlay = document.getElementById('ladder-paused');
+
+  const victoryOverlay = document.getElementById('ladder-victory');
+  const victoryDiffLabel = document.getElementById('victory-diff-label');
+  const victoryTime = document.getElementById('victory-time');
+  const victoryMoves = document.getElementById('victory-moves');
+  const victoryTargetMoves = document.getElementById('victory-target-moves');
+  const victoryHintsUsed = document.getElementById('victory-hints-used');
+  const victoryEffectiveScore = document.getElementById('victory-effective-score');
+  const victoryMedalCard = document.getElementById('victory-medal-card');
+  const victoryMedalIcon = document.getElementById('victory-medal-icon');
+  const victoryMedalTitle = document.getElementById('victory-medal-title');
+  const victoryMedalDesc = document.getElementById('victory-medal-desc');
+  const victorySummary = document.getElementById('victory-ladder-summary');
+  const victoryPbBadge = document.getElementById('ladder-pb-badge');
+  const playAgainBtn = document.getElementById('ladder-play-again');
+  const shareBtn = document.getElementById('ladder-share');
+  const shareStatus = document.getElementById('ladder-share-status');
+  const liveEl = document.getElementById('ladder-live');
+
+  const diffButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.ladder-diff-btn'));
+
+  function formatTime(totalSeconds: number): string {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+
+  function startTimer() {
+    if (isTimerRunning || isPaused || isWon) return;
+    isTimerRunning = true;
+    timerInterval = window.setInterval(() => {
+      elapsedSeconds++;
+      if (timerEl) timerEl.textContent = formatTime(elapsedSeconds);
+      saveState();
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    isTimerRunning = false;
+  }
+
+  function resetTimer() {
+    stopTimer();
+    elapsedSeconds = 0;
+    if (timerEl) timerEl.textContent = '00:00';
+  }
+
+  function computeOptimal(puzzle: WordLadderPuzzle) {
+    const path = findShortestPath(puzzle.startWord, puzzle.targetWord);
+    if (path && path.length > 1) {
+      optimalPath = path;
+      minMoves = path.length - 1;
+    } else {
+      optimalPath = puzzle.optimalPath || [];
+      minMoves = puzzle.minMoves || Math.max(2, optimalPath.length - 1);
+    }
+    if (targetMovesEl) targetMovesEl.textContent = String(minMoves);
+  }
+
+  function loadGlobalStats() {
+    try {
+      const raw = localStorage.getItem(GLOBAL_STATS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as GlobalStats;
+        if (typeof parsed.soundEnabled === 'boolean') soundEnabled = parsed.soundEnabled;
+        if (parsed.bests) bests = { ...parsed.bests };
+        if (parsed.dailyCompleted) dailyCompleted = { ...parsed.dailyCompleted };
+      }
+    } catch {}
+  }
+
+  function saveGlobalStats() {
+    try {
+      const stats: GlobalStats = {
+        soundEnabled,
+        bests,
+        dailyCompleted
+      };
+      localStorage.setItem(GLOBAL_STATS_KEY, JSON.stringify(stats));
+    } catch {}
+  }
+
+  function saveState() {
+    try {
+      const state: SavedPuzzleState = {
+        version: 2,
+        difficulty: currentDiff,
+        dailyDiff: currentDiff === 'daily' ? currentDailyDiff : undefined,
+        puzzleId: currentPuzzle.id,
+        startWord: currentPuzzle.startWord,
+        targetWord: currentPuzzle.targetWord,
+        ladder,
+        moves,
+        hintsUsed,
+        minMoves,
+        elapsedSeconds,
+        isWon,
+        isSolutionRevealed
+      };
+
+      if (currentDiff === 'daily') {
+        const key = getDailyStorageKey(getUtcDateKey(), currentDailyDiff);
+        localStorage.setItem(key, JSON.stringify(state));
+      } else {
+        localStorage.setItem(REGULAR_STORAGE_KEY, JSON.stringify(state));
+      }
+
+      saveGlobalStats();
+    } catch {}
+  }
+
+  function loadSavedPuzzle(diff: 'easy' | 'medium' | 'hard' | 'daily', dailyDiff: 'easy' | 'medium' | 'hard' = 'easy'): boolean {
+    try {
+      const key = diff === 'daily'
+        ? getDailyStorageKey(getUtcDateKey(), dailyDiff)
+        : REGULAR_STORAGE_KEY;
+
+      const raw = localStorage.getItem(key);
+      if (!raw) return false;
+
+      const parsed = JSON.parse(raw) as SavedPuzzleState;
+      if (!parsed || (parsed.version !== 2 && parsed.version !== 1)) return false;
+      if (diff !== 'daily' && parsed.difficulty !== diff) return false;
+      if (diff === 'daily' && parsed.dailyDiff && parsed.dailyDiff !== dailyDiff) return false;
+
+      // Find puzzle
+      let pool = diff === 'easy' ? PUZZLES_EASY : diff === 'medium' ? PUZZLES_MEDIUM : diff === 'hard' ? PUZZLES_HARD : DAILY_PUZZLES;
+      let matched = pool.find(p => p.id === parsed.puzzleId);
+      if (!matched) {
+        if (diff === 'daily') {
+          matched = getDailyPuzzle(new Date(), dailyDiff);
+        } else {
+          matched = pool[0];
+        }
+      }
+
+      currentPuzzle = matched;
+      computeOptimal(matched);
+
+      // Validate ladder steps integrity
+      let valid = true;
+      let prev = matched.startWord;
+      const cleanLadder: string[] = [];
+
+      for (const step of (parsed.ladder || [])) {
+        const u = step.toUpperCase().trim();
+        if (isValidWord(u) && isOneLetterDiff(prev, u)) {
+          cleanLadder.push(u);
+          prev = u;
+        } else {
+          valid = false;
+          break;
+        }
+      }
+
+      ladder = valid ? cleanLadder : [];
+      moves = typeof parsed.moves === 'number' ? parsed.moves : ladder.length;
+      hintsUsed = typeof parsed.hintsUsed === 'number' ? parsed.hintsUsed : 0;
+      elapsedSeconds = typeof parsed.elapsedSeconds === 'number' ? parsed.elapsedSeconds : 0;
+      isWon = Boolean(parsed.isWon && ladder[ladder.length - 1] === matched.targetWord);
+      isSolutionRevealed = Boolean(parsed.isSolutionRevealed);
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function setFeedback(msg: string, type: 'normal' | 'error' | 'success' = 'normal') {
+    if (!feedbackEl) return;
+    feedbackEl.textContent = msg;
+    feedbackEl.className = `ladder-feedback ${type === 'error' ? 'is-error' : type === 'success' ? 'is-success' : ''}`;
+    if (liveEl) liveEl.textContent = msg;
+  }
+
+  function renderWordTiles(
+    container: HTMLElement | null,
+    word: string,
+    prevWord: string | null = null,
+    targetWord: string = ''
+  ) {
+    if (!container) return;
+    container.innerHTML = '';
+    const changedIdx = prevWord ? getChangedIndex(prevWord, word) : -1;
+
+    for (let i = 0; i < word.length; i++) {
+      const tile = document.createElement('div');
+      const isMatch = Boolean(targetWord && word[i] === targetWord[i]);
+      const isChanged = i === changedIdx;
+
+      let cls = 'node-tile';
+      if (isChanged) cls += ' is-changed';
+      if (isMatch) cls += ' is-target-match';
+
+      tile.className = cls;
+      tile.style.display = 'flex';
+      tile.style.alignItems = 'center';
+      tile.style.justifyContent = 'center';
+      tile.textContent = word[i];
+      if (isMatch) {
+        tile.setAttribute('title', `Position ${i + 1} ('${word[i]}') matches target word`);
+      }
+      container.appendChild(tile);
+    }
+  }
+
+  function updateSlotLetters() {
+    if (!slotLettersEl || !currentPuzzle) return;
+    const typed = (wordInput?.value || '').trim().toUpperCase();
+    slotLettersEl.innerHTML = '';
+    slotLettersEl.style.display = 'flex';
+    slotLettersEl.style.flexDirection = 'row';
+    slotLettersEl.style.flexWrap = 'nowrap';
+    slotLettersEl.style.alignItems = 'center';
+    slotLettersEl.style.justifyContent = 'center';
+    const target = currentPuzzle.targetWord;
+    const currentWord = getLatestWord();
+
+    for (let i = 0; i < currentPuzzle.startWord.length; i++) {
+      const tile = document.createElement('div');
+      const char = typed[i] || '·';
+      let cls = 'node-tile';
+
+      if (typed[i]) {
+        const isMatch = typed[i] === target[i];
+        const isChanged = currentWord[i] && typed[i] !== currentWord[i];
+        if (isChanged) cls += ' is-changed';
+        if (isMatch) cls += ' is-target-match';
+      }
+
+      tile.className = cls;
+      tile.style.display = 'flex';
+      tile.style.alignItems = 'center';
+      tile.style.justifyContent = 'center';
+      tile.textContent = char;
+      slotLettersEl.appendChild(tile);
+    }
+  }
+
+  function renderLadder() {
+    // Render Start Word (with matching target letters highlighted in green)
+    if (startLettersEl) {
+      startLettersEl.style.display = 'flex';
+      startLettersEl.style.flexDirection = 'row';
+      startLettersEl.style.flexWrap = 'nowrap';
+      startLettersEl.style.alignItems = 'center';
+      startLettersEl.style.justifyContent = 'center';
+    }
+    renderWordTiles(startLettersEl, currentPuzzle.startWord, null, currentPuzzle.targetWord);
+
+    // Render Steps
+    if (stepsContainer) {
+      stepsContainer.innerHTML = '';
+      let prev = currentPuzzle.startWord;
+
+      ladder.forEach((stepWord, idx) => {
+        const stepNode = document.createElement('div');
+        stepNode.className = 'ladder-node step-node';
+        stepNode.setAttribute('role', 'listitem');
+        stepNode.setAttribute('aria-label', `Step ${idx + 1}: ${stepWord}`);
+
+        const meta = document.createElement('div');
+        meta.className = 'node-meta';
+        const badge = document.createElement('span');
+        badge.className = 'node-badge step-badge';
+        badge.textContent = `STEP ${idx + 1}`;
+        meta.appendChild(badge);
+
+        const lettersContainer = document.createElement('div');
+        lettersContainer.className = 'node-letters';
+        lettersContainer.style.display = 'flex';
+        lettersContainer.style.flexDirection = 'row';
+        lettersContainer.style.flexWrap = 'nowrap';
+        lettersContainer.style.alignItems = 'center';
+        lettersContainer.style.justifyContent = 'center';
+        renderWordTiles(lettersContainer, stepWord, prev, currentPuzzle.targetWord);
+
+        stepNode.appendChild(meta);
+        stepNode.appendChild(lettersContainer);
+        stepsContainer.appendChild(stepNode);
+
+        prev = stepWord;
+      });
+    }
+
+    // Render Active Slot
+    const activeSlot = document.getElementById('ladder-active-slot');
+    if (activeSlot) {
+      if (isWon) {
+        activeSlot.style.display = 'none';
+      } else {
+        activeSlot.style.display = 'flex';
+        updateSlotLetters();
+      }
+    }
+
+    // Render Target Word
+    if (targetLettersEl) {
+      targetLettersEl.style.display = 'flex';
+      targetLettersEl.style.flexDirection = 'row';
+      targetLettersEl.style.flexWrap = 'nowrap';
+      targetLettersEl.style.alignItems = 'center';
+      targetLettersEl.style.justifyContent = 'center';
+    }
+    renderWordTiles(targetLettersEl, currentPuzzle.targetWord);
+
+    // Update stats
+    if (movesEl) movesEl.textContent = String(moves);
+    if (targetMovesEl) targetMovesEl.textContent = String(minMoves);
+    if (hintsEl) hintsEl.textContent = String(hintsUsed);
+    if (timerEl) timerEl.textContent = formatTime(elapsedSeconds);
+
+    // Update Undo button state
+    if (undoBtn) {
+      undoBtn.disabled = ladder.length === 0 || isWon;
+    }
+
+    // Update input field length constraint & placeholder
+    if (wordInput) {
+      wordInput.maxLength = currentPuzzle.startWord.length;
+      wordInput.placeholder = `${currentPuzzle.startWord.length} LETTERS...`;
+      wordInput.disabled = isWon || isPaused;
+    }
+  }
+
+  function getLatestWord(): string {
+    return ladder.length > 0 ? ladder[ladder.length - 1] : currentPuzzle.startWord;
+  }
+
+  function submitWord() {
+    if (isWon || isPaused || !wordInput) return;
+
+    const raw = wordInput.value.trim().toUpperCase();
+    if (!raw) {
+      setFeedback('Please enter a word.', 'error');
+      playErrorSound();
+      return;
+    }
+
+    const currentWord = getLatestWord();
+
+    // 1. Length check
+    if (raw.length !== currentPuzzle.startWord.length) {
+      setFeedback(`Word must be exactly ${currentPuzzle.startWord.length} letters long.`, 'error');
+      playErrorSound();
+      return;
+    }
+
+    // 2. Already used check
+    if (raw === currentPuzzle.startWord || ladder.includes(raw)) {
+      setFeedback(`"${raw}" is already used in this ladder.`, 'error');
+      playErrorSound();
+      return;
+    }
+
+    // 3. One letter difference check
+    if (!isOneLetterDiff(currentWord, raw)) {
+      setFeedback(`Must change exactly one letter from "${currentWord}".`, 'error');
+      playErrorSound();
+      return;
+    }
+
+    // 4. Dictionary check
+    if (!isValidWord(raw)) {
+      setFeedback(`"${raw}" is not recognized in our word list.`, 'error');
+      playErrorSound();
+      return;
+    }
+
+    // Start timer on first move
+    if (moves === 0 && !isTimerRunning) {
+      startTimer();
+    }
+
+    // Valid word accepted!
+    ladder.push(raw);
+    moves++;
+    playValidWordSound();
+    wordInput.value = '';
+
+    // Check if won
+    if (raw === currentPuzzle.targetWord) {
+      handleWin();
+    } else {
+      setFeedback(`Accepted! Now change one letter from "${raw}".`, 'success');
+      renderLadder();
+      saveState();
+      wordInput.focus();
+    }
+  }
+
+  function handleWin() {
+    isWon = true;
+    stopTimer();
+    playVictorySound();
+    renderLadder();
+
+    const medalInfo = calculateMedal(moves, minMoves, hintsUsed);
+    const effectiveSteps = moves + hintsUsed * 1;
+
+    // Check personal best
+    const bestKey = currentDiff === 'daily' ? `daily-${currentDailyDiff}` : currentDiff;
+    let isNewPb = false;
+    if (!isSolutionRevealed) {
+      const prevBest = bests[bestKey];
+      if (!prevBest || effectiveSteps < prevBest.moves || (effectiveSteps === prevBest.moves && elapsedSeconds < prevBest.time)) {
+        bests[bestKey] = { moves: effectiveSteps, time: elapsedSeconds, medal: medalInfo.medal };
+        isNewPb = true;
+      }
+
+      if (currentDiff === 'daily') {
+        const todayKey = `${getUtcDateKey()}-${currentDailyDiff}`;
+        dailyCompleted[todayKey] = { moves: effectiveSteps, time: elapsedSeconds, medal: medalInfo.medal };
+      }
+    }
+
+    saveState();
+
+    // Populate Victory Modal
+    if (victoryDiffLabel) {
+      victoryDiffLabel.textContent = currentDiff === 'daily' ? `Daily (${currentDailyDiff.toUpperCase()})` : currentDiff.toUpperCase();
+    }
+    if (victoryTime) victoryTime.textContent = formatTime(elapsedSeconds);
+    if (victoryMoves) victoryMoves.textContent = `${moves} Steps`;
+    if (victoryTargetMoves) victoryTargetMoves.textContent = `${minMoves} Steps`;
+    if (victoryHintsUsed) victoryHintsUsed.textContent = String(hintsUsed);
+    if (victoryEffectiveScore) victoryEffectiveScore.textContent = `${effectiveSteps} Steps`;
+
+    if (victoryMedalIcon) victoryMedalIcon.textContent = medalInfo.icon;
+    if (victoryMedalTitle) victoryMedalTitle.textContent = medalInfo.title;
+    if (victoryMedalDesc) victoryMedalDesc.textContent = medalInfo.desc;
+
+    if (victorySummary) {
+      const fullPath = [currentPuzzle.startWord, ...ladder];
+      victorySummary.innerHTML = fullPath.map((w, idx) => `<b>${w}</b>${idx < fullPath.length - 1 ? '<span>→</span>' : ''}`).join('');
+    }
+
+    if (victoryPbBadge) {
+      victoryPbBadge.hidden = !isNewPb;
+    }
+
+    if (victoryOverlay) {
+      victoryOverlay.hidden = false;
+    }
+
+    setFeedback(`Congratulations! You reached ${currentPuzzle.targetWord} in ${moves} moves! (${medalInfo.title})`, 'success');
+  }
+
+  function undoLastStep() {
+    if (isWon || isPaused || ladder.length === 0) return;
+    const removed = ladder.pop();
+    if (moves > 0) moves--;
+    setFeedback(`Removed "${removed}". Current word is "${getLatestWord()}".`);
+    renderLadder();
+    saveState();
+    if (wordInput) wordInput.focus();
+  }
+
+  function giveHint() {
+    if (isWon || isPaused) return;
+    const currentWord = getLatestWord();
+    const used = new Set([currentPuzzle.startWord, ...ladder]);
+
+    const nextWord = findNextHintWord(currentWord, currentPuzzle.targetWord, used);
+    if (nextWord) {
+      hintsUsed++;
+      if (hintsEl) hintsEl.textContent = String(hintsUsed);
+      const idx = getChangedIndex(currentWord, nextWord);
+      setFeedback(`Hint: Try changing letter #${idx + 1} ('${currentWord[idx]}') to '${nextWord[idx]}' to form "${nextWord}". (+1 Step Penalty applied)`, 'success');
+      if (wordInput) {
+        wordInput.value = nextWord;
+        updateSlotLetters();
+        wordInput.focus();
+      }
+      saveState();
+    } else {
+      setFeedback('No direct path found without repeating words. Try undoing to a previous step.', 'error');
+      playErrorSound();
+    }
+  }
+
+  function revealSolution() {
+    if (isWon || isPaused) return;
+    if (!confirm('Reveal the full verified solution path for this puzzle?')) return;
+
+    stopTimer();
+    isSolutionRevealed = true;
+    ladder = optimalPath.slice(1);
+    moves = minMoves;
+    isWon = true;
+    renderLadder();
+    saveState();
+    setFeedback(`Solution revealed: ${optimalPath.join(' → ')}`, 'normal');
+  }
+
+  function restartCurrentPuzzle() {
+    if (ladder.length === 0 && moves === 0) return;
+    if (ladder.length > 0 && !isWon && !confirm('Restart this puzzle from the starting word?')) return;
+
+    resetTimer();
+    ladder = [];
+    moves = 0;
+    hintsUsed = 0;
+    isWon = false;
+    isSolutionRevealed = false;
+    isPaused = false;
+    if (pausedOverlay) pausedOverlay.hidden = true;
+    if (victoryOverlay) victoryOverlay.hidden = true;
+
+    setFeedback(`Restarted. Transform "${currentPuzzle.startWord}" to "${currentPuzzle.targetWord}".`);
+    renderLadder();
+    saveState();
+    if (wordInput) {
+      wordInput.value = '';
+      updateSlotLetters();
+      wordInput.focus();
+    }
+  }
+
+  function loadNewPuzzle(diff: 'easy' | 'medium' | 'hard' | 'daily', dailyDiff: 'easy' | 'medium' | 'hard' = 'easy') {
+    resetTimer();
+    currentDiff = diff;
+    if (diff === 'daily') currentDailyDiff = dailyDiff;
+
+    isWon = false;
+    isSolutionRevealed = false;
+    isPaused = false;
+    ladder = [];
+    moves = 0;
+    hintsUsed = 0;
+
+    if (diff === 'daily') {
+      if (dailySubbar) dailySubbar.hidden = false;
+      const todayDaily = getDailyPuzzle(new Date(), currentDailyDiff);
+      currentPuzzle = todayDaily;
+      computeOptimal(todayDaily);
+
+      // Check if user already solved today's daily
+      const todayKey = `${getUtcDateKey()}-${currentDailyDiff}`;
+      const completedRecord = dailyCompleted[todayKey];
+      if (completedRecord) {
+        // Load saved state if exists
+        loadSavedPuzzle('daily', currentDailyDiff);
+      }
+    } else {
+      if (dailySubbar) dailySubbar.hidden = true;
+      const pool = diff === 'easy' ? PUZZLES_EASY : diff === 'medium' ? PUZZLES_MEDIUM : PUZZLES_HARD;
+      const filtered = pool.filter(p => p.id !== currentPuzzle.id);
+      const chosen = filtered[Math.floor(Math.random() * filtered.length)] || pool[0];
+      currentPuzzle = chosen;
+      computeOptimal(chosen);
+    }
+
+    if (pausedOverlay) pausedOverlay.hidden = true;
+    if (victoryOverlay) victoryOverlay.hidden = true;
+
+    // Update Difficulty buttons
+    diffButtons.forEach(btn => {
+      const btnDiff = btn.dataset.difficulty;
+      const isActive = btnDiff === diff;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+
+    // Update Daily Tabs buttons
+    dailyTabButtons.forEach(btn => {
+      const bDiff = btn.dataset.dailyDiff;
+      const isActive = bDiff === currentDailyDiff;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+
+    setFeedback(`Transform "${currentPuzzle.startWord}" into "${currentPuzzle.targetWord}". Good luck!`);
+    renderLadder();
+    saveState();
+    if (wordInput) {
+      wordInput.value = '';
+      updateSlotLetters();
+      wordInput.focus();
+    }
+  }
+
+  function togglePause() {
+    if (isWon) return;
+    isPaused = !isPaused;
+
+    if (isPaused) {
+      stopTimer();
+      if (pausedOverlay) pausedOverlay.hidden = false;
+      if (wordInput) wordInput.disabled = true;
+    } else {
+      if (pausedOverlay) pausedOverlay.hidden = true;
+      if (moves > 0) startTimer();
+      if (wordInput) {
+        wordInput.disabled = false;
+        wordInput.focus();
+      }
+    }
+  }
+
+  function shareResult() {
+    const timeStr = formatTime(elapsedSeconds);
+    const medalInfo = calculateMedal(moves, minMoves, hintsUsed);
+    const modeName = currentDiff === 'daily'
+      ? `Daily Challenge (${currentDailyDiff.toUpperCase()})`
+      : `${currentDiff.toUpperCase()} Mode`;
+
+    const text = `PuzzleFeels Word Ladder — ${modeName}\n${medalInfo.icon} ${medalInfo.title}\n• Your Steps: ${moves}\n• Shortest Path: ${minMoves}\n• Hints (Penalty): ${hintsUsed}\n• Time: ${timeStr}\n\nPlay free: https://puzzlefeels.com/word-ladder-game-online/`;
+
+    if (navigator.share) {
+      navigator.share({ title: 'Word Ladder Game Online', text })
+        .then(() => {
+          if (shareStatus) shareStatus.textContent = 'Shared successfully!';
+        })
+        .catch(() => copyToClipboard(text));
+    } else {
+      copyToClipboard(text);
+    }
+  }
+
+  function copyToClipboard(text: string) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (shareStatus) shareStatus.textContent = 'Result copied to clipboard!';
+        setTimeout(() => { if (shareStatus) shareStatus.textContent = ''; }, 3000);
+      });
+    } else {
+      if (shareStatus) shareStatus.textContent = text;
+    }
+  }
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    if (soundLabel) soundLabel.textContent = `Sound: ${soundEnabled ? 'On' : 'Off'}`;
+    if (soundToggleBtn) soundToggleBtn.setAttribute('aria-pressed', String(soundEnabled));
+    if (soundOnIcon) (soundOnIcon as HTMLElement).hidden = !soundEnabled;
+    if (soundOffIcon) (soundOffIcon as HTMLElement).hidden = soundEnabled;
+    saveGlobalStats();
+  }
+
+  // Event Listeners
+  submitBtn?.addEventListener('click', submitWord);
+  wordInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitWord();
+    }
+  });
+  wordInput?.addEventListener('input', updateSlotLetters);
+
+  undoBtn?.addEventListener('click', undoLastStep);
+  hintBtn?.addEventListener('click', giveHint);
+  solutionBtn?.addEventListener('click', revealSolution);
+  restartBtn?.addEventListener('click', restartCurrentPuzzle);
+  newGameBtn?.addEventListener('click', () => loadNewPuzzle(currentDiff, currentDailyDiff));
+  pauseBtn?.addEventListener('click', togglePause);
+  resumeBtn?.addEventListener('click', togglePause);
+  playAgainBtn?.addEventListener('click', () => {
+    if (victoryOverlay) victoryOverlay.hidden = true;
+    loadNewPuzzle(currentDiff, currentDailyDiff);
+  });
+  shareBtn?.addEventListener('click', shareResult);
+  soundToggleBtn?.addEventListener('click', toggleSound);
+
+  function switchDifficulty(diff: 'easy' | 'medium' | 'hard' | 'daily', dailyDiff: 'easy' | 'medium' | 'hard' = 'easy') {
+    if (diff === currentDiff && diff !== 'daily') return;
+
+    resetTimer();
+    isPaused = false;
+    if (pausedOverlay) pausedOverlay.hidden = true;
+    if (victoryOverlay) victoryOverlay.hidden = true;
+
+    const restored = loadSavedPuzzle(diff, dailyDiff);
+    if (restored) {
+      currentDiff = diff;
+      if (diff === 'daily') currentDailyDiff = dailyDiff;
+
+      if (diff === 'daily') {
+        if (dailySubbar) dailySubbar.hidden = false;
+      } else {
+        if (dailySubbar) dailySubbar.hidden = true;
+      }
+
+      diffButtons.forEach(btn => {
+        const isActive = btn.dataset.difficulty === diff;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
+
+      dailyTabButtons.forEach(btn => {
+        const isActive = btn.dataset.dailyDiff === currentDailyDiff;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
+
+      setFeedback(`Transform "${currentPuzzle.startWord}" into "${currentPuzzle.targetWord}". Good luck!`);
+      renderLadder();
+      if (moves > 0 && !isWon) startTimer();
+      if (wordInput) {
+        wordInput.value = '';
+        updateSlotLetters();
+        wordInput.focus();
+      }
+    } else {
+      loadNewPuzzle(diff, dailyDiff);
+    }
+  }
+
+  // Difficulty button listeners
+  diffButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const diff = btn.dataset.difficulty as 'easy' | 'medium' | 'hard' | 'daily';
+      if (diff) {
+        switchDifficulty(diff, currentDailyDiff);
+      }
+    });
+  });
+
+  // Daily Challenge tab listeners
+  dailyTabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dDiff = btn.dataset.dailyDiff as 'easy' | 'medium' | 'hard';
+      if (dDiff) {
+        currentDailyDiff = dDiff;
+        switchDifficulty('daily', dDiff);
+      }
+    });
+  });
+
+  // Initialize
+  loadGlobalStats();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const wantsDaily = urlParams.get('daily') === 'today';
+
+  if (wantsDaily) {
+    loadNewPuzzle('daily', 'easy');
+  } else {
+    const restored = loadSavedPuzzle('easy');
+    if (!restored) {
+      loadNewPuzzle('easy');
+    } else {
+      diffButtons.forEach(btn => {
+        const isActive = btn.dataset.difficulty === currentDiff;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+      });
+      if (moves > 0 && !isWon && !isPaused) {
+        startTimer();
+      }
+      renderLadder();
+    }
+  }
+
+  // Update initial sound UI
+  if (soundLabel) soundLabel.textContent = `Sound: ${soundEnabled ? 'On' : 'Off'}`;
+  if (soundToggleBtn) soundToggleBtn.setAttribute('aria-pressed', String(soundEnabled));
+  if (soundOnIcon) (soundOnIcon as HTMLElement).hidden = !soundEnabled;
+  if (soundOffIcon) (soundOffIcon as HTMLElement).hidden = soundEnabled;
+</script>

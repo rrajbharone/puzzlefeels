@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = 'About PuzzleFeels | Play Puzzles. Feel the Fun.';
+const description = 'Learn about PuzzleFeels, a free browser-based puzzle platform offering Number Sequence, Color Flood, Picross, and Sliding Number Puzzle with no downloads required.';
+---
+
+<Base {title} {description} path="/about/">
+  <Header />
+  <main class="wrap content">
+    <span class="eyebrow">A little about us</span>
+    <h1>About PuzzleFeels – <span>Play Puzzles. Feel the Fun.</span></h1>
+    <p class="lead">PuzzleFeels is a website offering free online puzzle games. It is built around a simple idea: a good puzzle should be easy to open, enjoyable to play, and ready whenever you want a satisfying, mentally engaging break.</p>
+
+    <h2>A simpler way to take a puzzle break</h2>
+    <p>PuzzleFeels was created for people who appreciate thoughtful brain games without unnecessary complications. You can visit the site, pick a puzzle, and play directly in a modern web browser. There is no account to register and nothing to download or install. The site and controls are tailored to work smoothly across desktop computers, tablets, and mobile phones, with clear interfaces that feel natural whether using a touch screen, mouse, or keyboard.</p>
+    <p>We believe good game presentation should stay out of your way. Pages use a clean layout, readable typography, and seamless support for both Light Mode and Dark Mode. You can dive straight into solving puzzles without distractions.</p>
+
+    <h2>Available games to play right now</h2>
+    <p>PuzzleFeels currently offers four distinct puzzle games, each offering its own style of challenge:</p>
+    <ul>
+      <li><strong><a href="/number-sequence-game/">Number Sequence Game</a>:</strong> Study the numbers, deduce the underlying mathematical pattern, and choose the value that comes next. Features arithmetic, geometric, square, and alternating sequences across Easy, Medium, and Hard difficulties, plus a daily puzzle.</li>
+      <li><strong><a href="/color-flood-game/">Color Flood Game</a>:</strong> An engaging strategy puzzle where you expand your connected region from the top-left corner, absorbing adjacent matching cells to flood the entire board before running out of moves. Includes three board sizes and a date-seeded daily challenge.</li>
+      <li><strong><a href="/picross-game-online/">Picross Game Online</a>:</strong> A classic Nonogram picture logic puzzle where numerical clues guide you to fill and mark grid squares, ultimately revealing a hidden pixel-art illustration. Offers Beginner, Medium, and Hard boards, an intelligent hint system, and a daily challenge.</li>
+      <li><strong><a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>:</strong> Slide numbered tiles into numerical order on a framed grid. Features classic 8 puzzle (3×3), 15 puzzle (4×4), and 24 puzzle (5×5) boards, mathematically guaranteed solvability, full undo/redo support, and keyboard controls.</li>
+    </ul>
+
+    <h2>Progress stays in your browser</h2>
+    <p>To make it seamless to pick up where you left off, PuzzleFeels uses your browser’s local storage. Your active game sessions, scores, best records, sound settings, and daily completions are saved locally on your device. Your selected Light or Dark theme preference is saved in the same manner.</p>
+    <p>This data stays within your browser on your device and is never transmitted to an external server. You can play freely without sharing personal details. For more information about how local storage and third-party font assets work, please read our <a href="/privacy-policy/">Privacy Policy</a>.</p>
+
+    <h2>Looking ahead</h2>
+    <p>PuzzleFeels is built with care. Our priority is ensuring that existing games remain responsive, intuitive, and accessible to everyone. In the future, more puzzle games and brain challenges may be introduced to broaden the collection. Until then, you can explore all our current puzzles anytime.</p>
+
+    <a class="btn" href="/games/">Explore all games <span aria-hidden="true">→</span></a>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .content{padding:78px 0 100px;max-width:780px}
+  .content h1{font-size:clamp(2.7rem,6vw,4.5rem);margin:18px 0}
+  .content h1 span{color:#315ee8}
+  .content .lead{font-size:19px;line-height:1.7;color:#64728a;max-width:700px;margin:0 0 38px}
+  .content h2{font-size:23px;margin:34px 0 10px}
+  .content p:not(.lead){color:#66748b;line-height:1.8}
+  .content ul{margin:0 0 24px;padding-left:24px}
+  .content li{color:#66748b;line-height:1.8;margin-bottom:12px}
+  .content li strong{color:#17233b}
+  .content a:not(.btn){color:#315ee8;text-decoration:underline;text-underline-offset:3px}
+  .content .btn{margin-top:15px}
+  :global(html[data-theme="dark"]) .content .lead,
+  :global(html[data-theme="dark"]) .content p:not(.lead),
+  :global(html[data-theme="dark"]) .content li{color:#b8c4dd}
+  :global(html[data-theme="dark"]) .content li strong{color:#f1f5ff}
+  :global(html[data-theme="dark"]) .content h1 span,
+  :global(html[data-theme="dark"]) .content a:not(.btn){color:#a9bcff}
+  @media(max-width:640px){.content{padding:56px 0 72px}.content h1{font-size:clamp(2.45rem,11vw,3.5rem)}}
+</style>

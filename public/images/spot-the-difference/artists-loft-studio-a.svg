@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+  <defs>
+    <linearGradient id="studioWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2ebe4"/>
+      <stop offset="100%" stop-color="#ded3c7"/>
+    </linearGradient>
+    <linearGradient id="floorWood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b0865d"/>
+      <stop offset="100%" stop-color="#7a5430"/>
+    </linearGradient>
+    <linearGradient id="skyLoft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#bfdbfe"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Studio Walls & Floor -->
+  <rect width="800" height="520" fill="url(#studioWall)"/>
+  <rect x="0" y="380" width="800" height="140" fill="url(#floorWood)"/>
+  <!-- Floor Planks -->
+  
+    <line x1="0" y1="380" x2="60" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+    <line x1="100" y1="380" x2="160" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+    <line x1="200" y1="380" x2="260" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+    <line x1="300" y1="380" x2="360" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+    <line x1="400" y1="380" x2="460" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+    <line x1="500" y1="380" x2="560" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+    <line x1="600" y1="380" x2="660" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+    <line x1="700" y1="380" x2="760" y2="520" stroke="#5c3f24" stroke-width="1.5"/>
+  
+
+  <!-- Loft Skylight Window -->
+  <g id="skylight" transform="translate(480, 20)">
+    <polygon points="0,0 240,0 200,120 0,120" fill="url(#skyLoft)" stroke="#475569" stroke-width="4"/>
+    <line x1="80" y1="0" x2="65" y2="120" stroke="#475569" stroke-width="3"/>
+    <line x1="160" y1="0" x2="135" y2="120" stroke="#475569" stroke-width="3"/>
+    <line x1="0" y1="60" x2="220" y2="60" stroke="#475569" stroke-width="3"/>
+
+    <!-- Bird on Frame / Difference 5 -->
+    
+    <g id="skylightBird" transform="translate(64, 63)">
+      <ellipse cx="0" cy="0" rx="6" ry="4" fill="#334155"/>
+      <polygon points="5,-1 10,0 5,2" fill="#f59e0b"/>
+    </g>
+    
+  </g>
+
+  <!-- Hanging Macrame Plant / Difference 4 -->
+  <g id="hangingPlant" transform="translate(128, 146)">
+    <!-- Ropes -->
+    <line x1="0" y1="-146" x2="-15" y2="-20" stroke="#d6c7b2" stroke-width="2"/>
+    <line x1="0" y1="-146" x2="15" y2="-20" stroke="#d6c7b2" stroke-width="2"/>
+    <!-- Clay Pot -->
+    <polygon points="-22,-20 22,-20 16,15 -16,15" fill="#ea580c"/>
+    <!-- Trailing Foliage -->
+    <path d="M-15,10 Q-30,40 -20,70" stroke="#15803d" stroke-width="3" fill="none"/>
+    <path d="M0,15 Q-5,50 5,80" stroke="#16a34a" stroke-width="3" fill="none"/>
+    <path d="M15,10 Q30,45 22,75" stroke="#15803d" stroke-width="3" fill="none"/>
+    <!-- Blossom / Difference 4 -->
+    
+    <!-- White Flower in A -->
+    <circle cx="0" cy="30" r="6" fill="#ffffff"/>
+    <circle cx="0" cy="30" r="2.5" fill="#facc15"/>
+    
+  </g>
+
+  <!-- Bookshelf Right / Difference 7 -->
+  <g id="bookshelf" transform="translate(680, 146)">
+    <rect x="-40" y="-40" width="80" height="200" fill="#854d0e"/>
+    <rect x="-35" y="-35" width="70" height="55" fill="#5c360b"/>
+    <rect x="-35" y="25" width="70" height="60" fill="#5c360b"/>
+    <rect x="-35" y="90" width="70" height="65" fill="#5c360b"/>
+    <!-- Books Middle Shelf -->
+    <rect x="-30" y="40" width="12" height="42" fill="#b91c1c"/>
+    <rect x="-16" y="35" width="14" height="47" fill="#1d4ed8"/>
+    <rect x="0" y="45" width="10" height="37" fill="#047857"/>
+    <rect x="12" y="38" width="15" height="44" fill="#d97706"/>
+    <!-- Top Shelf Item / Difference 7 -->
+    
+    <!-- Classical Bust Statue in A -->
+    <circle cx="0" cy="-14" r="9" fill="#f8fafc"/>
+    <polygon points="-8,-4 8,-4 12,12 -12,12" fill="#e2e8f0"/>
+    
+  </g>
+
+  <!-- Wooden Stool & Brush Jar / Difference 6 -->
+  <g id="brushStool" transform="translate(488, 359)">
+    <ellipse cx="0" cy="20" rx="28" ry="8" fill="#a16207"/>
+    <line x1="-16" y1="24" x2="-22" y2="80" stroke="#78350f" stroke-width="4"/>
+    <line x1="16" y1="24" x2="22" y2="80" stroke="#78350f" stroke-width="4"/>
+    <!-- Jar -->
+    <rect x="-10" y="-8" width="20" height="26" rx="2" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Brushes -->
+    <line x1="-4" y1="-6" x2="-10" y2="-28" stroke="#b45309" stroke-width="2.5"/>
+    <!-- Tall Brush / Difference 6 -->
+    <line x1="2" y1="-6" x2="4" y2="-36" stroke="#eab308" stroke-width="3"/>
+  </g>
+
+  <!-- Easel with Painting / Difference 1 -->
+  <g id="easel" transform="translate(384, 218)">
+    <!-- Easel Legs -->
+    <line x1="0" y1="-80" x2="-65" y2="200" stroke="#78350f" stroke-width="6"/>
+    <line x1="0" y1="-80" x2="65" y2="200" stroke="#78350f" stroke-width="6"/>
+    <line x1="0" y1="-80" x2="0" y2="200" stroke="#542407" stroke-width="5"/>
+    <rect x="-70" y="55" width="140" height="10" fill="#92400e"/>
+    <!-- Stretched Canvas -->
+    <rect x="-60" y="-50" width="120" height="100" fill="#ffffff" stroke="#e2e8f0" stroke-width="2"/>
+    <!-- Landscape Artwork on Canvas -->
+    <rect x="-56" y="-46" width="112" height="92" fill="#bae6fd"/>
+    <polygon points="-56,46 0,-10 56,46" fill="#15803d"/>
+    <polygon points="-20,46 30,10 56,46" fill="#166534"/>
+    <!-- Celestial Motif / Difference 1 -->
+    
+    <!-- Bright Sun in A -->
+    <circle cx="30" cy="-24" r="10" fill="#f59e0b"/>
+    
+  </g>
+
+  <!-- Sleeping Cat on Round Rug / Difference 2 -->
+  <g id="sleepingCat" transform="translate(248, 426)">
+    <!-- Braided Rug -->
+    <ellipse cx="0" cy="15" rx="65" ry="30" fill="#fde68a" stroke="#f59e0b" stroke-width="3"/>
+    <!-- Cat Body -->
+    <ellipse cx="0" cy="10" rx="26" ry="18" fill="#ea580c"/>
+    <!-- Cat Head -->
+    <circle cx="-16" cy="4" r="12" fill="#ea580c"/>
+    <polygon points="-24,-3 -18,-3 -22,-10" fill="#c2410c"/>
+    <polygon points="-12,-3 -16,-3 -14,-10" fill="#c2410c"/>
+    <!-- Sleeping Eyes -->
+    <path d="M-22,6 Q-18,10 -14,6" stroke="#7c2d12" stroke-width="1.5" fill="none"/>
+    <!-- Collar / Difference 2 -->
+    <path d="M-12,12 C-8,14 -8,2 -12,4" stroke="#dc2626" stroke-width="3" fill="none"/>
+    <circle cx="-9" cy="8" r="2.5" fill="#facc15"/>
+  </g>
+
+  <!-- Acoustic Guitar / Difference 3 -->
+  <g id="guitar" transform="translate(704, 338) rotate(-15)">
+    <!-- Guitar Body -->
+    <ellipse cx="0" cy="45" rx="28" ry="34" fill="#d97706"/>
+    <ellipse cx="0" cy="5" rx="22" ry="24" fill="#d97706"/>
+    <circle cx="0" cy="15" r="9" fill="#451a03"/>
+    <!-- Neck -->
+    <rect x="-4" y="-70" width="8" height="75" fill="#78350f"/>
+    <!-- Headstock -->
+    <rect x="-6" y="-85" width="12" height="18" fill="#451a03"/>
+    <!-- Emblem Sticker / Difference 3 -->
+    
+  </g>
+</svg>

@@ -1,0 +1,375 @@
+---
+interface Props {
+  id?: string;
+  label?: string;
+  targetSelector: string;
+  zoomVar?: string;
+  className?: string;
+}
+
+const {
+  id = 'game-zoom',
+  label = 'Grid Zoom',
+  targetSelector,
+  zoomVar = '--zoom-scale',
+  className = '',
+} = Astro.props;
+---
+
+<div
+  class={`popover-wrapper zoom-popover-wrapper ${className}`}
+  data-zoom-control
+  data-target={targetSelector}
+  data-zoom-var={zoomVar}
+>
+  <button
+    type="button"
+    class="tool-utility-btn zoom-toggle-btn"
+    id={id ? `btn-${id}-toggle` : undefined}
+    aria-haspopup="true"
+    aria-expanded="false"
+    title="Zoom Controls"
+  >
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      <line x1="11" y1="8" x2="11" y2="14"></line>
+      <line x1="8" y1="11" x2="14" y2="11"></line>
+    </svg>
+    <span class="utility-label zoom-level-label">100%</span>
+  </button>
+
+  <!-- Dedicated Zoom Popover Panel -->
+  <div
+    class="norinori-popover zoom-popover"
+    role="dialog"
+    aria-label={label}
+    hidden
+  >
+    <div class="popover-header">
+      <strong>{label}</strong>
+      <button type="button" class="popover-close-btn" data-close-zoom aria-label="Close zoom menu">×</button>
+    </div>
+    <div class="zoom-controls-grid">
+      <button type="button" class="zoom-btn btn-zoom-in" title="Zoom In">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Zoom In</span>
+      </button>
+      <button type="button" class="zoom-btn btn-zoom-out" title="Zoom Out">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Zoom Out</span>
+      </button>
+      <button type="button" class="zoom-btn full-width btn-zoom-reset" title="Fit to Screen / Reset Zoom">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+          <polyline points="9 3 9 9 3 9"></polyline>
+          <polyline points="15 3 15 9 21 9"></polyline>
+          <polyline points="9 21 9 15 3 15"></polyline>
+          <polyline points="15 21 15 15 21 15"></polyline>
+        </svg>
+        <span>Fit to Screen (100%)</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .popover-wrapper {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .tool-utility-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 11px;
+    border-radius: 8px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--paper, #fff);
+    color: var(--ink, #0f172a);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    line-height: 1;
+    font-family: inherit;
+    box-sizing: border-box;
+    height: 34px;
+  }
+
+  .tool-utility-btn:hover {
+    border-color: var(--blue, #315ee8);
+    background: var(--wash, #f1f4fb);
+  }
+
+  .tool-utility-btn:focus-visible {
+    outline: 2px solid var(--blue, #315ee8);
+    outline-offset: 2px;
+  }
+
+  .utility-label {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .norinori-popover {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 60;
+    min-width: 250px;
+    max-width: calc(100vw - 24px);
+    background: var(--paper, #fff);
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+  }
+
+  .popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line, #e2e8f0);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink, #0f172a);
+  }
+
+  .popover-close-btn {
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    color: var(--muted, #64748b);
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+    font-family: inherit;
+  }
+
+  .popover-close-btn:hover {
+    color: var(--ink, #0f172a);
+  }
+
+  .zoom-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .zoom-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--wash, #f1f4fb);
+    color: var(--ink, #0f172a);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  .zoom-btn:hover {
+    border-color: var(--blue, #315ee8);
+    background: var(--line, #e2e8f0);
+  }
+
+  .zoom-btn:focus-visible {
+    outline: 2px solid var(--blue, #315ee8);
+    outline-offset: 1px;
+  }
+
+  .zoom-btn.full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* Dark Theme Overrides */
+  :global(html[data-theme="dark"]) .norinori-popover {
+    background: var(--paper, #151f3d);
+    border-color: var(--line, #293858);
+    box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6);
+  }
+
+  :global(html[data-theme="dark"]) .tool-utility-btn {
+    background: var(--paper, #151f3d);
+    border-color: var(--line, #293858);
+    color: var(--ink, #f1f5ff);
+  }
+
+  :global(html[data-theme="dark"]) .tool-utility-btn:hover {
+    background: var(--wash, #111b36);
+    border-color: var(--blue, #315ee8);
+  }
+
+  :global(html[data-theme="dark"]) .popover-header {
+    border-bottom-color: var(--line, #293858);
+    color: var(--ink, #f1f5ff);
+  }
+
+  :global(html[data-theme="dark"]) .popover-close-btn {
+    color: var(--muted, #8ea8ff);
+  }
+
+  :global(html[data-theme="dark"]) .popover-close-btn:hover {
+    color: var(--ink, #f1f5ff);
+  }
+
+  :global(html[data-theme="dark"]) .zoom-btn {
+    background: var(--wash, #111b36);
+    border-color: var(--line, #293858);
+    color: var(--ink, #f1f5ff);
+  }
+
+  :global(html[data-theme="dark"]) .zoom-btn:hover {
+    background: #1b294b;
+    border-color: var(--blue, #315ee8);
+  }
+</style>
+
+<script>
+  const zoomLevels = [70, 85, 100, 115, 130, 150];
+
+  function initAllZoomControls() {
+    const controls = document.querySelectorAll<HTMLElement>('[data-zoom-control]');
+    controls.forEach((wrapper) => {
+      if (wrapper.dataset.zoomReady === 'true') return;
+      wrapper.dataset.zoomReady = 'true';
+
+      const targetSelector = wrapper.dataset.target || '';
+      const zoomVar = wrapper.dataset.zoomVar || '--zoom-scale';
+      const btnToggle = wrapper.querySelector<HTMLButtonElement>('.zoom-toggle-btn');
+      const popover = wrapper.querySelector<HTMLElement>('.zoom-popover');
+      const label = wrapper.querySelector<HTMLElement>('.zoom-level-label');
+      const btnIn = wrapper.querySelector<HTMLButtonElement>('.btn-zoom-in');
+      const btnOut = wrapper.querySelector<HTMLButtonElement>('.btn-zoom-out');
+      const btnReset = wrapper.querySelector<HTMLButtonElement>('.btn-zoom-reset');
+      const btnClose = wrapper.querySelector<HTMLButtonElement>('[data-close-zoom]');
+
+      let zoomIndex = 2; // 100%
+
+      function getTarget(): HTMLElement | null {
+        return targetSelector ? document.querySelector<HTMLElement>(targetSelector) : null;
+      }
+
+      function applyZoom() {
+        const pct = zoomLevels[zoomIndex];
+        if (label) label.textContent = `${pct}%`;
+        const scale = pct / 100;
+        const target = getTarget();
+        if (target) {
+          target.style.setProperty(zoomVar, String(scale));
+          target.style.setProperty('--zoom-scale', String(scale));
+          target.style.setProperty('--zoom-pct', `${pct}%`);
+          target.dispatchEvent(
+            new CustomEvent('puzzlefeels:zoomchange', {
+              detail: { pct, scale, targetSelector },
+              bubbles: true,
+            })
+          );
+        }
+      }
+
+      function closePopover() {
+        if (popover) popover.hidden = true;
+        if (btnToggle) btnToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function openPopover() {
+        // Close any other open popovers
+        document.querySelectorAll<HTMLElement>('.zoom-popover:not([hidden])').forEach((p) => {
+          p.hidden = true;
+        });
+        document.querySelectorAll<HTMLButtonElement>('.zoom-toggle-btn[aria-expanded="true"]').forEach((b) => {
+          b.setAttribute('aria-expanded', 'false');
+        });
+
+        if (popover) popover.hidden = false;
+        if (btnToggle) btnToggle.setAttribute('aria-expanded', 'true');
+      }
+
+      if (btnToggle && popover) {
+        btnToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (popover.hidden) {
+            openPopover();
+          } else {
+            closePopover();
+          }
+        });
+      }
+
+      if (btnClose) {
+        btnClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closePopover();
+        });
+      }
+
+      if (btnIn) {
+        btnIn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (zoomIndex < zoomLevels.length - 1) {
+            zoomIndex++;
+            applyZoom();
+          }
+        });
+      }
+
+      if (btnOut) {
+        btnOut.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (zoomIndex > 0) {
+            zoomIndex--;
+            applyZoom();
+          }
+        });
+      }
+
+      if (btnReset) {
+        btnReset.addEventListener('click', (e) => {
+          e.stopPropagation();
+          zoomIndex = 2; // 100%
+          applyZoom();
+          closePopover();
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (popover && !popover.hidden && !wrapper.contains(e.target as Node)) {
+          closePopover();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && popover && !popover.hidden) {
+          closePopover();
+        }
+      });
+
+      // Initialize
+      applyZoom();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAllZoomControls);
+  } else {
+    initAllZoomControls();
+  }
+  document.addEventListener('astro:page-load', initAllZoomControls);
+</script>

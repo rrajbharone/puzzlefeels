@@ -1,0 +1,256 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520">
+  <defs>
+    <linearGradient id="skyGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a70b0"/>
+      <stop offset="60%" stop-color="#8bb7e0"/>
+      <stop offset="100%" stop-color="#e9c8a7"/>
+    </linearGradient>
+    <linearGradient id="sunGrad1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff1a8"/>
+      <stop offset="100%" stop-color="#ffb347"/>
+    </linearGradient>
+    <linearGradient id="mtnBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#55698a"/>
+      <stop offset="100%" stop-color="#7e95b3"/>
+    </linearGradient>
+    <linearGradient id="mtnFore" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d4f6c"/>
+      <stop offset="100%" stop-color="#536b8c"/>
+    </linearGradient>
+    <linearGradient id="lakeGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4d82a3"/>
+      <stop offset="50%" stop-color="#3b6e8f"/>
+      <stop offset="100%" stop-color="#244d6b"/>
+    </linearGradient>
+    <linearGradient id="cabinWall" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6e472a"/>
+      <stop offset="100%" stop-color="#8a5b36"/>
+    </linearGradient>
+    <linearGradient id="cabinRoof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a3222"/>
+      <stop offset="100%" stop-color="#2f1e14"/>
+    </linearGradient>
+    <linearGradient id="grassGrad1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5a8c43"/>
+      <stop offset="100%" stop-color="#3e662c"/>
+    </linearGradient>
+    <filter id="glow1" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="520" fill="url(#skyGrad1)"/>
+
+  <!-- Sun -->
+  <circle cx="680" cy="90" r="42" fill="url(#sunGrad1)" filter="url(#glow1)" opacity="0.9"/>
+
+  <!-- Clouds -->
+  <!-- Cloud 1 -->
+  <g fill="#ffffff" opacity="0.85">
+    <circle cx="120" cy="80" r="24"/>
+    <circle cx="145" cy="72" r="30"/>
+    <circle cx="175" cy="78" r="26"/>
+    <rect x="120" y="80" width="55" height="24" rx="10"/>
+  </g>
+
+  <!-- Cloud 2 / Difference 5: Extra cloud in B -->
+  
+
+  <!-- Cloud 3 Right -->
+  <g fill="#ffffff" opacity="0.8">
+    <circle cx="520" cy="70" r="22"/>
+    <circle cx="545" cy="62" r="28"/>
+    <circle cx="570" cy="69" r="24"/>
+    <rect x="520" y="70" width="50" height="20" rx="9"/>
+  </g>
+
+  <!-- Distant Mountains -->
+  <polygon points="60,300 184,114 310,300" fill="url(#mtnBack)"/>
+  <polygon points="240,300 390,95 530,300" fill="url(#mtnBack)"/>
+  <polygon points="460,300 580,140 720,300" fill="url(#mtnBack)"/>
+
+  <!-- Snowcaps -->
+  <!-- Middle Mountain Snow -->
+  <polygon points="390,95 360,140 375,135 390,148 405,135 420,142" fill="#f0f5fc"/>
+  <!-- Right Mountain Snow -->
+  <polygon points="580,140 555,175 570,170 580,180 595,172 605,178" fill="#f0f5fc"/>
+
+  <!-- Left Mountain Snowcap / Difference 2 -->
+  
+  <polygon points="184,114 158,155 172,150 184,162 198,152 210,158" fill="#f0f5fc"/>
+  
+
+  <!-- Foreground Mountains -->
+  <polygon points="0,320 120,180 280,320" fill="url(#mtnFore)"/>
+  <polygon points="340,320 480,165 640,320" fill="url(#mtnFore)"/>
+
+  <!-- Pine Tree Ridge Behind Lake -->
+  <g fill="#213d28">
+    
+      <polygon points="40,290 26,325 54,325"/>
+      <polygon points="40,275 28,305 52,305"/>
+      <polygon points="40,260 30,285 50,285"/>
+    
+      <polygon points="80,290 66,325 94,325"/>
+      <polygon points="80,275 68,305 92,305"/>
+      <polygon points="80,260 70,285 90,285"/>
+    
+      <polygon points="120,290 106,325 134,325"/>
+      <polygon points="120,275 108,305 132,305"/>
+      <polygon points="120,260 110,285 130,285"/>
+    
+      <polygon points="160,290 146,325 174,325"/>
+      <polygon points="160,275 148,305 172,305"/>
+      <polygon points="160,260 150,285 170,285"/>
+    
+      <polygon points="200,290 186,325 214,325"/>
+      <polygon points="200,275 188,305 212,305"/>
+      <polygon points="200,260 190,285 210,285"/>
+    
+      <polygon points="240,290 226,325 254,325"/>
+      <polygon points="240,275 228,305 252,305"/>
+      <polygon points="240,260 230,285 250,285"/>
+    
+      <polygon points="280,290 266,325 294,325"/>
+      <polygon points="280,275 268,305 292,305"/>
+      <polygon points="280,260 270,285 290,285"/>
+    
+      <polygon points="320,290 306,325 334,325"/>
+      <polygon points="320,275 308,305 332,305"/>
+      <polygon points="320,260 310,285 330,285"/>
+    
+      <polygon points="360,290 346,325 374,325"/>
+      <polygon points="360,275 348,305 372,305"/>
+      <polygon points="360,260 350,285 370,285"/>
+    
+      <polygon points="400,290 386,325 414,325"/>
+      <polygon points="400,275 388,305 412,305"/>
+      <polygon points="400,260 390,285 410,285"/>
+    
+      <polygon points="600,290 586,325 614,325"/>
+      <polygon points="600,275 588,305 612,305"/>
+      <polygon points="600,260 590,285 610,285"/>
+    
+      <polygon points="640,290 626,325 654,325"/>
+      <polygon points="640,275 628,305 652,305"/>
+      <polygon points="640,260 630,285 650,285"/>
+    
+      <polygon points="680,290 666,325 694,325"/>
+      <polygon points="680,275 668,305 692,305"/>
+      <polygon points="680,260 670,285 690,285"/>
+    
+      <polygon points="720,290 706,325 734,325"/>
+      <polygon points="720,275 708,305 732,305"/>
+      <polygon points="720,260 710,285 730,285"/>
+    
+      <polygon points="760,290 746,325 774,325"/>
+      <polygon points="760,275 748,305 772,305"/>
+      <polygon points="760,260 750,285 770,285"/>
+    
+  </g>
+
+  <!-- Lake -->
+  <path d="M0,310 Q400,295 800,310 L800,430 Q400,450 0,430 Z" fill="url(#lakeGrad1)"/>
+  <!-- Water Highlights -->
+  <ellipse cx="260" cy="340" rx="80" ry="2" fill="#88c0db" opacity="0.6"/>
+  <ellipse cx="560" cy="360" rx="110" ry="3" fill="#88c0db" opacity="0.5"/>
+  <ellipse cx="380" cy="380" rx="95" ry="2" fill="#88c0db" opacity="0.4"/>
+
+  <!-- Shoreline & Meadow -->
+  <path d="M0,380 Q350,370 520,410 L800,390 L800,520 L0,520 Z" fill="url(#grassGrad1)"/>
+  <!-- Pebbled Bank Near Water -->
+  <path d="M480,410 Q600,395 800,405 L800,440 Q620,425 480,410 Z" fill="#998977" opacity="0.75"/>
+
+  <!-- Wooden Log Cabin -->
+  <g id="cabin">
+    <!-- Cabin Shadow -->
+    <ellipse cx="460" cy="370" rx="85" ry="15" fill="#1b2e15" opacity="0.5"/>
+    <!-- Cabin Base Walls -->
+    <rect x="400" y="270" width="120" height="95" rx="3" fill="url(#cabinWall)"/>
+    <!-- Log Lines -->
+    <line x1="400" y1="290" x2="520" y2="290" stroke="#4a301b" stroke-width="2"/>
+    <line x1="400" y1="310" x2="520" y2="310" stroke="#4a301b" stroke-width="2"/>
+    <line x1="400" y1="330" x2="520" y2="330" stroke="#4a301b" stroke-width="2"/>
+    <line x1="400" y1="350" x2="520" y2="350" stroke="#4a301b" stroke-width="2"/>
+    <!-- Door -->
+    <rect x="445" y="305" width="28" height="60" rx="2" fill="#3a2211"/>
+    <circle cx="468" cy="336" r="2.5" fill="#d4af37"/>
+    <!-- Window Glowing -->
+    <rect x="485" y="295" width="24" height="24" rx="2" fill="#ffe48f"/>
+    <rect x="410" y="295" width="24" height="24" rx="2" fill="#ffe48f"/>
+    <line x1="497" y1="295" x2="497" y2="319" stroke="#3a2211" stroke-width="1.5"/>
+    <line x1="485" y1="307" x2="509" y2="307" stroke="#3a2211" stroke-width="1.5"/>
+    <!-- Overhanging Roof -->
+    <polygon points="380,270 460,205 540,270" fill="url(#cabinRoof)"/>
+    <!-- Chimney -->
+    <rect x="456" y="180" width="16" height="38" fill="#6e2d1d"/>
+    <rect x="453" y="176" width="22" height="6" rx="1" fill="#4d1f14"/>
+
+    <!-- Difference 1: Chimney Smoke (Present in A, missing in B) -->
+    
+    <g fill="#ffffff" opacity="0.7">
+      <circle cx="464" cy="162" r="7"/>
+      <circle cx="468" cy="146" r="11"/>
+      <circle cx="461" cy="126" r="15"/>
+      <circle cx="470" cy="102" r="19"/>
+    </g>
+    
+  </g>
+
+  <!-- Big Pine Trees Left Foreground -->
+  <g fill="#1a3821">
+    <!-- Tree 1 -->
+    <polygon points="80,480 40,480 60,350"/>
+    <polygon points="60,320 20,380 100,380"/>
+    <polygon points="60,280 26,340 94,340"/>
+    <polygon points="60,240 34,300 86,300"/>
+    <!-- Tree 2 -->
+    <polygon points="120,490 85,490 102,370"/>
+    <polygon points="102,340 65,400 140,400"/>
+    <polygon points="102,300 72,360 132,360"/>
+    <polygon points="102,260 80,320 125,320"/>
+  </g>
+
+  <!-- Campfire with Stones / Difference 4 -->
+  <g id="campfire">
+    <!-- Stones -->
+    <ellipse cx="336" cy="430" rx="36" ry="14" fill="#6b6b6b"/>
+    <circle cx="312" cy="430" r="7" fill="#4a4a4a"/>
+    <circle cx="326" cy="436" r="8" fill="#525252"/>
+    <circle cx="344" cy="436" r="8" fill="#4f4f4f"/>
+    <circle cx="358" cy="430" r="7" fill="#5e5e5e"/>
+    <circle cx="336" cy="424" r="7" fill="#424242"/>
+    <!-- Wooden Logs -->
+    <line x1="318" y1="428" x2="354" y2="422" stroke="#543118" stroke-width="6" stroke-linecap="round"/>
+    <line x1="322" y1="422" x2="350" y2="428" stroke="#3b210e" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Flames -->
+    
+    <!-- Standard Golden Orange Flame in A -->
+    <path d="M336,396 Q350,412 344,424 Q336,428 328,424 Q322,412 336,396 Z" fill="#ff7300"/>
+    <path d="M336,406 Q344,416 340,424 Q336,426 332,424 Q328,416 336,406 Z" fill="#ffe600"/>
+    
+  </g>
+
+  <!-- Wooden Canoe on Beach / Difference 3 -->
+  <g id="canoe">
+    <!-- Canoe Shadow -->
+    <ellipse cx="610" cy="420" rx="70" ry="10" fill="#1b2e15" opacity="0.4"/>
+    <!-- Canoe Hull -->
+    <path d="M540,410 Q610,432 680,405 Q610,418 540,410 Z" fill="#b84d28"/>
+    <path d="M544,409 Q610,424 676,405 Q610,416 544,409 Z" fill="#782e14"/>
+    <!-- Cross Braces -->
+    <line x1="585" y1="413" x2="585" y2="418" stroke="#eed8c1" stroke-width="2"/>
+    <line x1="635" y1="412" x2="635" y2="417" stroke="#eed8c1" stroke-width="2"/>
+
+    <!-- Canoe Paddle / Difference 3 (Present in A, missing in B) -->
+    
+    <g id="paddle">
+      <line x1="575" y1="428" x2="620" y2="385" stroke="#e8c07d" stroke-width="3" stroke-linecap="round"/>
+      <polygon points="616,388 625,380 622,392" fill="#d49c4b"/>
+    </g>
+    
+  </g>
+</svg>
