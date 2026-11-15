@@ -84,7 +84,7 @@ test('main routes render, expose a page heading, and use valid local links', asy
 test('All Games search, empty state, clear action, and game links work', async ({ page }) => {
   await page.goto('/games/');
   const cards = page.locator('.directory-card:visible');
-  await expect(cards).toHaveCount(8);
+  await expect(cards).toHaveCount(11);
 
   const search = page.getByRole('searchbox', { name: 'Search games by name' });
   await search.fill('number sequence');
@@ -129,13 +129,16 @@ test('All Games search, empty state, clear action, and game links work', async (
   await search.fill('murder mystery');
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toContainText('Murdoku Online Game');
+  await search.fill('hidden object');
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText('Free Hidden Object Online Game');
 
   await search.fill('nothing-matches-this');
   await expect(page.getByRole('heading', { name: 'No games found' })).toBeVisible();
   await expect(page.getByText('Try searching with a different game name.')).toBeVisible();
   await page.getByRole('button', { name: 'Clear search' }).click();
   await expect(search).toBeFocused();
-  await expect(cards).toHaveCount(8);
+  await expect(cards).toHaveCount(11);
 
   for (const [index, href, heading] of [
     [0, '/number-sequence-game/', 'Play Number Sequence Game Online'],
@@ -146,13 +149,16 @@ test('All Games search, empty state, clear action, and game links work', async (
     [5, '/reaction-time-challenge/', 'Reaction Time Challenge'],
     [6, '/memory-matching-game-online/', 'Memory Matching Game Online'],
     [7, '/murdoku-online-game/', 'Murdoku Online Game'],
+    [8, '/norinori-game/', 'Norinori Game'],
+    [9, '/spot-the-difference-game/', 'Spot the Difference Free Online Game'],
+    [10, '/hidden-object-game/', 'Free Hidden Object Online Game'],
   ]) {
     await expect(cards.nth(index)).toHaveAttribute('href', href);
     await cards.nth(index).click();
     await expect(page).toHaveURL(new RegExp(href.replaceAll('/', '\\/') + '$'));
     await expect(page.locator('h1').first()).toContainText(heading);
     await page.goBack();
-    await expect(page.locator('.directory-card')).toHaveCount(8);
+    await expect(page.locator('.directory-card')).toHaveCount(11);
   }
 });
 
@@ -183,7 +189,7 @@ test('All Games page is responsive and theme-aware', async ({ page }, testInfo) 
     await page.goto('/games/');
     const metrics = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
     expect(metrics.document, `${width}px page overflow`).toBeLessThanOrEqual(metrics.viewport + 1);
-    await expect(page.locator('.directory-card')).toHaveCount(8);
+    await expect(page.locator('.directory-card')).toHaveCount(11);
     if (width === 1280 || width === 390) await screenshot(page, testInfo, `games-light-${width}`);
   }
   const toggle = page.getByRole('switch');
@@ -1488,7 +1494,7 @@ test('Homepage featured games (exactly 5), Daily Moments (exactly 3, without Pic
   // 4. All Games directory (/games/) displays all games from catalog
   await page.goto('/games/');
   const directoryCards = page.locator('.directory-card:visible');
-  await expect(directoryCards).toHaveCount(8);
+  await expect(directoryCards).toHaveCount(11);
   await expect(directoryCards.locator('h3', { hasText: 'Reaction Time Challenge' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Memory Matching Game Online' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Murdoku Online Game' })).toBeVisible();
@@ -2539,5 +2545,369 @@ test('Norinori Game Online - Complete E2E Suite', async ({ page }) => {
       docWidth: document.documentElement.scrollWidth
     }));
     expect(metrics.docWidth, `Norinori ${width}px horizontal overflow`).toBeLessThanOrEqual(metrics.viewport + 1);
+  }
+});
+
+test('Free Hidden Object Online Game - Complete E2E Suite', async ({ page }) => {
+  // 1. Initial Page Load & Visual Structure
+  await page.goto('/hidden-object-game/');
+  await expect(page).toHaveTitle('Free Hidden Object Online Game – Find Hidden Objects in Pictures | PuzzleFeels');
+
+  const h1 = page.locator('.ho-intro h1');
+  await expect(h1).toBeVisible();
+  await expect(h1).toHaveText('Free Hidden Object Online Game');
+
+  const h1Align = await h1.evaluate(el => window.getComputedStyle(el.closest('.ho-intro')).textAlign);
+  expect(h1Align).toBe('center');
+
+  // Breadcrumbs
+  const breadcrumbs = page.locator('.ho-breadcrumbs');
+  await expect(breadcrumbs).toBeVisible();
+  await expect(breadcrumbs.locator('a[href="/"]')).toContainText('Home');
+  await expect(breadcrumbs.locator('a[href="/games/"]')).toContainText('Games');
+  await expect(breadcrumbs.locator('[aria-current="page"]')).toContainText('Free Hidden Object Online Game');
+
+  // JSON-LD Schemas
+  const schemas = await page.locator('script[type="application/ld+json"]').all();
+  expect(schemas.length).toBeGreaterThanOrEqual(3);
+
+  // 2. Difficulty Selection & Defaults (Easy by default: 5 objects)
+  const diffEasy = page.locator('.ho-tab-btn[data-difficulty="easy"]');
+  const diffMedium = page.locator('.ho-tab-btn[data-difficulty="medium"]');
+  const diffHard = page.locator('.ho-tab-btn[data-difficulty="hard"]');
+
+  await expect(diffEasy).toHaveClass(/is-active/);
+  await expect(page.locator('#ho-found-counter')).toHaveText('0 of 5 Found');
+  await expect(page.locator('#ho-remaining-tag')).toHaveText('(5 remaining)');
+  await expect(page.locator('.ho-object-card')).toHaveCount(5);
+
+  // Switch to Hard (8 objects)
+  await diffHard.click();
+  await expect(diffHard).toHaveClass(/is-active/);
+  await expect(page.locator('#ho-found-counter')).toHaveText('0 of 8 Found');
+  await expect(page.locator('.ho-object-card')).toHaveCount(8);
+
+  // Switch to Medium (7 objects)
+  await diffMedium.click();
+  await expect(diffMedium).toHaveClass(/is-active/);
+  await expect(page.locator('#ho-found-counter')).toHaveText('0 of 7 Found');
+  await expect(page.locator('.ho-object-card')).toHaveCount(7);
+
+  // Switch back to Easy (5 objects)
+  await diffEasy.click();
+  await expect(diffEasy).toHaveClass(/is-active/);
+  await expect(page.locator('#ho-found-counter')).toHaveText('0 of 5 Found');
+  await expect(page.locator('.ho-object-card')).toHaveCount(5);
+
+  // 3. Level 1 Initialization
+  await expect(page.locator('#ho-level-badge')).toHaveText('Level 1');
+  await expect(page.locator('#ho-puzzle-title')).toHaveText('Cozy Living Room');
+
+  // Scene image
+  const sceneImg = page.locator('#ho-scene-img');
+  await expect(sceneImg).toBeVisible();
+  await expect(sceneImg).toHaveAttribute('src', '/images/hidden-object/level-1-cozy-living-room.svg');
+
+  // Level Pills Check: Level 1 active, 2-10 locked
+  const pills = page.locator('.ho-level-pill');
+  await expect(pills).toHaveCount(10);
+  await expect(pills.first()).toHaveClass(/is-active/);
+  await expect(pills.first()).not.toBeDisabled();
+
+  for (let i = 1; i < 10; i++) {
+    await expect(pills.nth(i)).toBeDisabled();
+    await expect(pills.nth(i)).toHaveClass(/is-locked/);
+  }
+
+  // 4. Timer, Pause, Resume, and Restart
+  const timer = page.locator('#ho-timer');
+  await expect(timer).toBeVisible();
+  await expect(timer).toHaveText(/00:\d\d/);
+
+  // Pause
+  const pauseBtn = page.locator('#btn-pause');
+  await pauseBtn.click();
+  const pausedOverlay = page.locator('#ho-paused-overlay');
+  await expect(pausedOverlay).toBeVisible();
+
+  // Resume
+  const resumeBtn = page.locator('#btn-resume');
+  await resumeBtn.click();
+  await expect(pausedOverlay).toBeHidden();
+
+  // Restart
+  const restartBtn = page.locator('#btn-restart');
+  await restartBtn.click();
+  await expect(page.locator('#ho-found-counter')).toHaveText('0 of 5 Found');
+
+  // 5. Sound Toggle
+  const soundBtn = page.locator('#btn-sound');
+  await expect(soundBtn).toBeVisible();
+  await soundBtn.click(); // mute
+  let soundStorage = await page.evaluate(() => localStorage.getItem('puzzlefeels-ho-sound'));
+  expect(soundStorage).toBe('false');
+  await soundBtn.click(); // unmute
+  soundStorage = await page.evaluate(() => localStorage.getItem('puzzlefeels-ho-sound'));
+  expect(soundStorage).toBe('true');
+
+  // 6. Zoom Controls: Verify scaling of entire playable board
+  const zoomBtn = page.locator('#btn-ho-zoom-toggle');
+  await expect(zoomBtn).toBeVisible();
+  await zoomBtn.click();
+  const zoomPopover = page.locator('.zoom-popover:visible');
+  await expect(zoomPopover).toBeVisible();
+
+  const initialBox = await page.locator('#ho-scene-board').boundingBox();
+  expect(initialBox).not.toBeNull();
+
+  const btnZoomIn = page.locator('.btn-zoom-in');
+  await btnZoomIn.click();
+  await expect(page.locator('.zoom-level-label')).toHaveText('115%');
+  await expect.poll(async () => {
+    const box = await page.locator('#ho-scene-board').boundingBox();
+    return box ? box.width : 0;
+  }).toBeGreaterThan(initialBox.width);
+
+  const btnZoomOut = page.locator('.btn-zoom-out');
+  await btnZoomOut.click(); // back to 100%
+  await btnZoomOut.click(); // down to 85%
+  await expect(page.locator('.zoom-level-label')).toHaveText('85%');
+  await expect.poll(async () => {
+    const box = await page.locator('#ho-scene-board').boundingBox();
+    return box ? box.width : 9999;
+  }).toBeLessThan(initialBox.width);
+
+  const btnZoomReset = page.locator('.btn-zoom-reset');
+  await btnZoomReset.click();
+  await expect(page.locator('.zoom-level-label')).toHaveText('100%');
+  await expect(zoomPopover).toBeHidden();
+  await expect.poll(async () => {
+    const box = await page.locator('#ho-scene-board').boundingBox();
+    return box ? Math.round(box.width) : 0;
+  }).toBe(Math.round(initialBox.width));
+
+  // 7. Hint Functionality
+  const hintBtn = page.locator('#btn-hint');
+  await hintBtn.click();
+  await expect(page.locator('#ho-hints-counter')).toHaveText('1');
+  const toastBanner = page.locator('#ho-toast-banner');
+  await expect(toastBanner).toBeVisible();
+  await expect(toastBanner).toContainText('Hint:');
+
+  // 8. Detection Tests (Easy mode: 5 objects)
+  const overlay = page.locator('#ho-scene-overlay');
+  const overlayBox = await overlay.boundingBox();
+  expect(overlayBox).not.toBeNull();
+
+  // Test 8A: Incorrect click shows popup with red cross and "Not quite! Keep looking." without incrementing
+  await overlay.click({ position: { x: overlayBox.width * 0.1, y: overlayBox.height * 0.1 } });
+  await expect(page.locator('#ho-found-counter')).toHaveText('0 of 5 Found');
+  await expect(page.locator('.ho-marker')).toHaveCount(0);
+  const missPopup = page.locator('.ho-selection-popup.ho-popup-incorrect');
+  await expect(missPopup).toBeVisible();
+  await expect(missPopup).toContainText('Not quite! Keep looking.');
+  await expect(missPopup.locator('.incorrect-icon')).toBeVisible();
+
+  // Test 8B: Correct click on Brass Key at (52.2%, 32.5%)
+  const keyX = overlayBox.width * 0.522;
+  const keyY = overlayBox.height * 0.325;
+  await overlay.click({ position: { x: keyX, y: keyY } });
+
+  await expect(page.locator('#ho-found-counter')).toHaveText('1 of 5 Found');
+  await expect(page.locator('#ho-remaining-tag')).toHaveText('(4 remaining)');
+  await expect(page.locator('.ho-marker')).toHaveCount(1);
+  await expect(page.locator('.ho-object-card[data-obj-id="brass-key"]')).toHaveClass(/is-found/);
+  
+  const correctPopup = page.locator('.ho-selection-popup.ho-popup-correct');
+  await expect(correctPopup).toBeVisible();
+  await expect(correctPopup).toContainText('Brass Key');
+  await expect(correctPopup.locator('.correct-icon')).toBeVisible();
+
+  // Test 8C: Duplicate click does NOT increment
+  await overlay.click({ position: { x: keyX, y: keyY } });
+  await expect(page.locator('#ho-found-counter')).toHaveText('1 of 5 Found');
+  await expect(page.locator('.ho-marker')).toHaveCount(1);
+
+  // Test 8D: Zoom In and verify clicking an object while zoomed works accurately
+  await zoomBtn.click();
+  await btnZoomIn.click();
+  await expect(page.locator('.zoom-level-label')).toHaveText('115%');
+  const zoomedOverlayBox = await overlay.boundingBox();
+  expect(zoomedOverlayBox).not.toBeNull();
+  // Click Tea Cup at (41.7%, 71.7%) on the zoomed board
+  await overlay.click({ position: { x: zoomedOverlayBox.width * 0.417, y: zoomedOverlayBox.height * 0.717 } });
+  await expect(page.locator('#ho-found-counter')).toHaveText('2 of 5 Found');
+  await expect(page.locator('.ho-object-card[data-obj-id="tea-cup"]')).toHaveClass(/is-found/);
+  // Re-open zoom popover and reset back to 100%
+  await zoomBtn.click();
+  await btnZoomReset.click();
+  await expect(page.locator('.zoom-level-label')).toHaveText('100%');
+  await expect.poll(async () => {
+    const box = await page.locator('#ho-scene-board').boundingBox();
+    return box ? Math.round(box.width) : 0;
+  }).toBe(Math.round(initialBox.width));
+
+  // 9. Complete Level 1 in Easy mode by finding the other 3 objects:
+  // yarn-ball: (86.7, 81.7)
+  // magnifying-glass: (15.6, 43.3)
+  // pocket-watch: (72.2, 61.7)
+  const freshOverlayBox = await overlay.boundingBox();
+  const remainingEasyTargets = [
+    { x: 0.867, y: 0.817 },
+    { x: 0.156, y: 0.433 },
+    { x: 0.722, y: 0.617 }
+  ];
+
+  for (const t of remainingEasyTargets) {
+    await overlay.click({ position: { x: freshOverlayBox.width * t.x, y: freshOverlayBox.height * t.y } });
+  }
+
+  // All 5 found!
+  await expect(page.locator('#ho-found-counter')).toHaveText('5 of 5 Found');
+  await expect(page.locator('#ho-remaining-tag')).toHaveText('(0 remaining)');
+  await expect(page.locator('.ho-marker')).toHaveCount(5);
+
+  // Completion modal should appear with stats
+  const completionOverlay = page.locator('#ho-completion-overlay');
+  await expect(completionOverlay).toBeVisible();
+  await expect(page.locator('#ho-completion-title')).toContainText('Level 1 Complete');
+  await expect(page.locator('#ho-stat-time')).toContainText('Time:');
+  await expect(page.locator('#ho-stat-hints')).toContainText('Hints: 1');
+
+  // Next level pill (Level 2) is now unlocked
+  await expect(pills.nth(1)).not.toBeDisabled();
+
+  // 10. Click Next Level to advance to Level 2
+  const nextBtn = page.locator('#btn-next-level');
+  await nextBtn.click();
+  await expect(completionOverlay).toBeHidden();
+
+  // Level 2 loaded
+  await expect(page.locator('#ho-level-badge')).toHaveText('Level 2');
+  await expect(page.locator('#ho-puzzle-title')).toHaveText('Beautiful Garden');
+  await expect(page.locator('#ho-found-counter')).toHaveText('0 of 5 Found');
+  await expect(page.locator('.ho-marker')).toHaveCount(0);
+  await expect(sceneImg).toHaveAttribute('src', '/images/hidden-object/level-2-beautiful-garden.svg');
+
+  // 11. Test LocalStorage Persistence
+  await page.reload();
+  await expect(page.locator('#ho-level-badge')).toHaveText('Level 1');
+  await expect(pills.nth(1)).not.toBeDisabled();
+  await pills.nth(1).click();
+  await expect(page.locator('#ho-level-badge')).toHaveText('Level 2');
+  await expect(page.locator('#ho-puzzle-title')).toHaveText('Beautiful Garden');
+
+  // 12. Informational Content & Internal Links
+  const article = page.locator('.ho-article');
+  await expect(article).toBeVisible();
+  const internalLinks = article.locator('a[href^="/"]');
+  const count = await internalLinks.count();
+  expect(count).toBeGreaterThanOrEqual(5);
+
+  // 13. Explore More Section (Exactly 3 cards)
+  const relatedCards = page.locator('.related-games-section .related-card');
+  await expect(relatedCards).toHaveCount(3);
+  await expect(relatedCards.nth(0)).toHaveAttribute('href', '/spot-the-difference-game/');
+  await expect(relatedCards.nth(1)).toHaveAttribute('href', '/memory-matching-game-online/');
+  await expect(relatedCards.nth(2)).toHaveAttribute('href', '/picross-game-online/');
+
+  // 14. Games Directory Page Integration
+  await page.goto('/games/');
+  const hoCard = page.locator('a[href="/hidden-object-game/"]');
+  await expect(hoCard).toBeVisible();
+  await expect(hoCard.locator('h3')).toHaveText('Free Hidden Object Online Game');
+
+  // Verify Hidden Object thumbnail / card visual has 4 styled vibrant icons matching PuzzleFeels design
+  const hoIconSpans = hoCard.locator('.directory-icon span');
+  await expect(hoIconSpans).toHaveCount(4);
+  const hoSpan1Bg = await hoIconSpans.nth(0).evaluate(el => window.getComputedStyle(el).backgroundColor);
+  expect(hoSpan1Bg).toBe('rgb(254, 243, 199)'); // #fef3c7 warm gold
+  const hoSpan2Bg = await hoIconSpans.nth(1).evaluate(el => window.getComputedStyle(el).backgroundColor);
+  expect(hoSpan2Bg).toBe('rgb(49, 94, 232)'); // #315ee8 royal blue
+
+  const searchInput = page.locator('#game-search-input');
+  await searchInput.fill('hidden object');
+  await expect(hoCard).toBeVisible();
+
+  // 15. Homepage Isolation (Must not add to 5 featured or 3 daily games)
+  await page.goto('/');
+  const featuredSection = page.locator('section:has-text("One good puzzle can change your day")');
+  const featuredLinks = await featuredSection.locator('a[href*="-game"]').evaluateAll(els => els.map(e => e.getAttribute('href')));
+  expect(featuredLinks.some(l => l && l.includes('hidden-object'))).toBe(false);
+
+  const dailySection = page.locator('section:has-text("Your Daily Moments of Focus")');
+  const dailyLinks = await dailySection.locator('a[href*="-game"]').evaluateAll(els => els.map(e => e.getAttribute('href')));
+  expect(dailyLinks.some(l => l && l.includes('hidden-object'))).toBe(false);
+
+  // 16. Viewport Responsiveness & Mobile 2-Column Grid
+  await page.goto('/hidden-object-game/');
+  for (const width of [1280, 1024, 768, 430, 414, 390, 375, 360, 320]) {
+    await page.setViewportSize({ width, height: 850 });
+    const metrics = await page.evaluate(() => ({
+      viewport: innerWidth,
+      docWidth: document.documentElement.scrollWidth
+    }));
+    expect(metrics.docWidth, `Hidden Object ${width}px horizontal overflow`).toBeLessThanOrEqual(metrics.viewport + 1);
+
+    if (width <= 640) {
+      const gridCols = await page.locator('#ho-objects-grid').evaluate(el => window.getComputedStyle(el).gridTemplateColumns);
+      const cols = gridCols.trim().split(/\s+/);
+      expect(cols.length, `Objects to Find at ${width}px should have exactly 2 columns`).toBe(2);
+    }
+  }
+});
+
+test('Free Hidden Object Online Game - All 10 Levels Playthrough and Victory', async ({ page }) => {
+  await page.goto('/hidden-object-game/');
+
+  // Clear any existing localStorage
+  await page.evaluate(() => {
+    localStorage.clear();
+  });
+  await page.reload();
+
+  // Switch to Hard mode to test finding all 8 objects per level
+  const diffHard = page.locator('.ho-tab-btn[data-difficulty="hard"]');
+  await diffHard.click();
+  await expect(diffHard).toHaveClass(/is-active/);
+
+  const dataContent = await page.locator('#ho-data').textContent();
+  const levels = JSON.parse(dataContent || '[]');
+  expect(levels.length).toBe(10);
+
+  const overlay = page.locator('#ho-scene-overlay');
+  const completionOverlay = page.locator('#ho-completion-overlay');
+  const nextBtn = page.locator('#btn-next-level');
+
+  for (let i = 0; i < 10; i++) {
+    const currentLevel = levels[i];
+    await expect(page.locator('#ho-level-badge')).toHaveText(`Level ${currentLevel.level}`);
+    await expect(page.locator('#ho-puzzle-title')).toHaveText(currentLevel.title);
+
+    const overlayBox = await overlay.boundingBox();
+    expect(overlayBox).not.toBeNull();
+
+    // Click every object in the level
+    for (const obj of currentLevel.objects) {
+      const clickX = overlayBox.width * (obj.x / 100);
+      const clickY = overlayBox.height * (obj.y / 100);
+      await overlay.click({ position: { x: clickX, y: clickY } });
+    }
+
+    // Level completed!
+    await expect(page.locator('#ho-found-counter')).toHaveText('8 of 8 Found');
+    await expect(completionOverlay).toBeVisible();
+
+    if (i < 9) {
+      await expect(page.locator('#ho-completion-title')).toContainText(`Level ${currentLevel.level} Complete`);
+      await nextBtn.click();
+      await expect(completionOverlay).toBeHidden();
+    } else {
+      // Level 10 Grand Victory
+      await expect(page.locator('#ho-completion-title')).toContainText('All 10 Levels Completed');
+      await expect(nextBtn).toContainText('Play Again');
+      await nextBtn.click();
+      await expect(page.locator('#ho-level-badge')).toHaveText('Level 1');
+    }
   }
 });

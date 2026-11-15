@@ -156,6 +156,18 @@ export const ALL_GAMES: GameCatalogItem[] = [
     visualClass: 'spot-visual',
     iconClass: 'spot-icon',
   },
+  {
+    id: 'hidden-object',
+    title: 'Free Hidden Object Online Game',
+    shortTitle: 'Hidden Object',
+    href: '/hidden-object-game/',
+    search: 'free hidden object online game hidden object game hidden object puzzle find hidden objects visual search observation relaxing casual game',
+    pill: 'HIDDEN OBJECT',
+    difficulty: '10 Unique Levels',
+    description: 'Inspect detailed illustrated scenes, find every hidden object from the list, and unlock all 10 relaxing levels.',
+    visualClass: 'hidden-object-visual',
+    iconClass: 'hidden-object-icon',
+  },
 ];
 
 /**

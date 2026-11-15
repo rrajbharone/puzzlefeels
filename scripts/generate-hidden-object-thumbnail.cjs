@@ -1,0 +1,375 @@
+const fs = require('fs');
+const path = require('path');
+
+const targetPath = path.join(__dirname, '..', 'public', 'images', 'hidden-object', 'thumbnail.svg');
+
+const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%" aria-label="Free Hidden Object Online Game Thumbnail">
+  <defs>
+    <!-- Lighting and Shading Filters -->
+    <filter id="thumbShadow" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="2" dy="5" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.22"/>
+    </filter>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="sunGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <!-- Color Gradients -->
+    <!-- Room Walls: Rich vibrant twilight-teal to cheerful royal blue -->
+    <linearGradient id="wallGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#244885"/>
+      <stop offset="50%" stop-color="#1d3b70"/>
+      <stop offset="100%" stop-color="#13274c"/>
+    </linearGradient>
+
+    <!-- Arched Window Sky: Brilliant sunny daylight -->
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="65%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+
+    <!-- Sunbeams -->
+    <linearGradient id="sunBeam" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef08a" stop-opacity="0.55"/>
+      <stop offset="50%" stop-color="#fef9c3" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Hardwood Floor: Warm polished golden amber oak -->
+    <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c27838"/>
+      <stop offset="35%" stop-color="#a65f24"/>
+      <stop offset="100%" stop-color="#783d11"/>
+    </linearGradient>
+
+    <!-- Ornate Persian Rug: Rich Crimson and Gold -->
+    <linearGradient id="rugGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b91c1c"/>
+      <stop offset="50%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+
+    <!-- Emerald Velvet Armchair -->
+    <linearGradient id="chairGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="60%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+
+    <!-- Mahogany Bookshelf and Desk -->
+    <linearGradient id="woodDesk" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#854d0e"/>
+      <stop offset="50%" stop-color="#a16207"/>
+      <stop offset="100%" stop-color="#713f12"/>
+    </linearGradient>
+
+    <!-- Brass and Gold Shimmer for Hidden Objects -->
+    <linearGradient id="goldShine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+
+    <!-- Ruby Gem Shimmer -->
+    <linearGradient id="rubyGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="60%" stop-color="#e11d48"/>
+      <stop offset="100%" stop-color="#9f1239"/>
+    </linearGradient>
+
+    <!-- Glass Lens Highlight -->
+    <linearGradient id="lensGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.75"/>
+      <stop offset="50%" stop-color="#67e8f9" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- BACKGROUND WALL -->
+  <rect width="900" height="430" fill="url(#wallGrad)"/>
+
+  <!-- Wainscoting Lower Wall Panel -->
+  <rect y="360" width="900" height="70" fill="#1b2e54"/>
+  <line x1="0" y1="360" x2="900" y2="360" stroke="#31528f" stroke-width="5"/>
+  <line x1="0" y1="395" x2="900" y2="395" stroke="#172747" stroke-width="3"/>
+
+  <!-- HARDWOOD FLOOR -->
+  <rect y="430" width="900" height="170" fill="url(#floorGrad)"/>
+  <!-- Floor Planks Perspective -->
+  <line x1="0" y1="475" x2="900" y2="475" stroke="#602f0a" stroke-width="2.5" opacity="0.6"/>
+  <line x1="0" y1="520" x2="900" y2="520" stroke="#602f0a" stroke-width="2.5" opacity="0.6"/>
+  <line x1="0" y1="565" x2="900" y2="565" stroke="#602f0a" stroke-width="2.5" opacity="0.6"/>
+
+  <!-- LARGE ARCHED SUNLIT WINDOW IN CENTER -->
+  <g id="window-bay" filter="url(#thumbShadow)">
+    <!-- Window Frame Outer Cutout -->
+    <path d="M 330 50 A 120 120 0 0 1 570 50 L 570 330 L 330 330 Z" fill="#ffffff" stroke="#c7d4eb" stroke-width="8"/>
+    <!-- Window Glass (Sky & Hills View) -->
+    <path d="M 338 52 A 112 112 0 0 1 562 52 L 562 322 L 338 322 Z" fill="url(#skyGrad)"/>
+
+    <!-- Outdoor Landscape: Rolling Green Hills & Fluffy Clouds -->
+    <path d="M 338 270 Q 400 240 460 265 Q 520 280 562 250 L 562 322 L 338 322 Z" fill="#22c55e"/>
+    <path d="M 338 290 Q 420 270 480 295 Q 530 310 562 285 L 562 322 L 338 322 Z" fill="#15803d"/>
+    <!-- Outdoor Tree Canopy on Right -->
+    <circle cx="530" cy="230" r="32" fill="#16a34a"/>
+    <circle cx="550" cy="215" r="24" fill="#22c55e"/>
+
+    <!-- Fluffy Clouds -->
+    <g fill="#ffffff" opacity="0.9">
+      <circle cx="390" cy="110" r="18"/>
+      <circle cx="410" cy="100" r="22"/>
+      <circle cx="430" cy="110" r="16"/>
+      <rect x="390" y="108" width="40" height="18" rx="8"/>
+    </g>
+
+    <!-- Radiant Glowing Sun -->
+    <circle cx="500" cy="85" r="28" fill="#fde047" filter="url(#sunGlow)"/>
+    <circle cx="500" cy="85" r="20" fill="#ffffff"/>
+
+    <!-- Window Panes Grille -->
+    <line x1="450" y1="50" x2="450" y2="322" stroke="#ffffff" stroke-width="6"/>
+    <line x1="338" y1="160" x2="562" y2="160" stroke="#ffffff" stroke-width="6"/>
+    <line x1="338" y1="240" x2="562" y2="240" stroke="#ffffff" stroke-width="6"/>
+
+    <!-- Window Sill with Stone Ledge -->
+    <rect x="315" y="322" width="270" height="18" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+  </g>
+
+  <!-- SUNLIGHT BEAMS STREAMING ACROSS ROOM -->
+  <polygon points="450 140, 560 140, 850 560, 280 560" fill="url(#sunBeam)" style="mix-blend-mode: screen;"/>
+  <!-- Ambient Sparkles in Sunbeam -->
+  <circle cx="480" cy="280" r="2.5" fill="#fef08a" opacity="0.8"/>
+  <circle cx="520" cy="340" r="3" fill="#ffffff" opacity="0.9"/>
+  <circle cx="430" cy="380" r="2" fill="#fde047" opacity="0.75"/>
+  <circle cx="580" cy="420" r="3.5" fill="#ffffff" opacity="0.85"/>
+
+  <!-- ORNATE PERSIAN RUG -->
+  <g id="rug" filter="url(#thumbShadow)">
+    <ellipse cx="450" cy="510" rx="270" ry="75" fill="url(#rugGrad)"/>
+    <ellipse cx="450" cy="510" rx="245" ry="63" fill="#991b1b" stroke="#f59e0b" stroke-width="3" stroke-dasharray="10 6"/>
+    <ellipse cx="450" cy="510" rx="165" ry="38" fill="#7f1d1d" stroke="#fde047" stroke-width="2"/>
+    <!-- Rug Fringe -->
+    <line x1="180" y1="510" x2="172" y2="510" stroke="#fef08a" stroke-width="4"/>
+    <line x1="720" y1="510" x2="728" y2="510" stroke="#fef08a" stroke-width="4"/>
+  </g>
+
+  <!-- LEFT WALL: TALL MAHOGANY BOOKSHELF -->
+  <g id="bookshelf" filter="url(#thumbShadow)">
+    <!-- Outer Shelf Cabinet -->
+    <rect x="25" y="70" width="190" height="420" rx="5" fill="#603813" stroke="#3d2208" stroke-width="4"/>
+    <rect x="35" y="80" width="170" height="400" fill="#45270c"/>
+    <!-- Shelves Horizontals -->
+    <rect x="25" y="150" width="190" height="14" fill="url(#woodDesk)"/>
+    <rect x="25" y="235" width="190" height="14" fill="url(#woodDesk)"/>
+    <rect x="25" y="320" width="190" height="14" fill="url(#woodDesk)"/>
+    <rect x="25" y="405" width="190" height="14" fill="url(#woodDesk)"/>
+
+    <!-- Colorful Books on Shelves -->
+    <!-- Top Shelf Books -->
+    <rect x="42" y="95" width="18" height="55" rx="2" fill="#ef4444"/>
+    <rect x="62" y="102" width="15" height="48" rx="2" fill="#3b82f6"/>
+    <rect x="79" y="90" width="22" height="60" rx="2" fill="#10b981"/>
+    <rect x="103" y="105" width="16" height="45" rx="2" fill="#f59e0b"/>
+    <rect x="121" y="98" width="19" height="52" rx="2" fill="#8b5cf6"/>
+    <!-- Tilted Book on Top Shelf -->
+    <rect x="160" y="105" width="16" height="50" rx="2" fill="#ec4899" transform="rotate(16 160 105)"/>
+
+    <!-- Middle Shelf Books -->
+    <rect x="42" y="165" width="24" height="70" rx="2" fill="#0284c7"/>
+    <rect x="68" y="172" width="18" height="63" rx="2" fill="#eab308"/>
+    <rect x="88" y="168" width="20" height="67" rx="2" fill="#6366f1"/>
+
+    <!-- Lower Shelf Items -->
+    <rect x="135" y="250" width="22" height="70" rx="2" fill="#14b8a6"/>
+    <rect x="159" y="258" width="18" height="62" rx="2" fill="#f97316"/>
+  </g>
+
+  <!-- RIGHT WALL: COZY EMERALD VELVET ARMCHAIR -->
+  <g id="armchair" filter="url(#thumbShadow)">
+    <!-- Armchair Back Cushion -->
+    <rect x="680" y="240" width="180" height="160" rx="35" fill="url(#chairGrad)" stroke="#065f46" stroke-width="4"/>
+    <!-- Tufting Buttons on Back -->
+    <circle cx="730" cy="290" r="4" fill="#064e3b"/>
+    <circle cx="770" cy="290" r="4" fill="#064e3b"/>
+    <circle cx="810" cy="290" r="4" fill="#064e3b"/>
+    <circle cx="750" cy="330" r="4" fill="#064e3b"/>
+    <circle cx="790" cy="330" r="4" fill="#064e3b"/>
+
+    <!-- Plump Seat Cushion -->
+    <rect x="660" y="360" width="210" height="85" rx="26" fill="#10b981" stroke="#047857" stroke-width="3"/>
+
+    <!-- Left & Right Armrests -->
+    <rect x="645" y="325" width="45" height="110" rx="18" fill="#059669" stroke="#065f46" stroke-width="3"/>
+    <rect x="840" y="325" width="45" height="110" rx="18" fill="#059669" stroke="#065f46" stroke-width="3"/>
+
+    <!-- Wooden Chair Legs -->
+    <polygon points="665 440, 680 440, 670 485, 655 485" fill="#713f12"/>
+    <polygon points="840 440, 855 440, 865 485, 850 485" fill="#713f12"/>
+
+    <!-- Cheerful Golden Cushion on Chair -->
+    <rect x="695" y="335" width="70" height="55" rx="14" fill="#facc15" stroke="#ca8a04" stroke-width="2" transform="rotate(-12 695 335)"/>
+  </g>
+
+  <!-- CENTRAL STUDY DESK WITH POLISHED WOOD -->
+  <g id="study-desk" filter="url(#thumbShadow)">
+    <!-- Desktop Surface (Perspective) -->
+    <polygon points="260 375, 630 375, 660 415, 230 415" fill="url(#woodDesk)" stroke="#542e13" stroke-width="3"/>
+    <!-- Desk Front Apron & Drawers -->
+    <rect x="230" y="415" width="430" height="65" fill="#78350f" stroke="#451a03" stroke-width="3"/>
+    <!-- Left Drawer -->
+    <rect x="245" y="425" width="115" height="45" rx="3" fill="#854d0e" stroke="#451a03" stroke-width="2"/>
+    <circle cx="302" cy="447" r="5" fill="url(#goldShine)"/>
+    <!-- Right Drawer -->
+    <rect x="530" y="425" width="115" height="45" rx="3" fill="#854d0e" stroke="#451a03" stroke-width="2"/>
+    <circle cx="587" cy="447" r="5" fill="url(#goldShine)"/>
+    <!-- Solid Desk Turned Legs -->
+    <rect x="238" y="480" width="22" height="90" fill="#542e13" rx="4"/>
+    <rect x="630" y="480" width="22" height="90" fill="#542e13" rx="4"/>
+  </g>
+
+  <!-- ======================================================== -->
+  <!-- CLEVERLY PLACED & VIBRANT HIDDEN OBJECTS THROUGHOUT SCENE -->
+  <!-- ======================================================== -->
+
+  <!-- HIDDEN OBJECT 1: ORNATE VINTAGE GOLDEN KEY (Hanging on Bookshelf) -->
+  <g id="hidden-key" filter="url(#softGlow)" transform="translate(182, 175)">
+    <!-- Glow Ring to entice player -->
+    <circle cx="15" cy="15" r="16" fill="#fef08a" opacity="0.35"/>
+    <!-- Key Bow / Handle -->
+    <circle cx="15" cy="10" r="9" fill="none" stroke="url(#goldShine)" stroke-width="3"/>
+    <circle cx="15" cy="10" r="4" fill="none" stroke="url(#goldShine)" stroke-width="2"/>
+    <!-- Key Shaft -->
+    <line x1="15" y1="19" x2="15" y2="46" stroke="url(#goldShine)" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Key Wards -->
+    <line x1="15" y1="36" x2="22" y2="36" stroke="url(#goldShine)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="15" y1="43" x2="24" y2="43" stroke="url(#goldShine)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="24" y1="39" x2="24" y2="43" stroke="url(#goldShine)" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- HIDDEN OBJECT 2: BRASS MAGNIFYING GLASS (On the Desk, highlighting clues) -->
+  <g id="hidden-magnifier" filter="url(#thumbShadow)" transform="translate(340, 365) rotate(22)">
+    <!-- Circular Brass Rim -->
+    <circle cx="40" cy="30" r="26" fill="url(#lensGlass)" stroke="url(#goldShine)" stroke-width="5"/>
+    <!-- Glass Lens Gleam Reflection -->
+    <path d="M 24 20 A 20 20 0 0 1 48 14" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+    <!-- Sparkle inside lens revealing discovery -->
+    <polygon points="40 24, 42 28, 46 30, 42 32, 40 36, 38 32, 34 30, 38 28" fill="#fef08a"/>
+    <!-- Wooden / Brass Turned Handle -->
+    <line x1="58" y1="48" x2="98" y2="88" stroke="#451a03" stroke-width="7" stroke-linecap="round"/>
+    <line x1="58" y1="48" x2="68" y2="58" stroke="url(#goldShine)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="92" y1="82" x2="98" y2="88" stroke="url(#goldShine)" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- HIDDEN OBJECT 3: ANTIQUE POCKET WATCH (Draped over desk edge) -->
+  <g id="hidden-watch" filter="url(#thumbShadow)" transform="translate(560, 395)">
+    <!-- Watch Chain -->
+    <path d="M 15 -18 Q 28 -5 18 12" fill="none" stroke="url(#goldShine)" stroke-width="2.5" stroke-dasharray="3 2"/>
+    <!-- Outer Golden Casing -->
+    <circle cx="20" cy="22" r="19" fill="#fef08a" stroke="url(#goldShine)" stroke-width="4"/>
+    <circle cx="20" cy="22" r="15" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+    <!-- Watch Top Stem and Crown -->
+    <rect x="17" y="1" width="6" height="4" rx="1" fill="url(#goldShine)"/>
+    <circle cx="20" cy="0" r="3" fill="none" stroke="url(#goldShine)" stroke-width="2"/>
+    <!-- Watch Hands -->
+    <circle cx="20" cy="22" r="2" fill="#0f172a"/>
+    <line x1="20" y1="22" x2="20" y2="12" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+    <line x1="20" y1="22" x2="28" y2="22" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- HIDDEN OBJECT 4: GLEAMING RUBY GEM (Subtly resting on bookshelf lower ledge) -->
+  <g id="hidden-gem" filter="url(#softGlow)" transform="translate(60, 300)">
+    <polygon points="18 4, 32 4, 42 16, 25 36, 8 16" fill="url(#rubyGrad)" stroke="#fda4af" stroke-width="1.5"/>
+    <polygon points="18 4, 32 4, 25 16" fill="#f43f5e" opacity="0.8"/>
+    <polygon points="18 4, 8 16, 25 16" fill="#be123c" opacity="0.7"/>
+    <polygon points="32 4, 42 16, 25 16" fill="#fb7185" opacity="0.85"/>
+    <polygon points="8 16, 25 36, 25 16" fill="#9f1239"/>
+    <polygon points="42 16, 25 36, 25 16" fill="#e11d48"/>
+    <!-- White Facet Glint -->
+    <circle cx="20" cy="10" r="2" fill="#ffffff"/>
+  </g>
+
+  <!-- HIDDEN OBJECT 5: BRASS TELESCOPE ON TRIPOD (By the window) -->
+  <g id="hidden-telescope" filter="url(#thumbShadow)" transform="translate(535, 195) rotate(-18)">
+    <!-- Tripod Legs -->
+    <line x1="45" y1="75" x2="25" y2="140" stroke="#713f12" stroke-width="3" stroke-linecap="round"/>
+    <line x1="45" y1="75" x2="45" y2="142" stroke="#542e13" stroke-width="3" stroke-linecap="round"/>
+    <line x1="45" y1="75" x2="65" y2="138" stroke="#713f12" stroke-width="3" stroke-linecap="round"/>
+    <!-- Telescope Barrel -->
+    <polygon points="15 62, 75 52, 76 68, 16 78" fill="url(#goldShine)" stroke="#92400e" stroke-width="1.5"/>
+    <!-- Eyepiece & Focus Ring -->
+    <rect x="7" y="66" width="8" height="8" rx="2" fill="#78350f"/>
+    <rect x="73" y="49" width="7" height="22" rx="2" fill="url(#goldShine)"/>
+    <rect x="40" y="56" width="10" height="18" fill="#d97706"/>
+  </g>
+
+  <!-- HIDDEN OBJECT 6: STEAMING PORCELAIN TEACUP & SAUCER (On Desk) -->
+  <g id="hidden-teacup" filter="url(#thumbShadow)" transform="translate(250, 365)">
+    <!-- Saucer -->
+    <ellipse cx="25" cy="22" rx="22" ry="6" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
+    <!-- Cup Body -->
+    <path d="M 12 10 Q 14 20 25 20 Q 36 20 38 10 Z" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <!-- Cup Handle -->
+    <path d="M 36 12 C 44 12, 44 19, 35 19" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+    <!-- Golden Tea Surface -->
+    <ellipse cx="25" cy="10" rx="13" ry="3.5" fill="#b45309"/>
+    <!-- Steam Swirls -->
+    <path d="M 22 5 Q 20 -2 23 -8 Q 26 -14 22 -18" fill="none" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+    <path d="M 28 4 Q 31 -3 28 -9 Q 25 -15 29 -20" fill="none" stroke="#e0f2fe" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+  </g>
+
+  <!-- HIDDEN OBJECT 7: MARITIME BRASS COMPASS (On Bookshelf Mid-Shelf) -->
+  <g id="hidden-compass" filter="url(#softGlow)" transform="translate(130, 195)">
+    <circle cx="18" cy="18" r="16" fill="url(#goldShine)" stroke="#78350f" stroke-width="2"/>
+    <circle cx="18" cy="18" r="12" fill="#f8fafc" stroke="#b45309" stroke-width="1.2"/>
+    <!-- Star Dial Points -->
+    <line x1="18" y1="8" x2="18" y2="28" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="18" x2="28" y2="18" stroke="#94a3b8" stroke-width="1"/>
+    <!-- Red & Blue Magnetic Needle -->
+    <polygon points="18 10, 15 18, 18 17" fill="#ef4444"/>
+    <polygon points="18 10, 21 18, 18 17" fill="#dc2626"/>
+    <polygon points="18 26, 15 18, 18 19" fill="#3b82f6"/>
+    <polygon points="18 26, 21 18, 18 19" fill="#1d4ed8"/>
+    <circle cx="18" cy="18" r="2.5" fill="url(#goldShine)"/>
+  </g>
+
+  <!-- HIDDEN OBJECT 8: ANCIENT ROLLED TREASURE MAP (Beside Desk) -->
+  <g id="hidden-scroll" filter="url(#thumbShadow)" transform="translate(460, 360)">
+    <!-- Rolled Parchment -->
+    <rect x="0" y="8" width="55" height="24" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <!-- Red Wax Seal & Ribbon -->
+    <rect x="24" y="6" width="6" height="28" fill="#ef4444"/>
+    <circle cx="27" cy="20" r="5" fill="#dc2626" stroke="#991b1b" stroke-width="1.5"/>
+    <path d="M 8 16 Q 16 14 22 18" stroke="#b45309" stroke-width="1.5" fill="none"/>
+    <path d="M 32 17 Q 40 15 48 18" stroke="#b45309" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- FOREGROUND LUSH POTTED MONSTERA HOUSEPLANT (Adds Depth and Casual Game Polish) -->
+  <g id="potted-plant" filter="url(#thumbShadow)" transform="translate(40, 380)">
+    <!-- Terracotta Clay Pot -->
+    <polygon points="25 120, 85 120, 75 180, 35 180" fill="#ea580c" stroke="#9a3412" stroke-width="3"/>
+    <ellipse cx="55" cy="120" rx="32" ry="8" fill="#c2410c"/>
+    <ellipse cx="55" cy="120" rx="27" ry="6" fill="#78350f"/>
+    <!-- Tropical Monstera Leaves -->
+    <path d="M 50 120 Q 30 70 -5 70 Q 20 40 50 120 Z" fill="#15803d"/>
+    <path d="M 55 120 Q 75 50 115 50 Q 85 30 55 120 Z" fill="#22c55e"/>
+    <path d="M 52 120 Q 55 30 52 10 Q 75 40 52 120 Z" fill="#16a34a"/>
+    <path d="M 50 120 Q 15 85 10 110 Q 30 115 50 120 Z" fill="#166534"/>
+  </g>
+
+  <!-- INVITATION BADGE / INTERACTIVE ACCENT (Bottom Right Subtle Game Indicator) -->
+  <g id="interactive-hint-accent" filter="url(#softGlow)" transform="translate(810, 480)">
+    <!-- Pulsing Discovery Beacon -->
+    <circle cx="24" cy="24" r="22" fill="#315ee8" opacity="0.2"/>
+    <circle cx="24" cy="24" r="16" fill="#315ee8" opacity="0.35"/>
+    <circle cx="24" cy="24" r="10" fill="#315ee8"/>
+    <polygon points="24 16, 26 21, 31 22, 27 25, 28 30, 24 27, 20 30, 21 25, 17 22, 22 21" fill="#ffffff"/>
+  </g>
+</svg>`;
+
+fs.writeFileSync(targetPath, svgContent.trim());
+console.log('Successfully wrote', targetPath, 'Size:', svgContent.length);

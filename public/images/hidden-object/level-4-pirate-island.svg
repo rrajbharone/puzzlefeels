@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%" aria-label="Hidden Object Scene - Pirate Treasure Island">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="1" dy="3" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <defs>
+    <linearGradient id="l4-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="l4-sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <linearGradient id="l4-sand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Tropical Sky & Sun -->
+  <rect x="0" y="0" width="900" height="260" fill="url(#l4-sky)"/>
+  <circle cx="750" cy="70" r="40" fill="#fef08a" opacity="0.9"/>
+
+  <!-- Turquoise Ocean -->
+  <rect x="0" y="240" width="900" height="120" fill="url(#l4-sea)"/>
+  <path d="M0 320 Q225 310 450 320 Q675 330 900 320 L900 360 L0 360 Z" fill="#2dd4bf" opacity="0.6"/>
+
+  <!-- Golden Sand Beach -->
+  <path d="M0 340 Q300 320 600 350 T900 360 L900 600 L0 600 Z" fill="url(#l4-sand)"/>
+
+  <!-- Palm Tree on Right -->
+  <path d="M820 450 Q800 280 770 170" fill="none" stroke="#78350f" stroke-width="22" stroke-linecap="round"/>
+  <!-- Palm Fronds -->
+  <path d="M770 170 Q690 140 640 180" fill="none" stroke="#15803d" stroke-width="12" stroke-linecap="round"/>
+  <path d="M770 170 Q750 90 730 60" fill="none" stroke="#16a34a" stroke-width="12" stroke-linecap="round"/>
+  <path d="M770 170 Q850 110 880 150" fill="none" stroke="#15803d" stroke-width="12" stroke-linecap="round"/>
+  <path d="M770 170 Q820 220 850 240" fill="none" stroke="#16a34a" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Pirate Shipwreck on Left -->
+  <path d="M60 260 L240 290 L220 370 L40 350 Z" fill="#451a03" stroke="#291102" stroke-width="4"/>
+  <line x1="160" y1="280" x2="160" y2="150" stroke="#78350f" stroke-width="8"/>
+  <!-- Broken Mast & Ropes -->
+  <line x1="160" y1="180" x2="220" y2="240" stroke="#a16207" stroke-width="3"/>
+
+  <!-- Treasure Chest -->
+  <rect x="530" y="450" width="90" height="55" rx="6" fill="#78350f" stroke="#451a03" stroke-width="4" filter="url(#shadow)"/>
+  <rect x="525" y="440" width="100" height="18" rx="4" fill="#92400e" stroke="#f59e0b" stroke-width="3"/>
+  <!-- Gold Coins inside chest -->
+  <circle cx="560" cy="446" r="6" fill="#fbbf24"/>
+  <circle cx="575" cy="444" r="7" fill="#facc15"/>
+  <circle cx="590" cy="448" r="6" fill="#eab308"/>
+
+  <!-- Driftwood Log -->
+  <path d="M260 440 Q330 425 380 440 L375 455 Q325 440 255 455 Z" fill="#542e13"/>
+
+  <!-- ==================== 8 TARGET OBJECTS ==================== -->
+  <!-- 1. Brass Spyglass (cx: 310, cy: 430) -->
+  <g id="target-brass-spyglass" transform="translate(310, 430) rotate(-15)">
+    <rect x="-20" y="-5" width="16" height="10" fill="#f59e0b" stroke="#b45309" stroke-width="1.5"/>
+    <rect x="-4" y="-4" width="14" height="8" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/>
+    <rect x="10" y="-3" width="12" height="6" fill="#fef08a" stroke="#b45309" stroke-width="1.5"/>
+  </g>
+
+  <!-- 2. Skull Flag (cx: 180, cy: 180) -->
+  <g id="target-skull-flag" transform="translate(180, 180)">
+    <path d="M-15 -18 H18 L12 0 L18 18 H-15 Z" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+    <circle cx="-2" cy="-2" r="5" fill="#f8fafc"/>
+    <circle cx="-4" cy="-3" r="1.5" fill="#0f172a"/>
+    <circle cx="0" cy="-3" r="1.5" fill="#0f172a"/>
+  </g>
+
+  <!-- 3. Golden Chalice (cx: 580, cy: 470) -->
+  <g id="target-golden-chalice" transform="translate(580, 470)">
+    <path d="M-10 -14 H10 V-4 C10 4 -10 4 -10 -4 Z" fill="#fbbf24" stroke="#d97706" stroke-width="2"/>
+    <circle cx="0" cy="-6" r="3" fill="#ef4444"/>
+    <rect x="-2" y="2" width="4" height="12" fill="#d97706"/>
+    <ellipse cx="0" cy="14" rx="8" ry="3" fill="#fbbf24"/>
+  </g>
+
+  <!-- 4. Pocket Compass (cx: 730, cy: 490) -->
+  <g id="target-pocket-compass" transform="translate(730, 490)">
+    <circle cx="0" cy="0" r="16" fill="#fef08a" stroke="#b45309" stroke-width="3"/>
+    <polygon points="0,-12 4,0 0,2 -4,0" fill="#ef4444"/>
+    <polygon points="0,12 4,0 0,-2 -4,0" fill="#3b82f6"/>
+    <circle cx="0" cy="0" r="2" fill="#1e293b"/>
+  </g>
+
+  <!-- 5. Parrot (cx: 780, cy: 160) -->
+  <g id="target-red-parrot" transform="translate(780, 160)">
+    <path d="M-6 -10 C-6 -18 6 -18 8 -8 C10 0 4 14 -2 22 C-4 16 -6 4 -6 -10 Z" fill="#dc2626"/>
+    <path d="M4 -6 C10 -6 14 4 10 14 Z" fill="#2563eb"/>
+    <polygon points="8,-12 15,-8 8,-6" fill="#f59e0b"/>
+    <circle cx="3" cy="-11" r="1.5" fill="#ffffff"/>
+  </g>
+
+  <!-- 6. Message Bottle (cx: 450, cy: 530) -->
+  <g id="target-message-bottle" transform="translate(450, 530) rotate(35)">
+    <rect x="-8" y="-12" width="16" height="26" rx="4" fill="#a5f3fc" opacity="0.8" stroke="#0891b2" stroke-width="2"/>
+    <rect x="-4" y="-18" width="8" height="6" fill="#a5f3fc" stroke="#0891b2" stroke-width="2"/>
+    <rect x="-3" y="-22" width="6" height="4" fill="#b45309"/>
+    <!-- Scroll inside -->
+    <rect x="-4" y="-6" width="8" height="14" rx="1" fill="#fde047"/>
+  </g>
+
+  <!-- 7. Pirate Cutlass (cx: 660, cy: 350) -->
+  <g id="target-pirate-cutlass" transform="translate(660, 350) rotate(-45)">
+    <path d="M0 -25 Q12 0 4 25 L-2 25 Q6 0 0 -25 Z" fill="#e2e8f0" stroke="#64748b" stroke-width="2"/>
+    <circle cx="0" cy="28" r="7" fill="none" stroke="#d97706" stroke-width="3"/>
+    <rect x="-2" y="25" width="4" height="12" fill="#78350f"/>
+  </g>
+
+  <!-- 8. Iron Anchor (cx: 120, cy: 360) -->
+  <g id="target-iron-anchor" transform="translate(120, 360)">
+    <circle cx="0" cy="-20" r="5" fill="none" stroke="#1e293b" stroke-width="3"/>
+    <line x1="0" y1="-15" x2="0" y2="20" stroke="#1e293b" stroke-width="4"/>
+    <line x1="-12" y1="-8" x2="12" y2="-8" stroke="#1e293b" stroke-width="3"/>
+    <path d="M-18 12 C-18 24 18 24 18 12" fill="none" stroke="#1e293b" stroke-width="4"/>
+  </g>
+  </svg>

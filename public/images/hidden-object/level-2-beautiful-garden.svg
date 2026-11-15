@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%" aria-label="Hidden Object Scene - Beautiful Garden">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="1" dy="3" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <defs>
+    <linearGradient id="l2-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <linearGradient id="l2-grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect x="0" y="0" width="900" height="320" fill="url(#l2-sky)"/>
+  <circle cx="820" cy="80" r="45" fill="#fde047" opacity="0.8"/>
+  <path d="M150 90 Q170 70 200 80 Q230 60 260 85 Q280 110 250 115 Q170 120 150 90 Z" fill="#ffffff" opacity="0.85"/>
+
+  <!-- Background Hedge & Trees -->
+  <rect x="0" y="240" width="900" height="100" fill="#15803d"/>
+  <circle cx="100" cy="220" r="60" fill="#166534"/>
+  <circle cx="250" cy="210" r="75" fill="#14532d"/>
+  <circle cx="780" cy="200" r="80" fill="#166534"/>
+  <circle cx="880" cy="210" r="65" fill="#14532d"/>
+
+  <!-- Lawn -->
+  <rect x="0" y="320" width="900" height="280" fill="url(#l2-grass)"/>
+
+  <!-- Trellis Arch in Center -->
+  <path d="M430 320 V140 Q475 90 520 140 V320" fill="none" stroke="#f8fafc" stroke-width="12" filter="url(#shadow)"/>
+  <line x1="430" y1="180" x2="520" y2="180" stroke="#cbd5e1" stroke-width="4"/>
+  <line x1="430" y1="230" x2="520" y2="230" stroke="#cbd5e1" stroke-width="4"/>
+  <line x1="430" y1="280" x2="520" y2="280" stroke="#cbd5e1" stroke-width="4"/>
+  <!-- Climbing Roses -->
+  <circle cx="435" cy="190" r="8" fill="#f43f5e"/>
+  <circle cx="515" cy="170" r="9" fill="#f43f5e"/>
+  <circle cx="470" cy="115" r="10" fill="#fb7185"/>
+
+  <!-- Winding Cobblestone Path -->
+  <path d="M460 320 Q500 420 540 600 L440 600 Q420 440 440 320 Z" fill="#cbd5e1"/>
+  <!-- Stone Texture Lines -->
+  <ellipse cx="480" cy="400" rx="14" ry="7" fill="#94a3b8"/>
+  <ellipse cx="460" cy="470" rx="18" ry="9" fill="#94a3b8"/>
+  <ellipse cx="505" cy="530" rx="20" ry="10" fill="#94a3b8"/>
+
+  <!-- Flowerbeds Left and Right -->
+  <ellipse cx="220" cy="400" rx="130" ry="40" fill="#713f12"/>
+  <circle cx="160" cy="385" r="9" fill="#a855f7"/>
+  <circle cx="190" cy="380" r="10" fill="#eab308"/>
+  <circle cx="230" cy="390" r="9" fill="#ec4899"/>
+  <circle cx="270" cy="385" r="11" fill="#ef4444"/>
+
+  <!-- Stone Birdbath -->
+  <ellipse cx="360" cy="340" rx="36" ry="12" fill="#94a3b8"/>
+  <rect x="353" y="270" width="14" height="70" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/>
+  <ellipse cx="360" cy="270" rx="42" ry="15" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/>
+  <ellipse cx="360" cy="268" rx="35" ry="10" fill="#38bdf8"/>
+
+  <!-- Wooden Garden Bench on Right -->
+  <rect x="650" y="350" width="130" height="12" rx="3" fill="#b45309" stroke="#78350f" stroke-width="2"/>
+  <rect x="650" y="320" width="130" height="24" rx="2" fill="#d97706" stroke="#78350f" stroke-width="2"/>
+  <line x1="665" y1="362" x2="665" y2="400" stroke="#78350f" stroke-width="4"/>
+  <line x1="765" y1="362" x2="765" y2="400" stroke="#78350f" stroke-width="4"/>
+
+  <!-- Terracotta Clay Pots on Left -->
+  <path d="M100 480 L115 480 L110 440 L105 440 Z" fill="#ea580c"/>
+  <path d="M140 470 L160 470 L155 425 L145 425 Z" fill="#c2410c"/>
+
+  <!-- ==================== 8 TARGET OBJECTS ==================== -->
+  <!-- 1. Watering Can (cx: 180, cy: 460) -->
+  <g id="target-watering-can" transform="translate(180, 460)">
+    <rect x="-14" y="-8" width="28" height="26" rx="4" fill="#15803d" stroke="#166534" stroke-width="2"/>
+    <path d="M-10 -8 C-10 -20 10 -20 10 -8" fill="none" stroke="#15803d" stroke-width="3"/>
+    <line x1="14" y1="2" x2="28" y2="-10" stroke="#15803d" stroke-width="4"/>
+    <ellipse cx="29" cy="-11" rx="4" ry="7" fill="#f59e0b"/>
+  </g>
+
+  <!-- 2. Garden Trowel (cx: 340, cy: 430) -->
+  <g id="target-garden-trowel" transform="translate(340, 430) rotate(40)">
+    <path d="M0 -15 C8 -10 8 5 0 10 C-8 5 -8 -10 0 -15 Z" fill="#94a3b8" stroke="#475569" stroke-width="1.5"/>
+    <rect x="-2" y="10" width="4" height="15" rx="1.5" fill="#b45309"/>
+  </g>
+
+  <!-- 3. Butterfly (cx: 490, cy: 150) -->
+  <g id="target-yellow-butterfly" transform="translate(490, 150)">
+    <ellipse cx="-8" cy="-5" rx="9" ry="12" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
+    <ellipse cx="8" cy="-5" rx="9" ry="12" fill="#facc15" stroke="#ca8a04" stroke-width="1.5"/>
+    <ellipse cx="-6" cy="6" rx="6" ry="8" fill="#f59e0b"/>
+    <ellipse cx="6" cy="6" rx="6" ry="8" fill="#f59e0b"/>
+    <line x1="0" y1="-12" x2="0" y2="12" stroke="#451a03" stroke-width="2.5"/>
+  </g>
+
+  <!-- 4. Sun Hat (cx: 710, cy: 340) -->
+  <g id="target-sun-hat" transform="translate(710, 340)">
+    <ellipse cx="0" cy="5" rx="28" ry="10" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+    <path d="M-14 4 C-14 -12 14 -12 14 4 Z" fill="#fde047" stroke="#ca8a04" stroke-width="2"/>
+    <path d="M-14 2 H14" stroke="#1d4ed8" stroke-width="3"/>
+  </g>
+
+  <!-- 5. Birdhouse (cx: 820, cy: 130) -->
+  <g id="target-birdhouse" transform="translate(820, 130)">
+    <line x1="0" y1="-30" x2="0" y2="-15" stroke="#78350f" stroke-width="2"/>
+    <polygon points="0,-15 -20,2 20,2" fill="#b91c1c" stroke="#7f1d1d" stroke-width="2"/>
+    <rect x="-15" y="2" width="30" height="28" fill="#fef3c7" stroke="#78350f" stroke-width="2"/>
+    <circle cx="0" cy="14" r="5" fill="#1e293b"/>
+    <line x1="0" y1="21" x2="0" y2="25" stroke="#78350f" stroke-width="3"/>
+  </g>
+
+  <!-- 6. Pruning Shears (cx: 520, cy: 510) -->
+  <g id="target-pruning-shears" transform="translate(520, 510) rotate(-20)">
+    <circle cx="-10" cy="12" r="6" fill="none" stroke="#ef4444" stroke-width="3"/>
+    <circle cx="10" cy="12" r="6" fill="none" stroke="#ef4444" stroke-width="3"/>
+    <line x1="-7" y1="8" x2="8" y2="-12" stroke="#64748b" stroke-width="3.5"/>
+    <line x1="7" y1="8" x2="-8" y2="-12" stroke="#64748b" stroke-width="3.5"/>
+  </g>
+
+  <!-- 7. Garden Snail (cx: 360, cy: 290) -->
+  <g id="target-garden-snail" transform="translate(360, 290)">
+    <circle cx="-3" cy="0" r="10" fill="#f59e0b" stroke="#b45309" stroke-width="2"/>
+    <path d="M-3 0 A4 4 0 1 0 1 -2" fill="none" stroke="#b45309" stroke-width="1.8"/>
+    <path d="M-12 8 C-2 8 8 8 12 4 C14 2 16 2 16 0" fill="none" stroke="#ca8a04" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="16" cy="-3" r="1.5" fill="#1e293b"/>
+  </g>
+
+  <!-- 8. Seed Packet (cx: 120, cy: 390) -->
+  <g id="target-seed-packet" transform="translate(120, 390) rotate(15)">
+    <rect x="-10" y="-14" width="20" height="28" rx="2" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+    <circle cx="0" cy="-2" r="5" fill="#f97316"/>
+    <line x1="-6" y1="7" x2="6" y2="7" stroke="#15803d" stroke-width="2"/>
+  </g>
+  </svg>

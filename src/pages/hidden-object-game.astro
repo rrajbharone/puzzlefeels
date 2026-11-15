@@ -1,0 +1,2631 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+import { HIDDEN_OBJECT_LEVELS } from '../data/hiddenObjectData';
+
+const title = 'Free Hidden Object Online Game – Find Hidden Objects in Pictures | PuzzleFeels';
+const description = 'Play our Free Hidden Object Online Game! Choose Easy, Medium, or Hard difficulty, inspect 10 beautifully illustrated scenes, find hidden objects, use hints, and unlock every challenge. Free in your browser!';
+
+const faqs = [
+  {
+    question: 'What is Free Hidden Object Online Game?',
+    answer: 'Free Hidden Object Online Game is a relaxing visual search puzzle where players examine detailed illustrated scenes to discover hidden items from a target list. Each level features an original themed illustration, adjustable difficulty modes, and unique objects to find.'
+  },
+  {
+    question: 'How do Easy, Medium, and Hard difficulty modes work?',
+    answer: 'Easy mode challenges you to find 5 prominent objects per level—ideal for a quick or relaxing session. Medium mode increases the target list to 7 items with more cleverly concealed positions. Hard mode challenges you to find all 8 objects, requiring patient, meticulous observation.'
+  },
+  {
+    question: 'How do I play each level?',
+    answer: 'Examine the list of objects shown below the scene. Look closely at the illustration to locate them. When you spot an item, click or tap directly on it. Discovered objects are highlighted on the picture and marked off your list. Find all objects to complete the level and unlock the next challenge!'
+  },
+  {
+    question: 'How does the Hint feature work?',
+    answer: 'If you get stuck finding a particular item, click the "Hint" button in the toolbar. A glowing radar beacon will pulse directly over an undiscovered object in the scene, and its card in your target list will highlight to help you spot it quickly.'
+  },
+  {
+    question: 'How do the Zoom In and Zoom Out controls work?',
+    answer: 'Click the Zoom icon in the toolbar to open the zoom popover. You can zoom in (+) up to 150%, zoom out (−) down to 70%, or click "Fit to Screen" (100%) to reset. Zooming scales only the playable scene, and object detection remains 100% aligned and accurate at every zoom level.'
+  },
+  {
+    question: 'How does the timer work?',
+    answer: 'The timer tracks your elapsed puzzle-solving time in minutes and seconds (MM:SS). It automatically pauses when you click Pause and stops when you complete the level. There is no countdown limit or time penalty, so you can enjoy the puzzle at your own pace.'
+  },
+  {
+    question: 'Can I mute or adjust the game sounds?',
+    answer: 'Yes! Click the speaker icon in the toolbar to toggle sound effects on or off. The game features soft, pleasant Web Audio chime effects for correct finds, gentle miss indicators, and celebratory completion fanfares. Your preference is automatically saved in your browser.'
+  },
+  {
+    question: 'How many levels are available?',
+    answer: 'The game features exactly 10 distinct levels, each with its own original theme, hand-crafted illustration, and unique collection of hidden objects across all three difficulty modes.'
+  },
+  {
+    question: 'Does the game save my progress if I close or refresh my browser?',
+    answer: 'Yes! Your highest unlocked level and completed stages are automatically saved in your browser’s local storage. When you return, you can immediately continue where you left off or replay any unlocked level.'
+  },
+  {
+    question: 'Can I play this game on mobile devices and smartphones?',
+    answer: 'Yes! The game is fully responsive for all screen sizes. Touch interactions are optimized for mobile phones and tablets, with clean scaling, tap-friendly detection areas, and no horizontal scrolling.'
+  },
+  {
+    question: 'What happens if I click an incorrect spot?',
+    answer: 'An incorrect click displays a gentle, temporary ripple and a brief message ("Not quite! Keep looking.") to confirm your touch was registered. There are no penalties, score deductions, or game-over states.'
+  },
+  {
+    question: 'Can the same object be counted or clicked more than once?',
+    answer: 'No. Once a hidden object is discovered, it is marked with an illuminated checkmark ring and locked. Further clicks on that spot will not trigger duplicate completions or inflate your progress.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Free Hidden Object Online Game',
+  url: 'https://puzzlefeels.com/hidden-object-game/',
+  image: 'https://puzzlefeels.com/images/hidden-object/thumbnail.svg',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Puzzle game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Free Hidden Object Online Game', item: 'https://puzzlefeels.com/hidden-object-game/' }
+  ]
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+---
+
+<Base {title} {description} path="/hidden-object-game/">
+  <Fragment slot="head">
+    <meta property="og:image" content="https://puzzlefeels.com/images/hidden-object/thumbnail.svg" />
+    <meta name="twitter:image" content="https://puzzlefeels.com/images/hidden-object/thumbnail.svg" />
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="ho-page">
+    <nav class="wrap ho-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Free Hidden Object Online Game</span>
+    </nav>
+
+    <section class="wrap ho-intro">
+      <span class="eyebrow">Visual Search & Observation Puzzle</span>
+      <h1>Free Hidden Object Online Game</h1>
+      <p class="muted">Inspect detailed illustrated scenes, choose your difficulty, find every hidden object from the list, and unlock all 10 relaxing levels.</p>
+    </section>
+
+    <!-- Main Game Shell Card -->
+    <section class="wrap ho-shell card" data-ho-game aria-label="Interactive Hidden Object puzzle game">
+      <!-- 1. Difficulty Tabs Bar -->
+      <div class="ho-diff-bar" role="group" aria-label="Choose difficulty level">
+        <button type="button" class="ho-tab-btn is-active" data-difficulty="easy" aria-pressed="true">
+          <span class="diff-dot easy"></span>
+          <span>Easy (5 Objects)</span>
+        </button>
+        <button type="button" class="ho-tab-btn" data-difficulty="medium" aria-pressed="false">
+          <span class="diff-dot medium"></span>
+          <span>Medium (7 Objects)</span>
+        </button>
+        <button type="button" class="ho-tab-btn" data-difficulty="hard" aria-pressed="false">
+          <span class="diff-dot hard"></span>
+          <span>Hard (8 Objects)</span>
+        </button>
+      </div>
+
+      <!-- 2. Level Selector Bar -->
+      <div class="ho-level-selector" role="group" aria-label="Select level">
+        <span class="ho-level-selector-label">Levels:</span>
+        <div class="ho-level-pills" id="ho-level-pills">
+          {HIDDEN_OBJECT_LEVELS.map((lvl) => (
+            <button
+              type="button"
+              class={`ho-level-pill ${lvl.level === 1 ? 'is-active' : 'is-locked'}`}
+              data-level={lvl.level}
+              aria-label={`Level ${lvl.level}: ${lvl.title}${lvl.level > 1 ? ' (Locked)' : ''}`}
+              disabled={lvl.level > 1}
+            >
+              <span class="pill-num">{lvl.level}</span>
+              {lvl.level > 1 && <span class="pill-lock" aria-hidden="true">🔒</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- 3. Level Status & Metrics Header -->
+      <div class="ho-status-bar">
+        <div class="ho-status-info">
+          <span class="ho-level-badge" id="ho-level-badge">Level 1</span>
+          <div class="ho-title-group">
+            <h2 class="ho-puzzle-title" id="ho-puzzle-title">Cozy Living Room</h2>
+            <span class="ho-puzzle-theme" id="ho-puzzle-theme">Warm Interior · Easy · 5 Hidden Objects</span>
+          </div>
+        </div>
+
+        <div class="ho-metrics">
+          <div class="ho-metric-chip" title="Objects found out of total for this difficulty">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <span class="ho-metric-label">Found:</span>
+            <strong class="ho-metric-val" id="ho-found-counter">0 of 5 Found</strong>
+          </div>
+
+          <div class="ho-metric-chip" title="Elapsed game time">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <polyline points="12 7 12 12 15 15"></polyline>
+            </svg>
+            <span class="ho-metric-label">Time:</span>
+            <strong class="ho-metric-val" id="ho-timer">00:00</strong>
+          </div>
+
+          <div class="ho-metric-chip" title="Hints used this level">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <line x1="12" y1="2" x2="12" y2="4"></line>
+              <line x1="12" y1="20" x2="12" y2="22"></line>
+              <line x1="2" y1="12" x2="4" y2="12"></line>
+              <line x1="20" y1="12" x2="22" y2="12"></line>
+            </svg>
+            <span class="ho-metric-label">Hints:</span>
+            <strong class="ho-metric-val" id="ho-hints-counter">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Action & Utility Toolbar -->
+      <div class="ho-toolbar">
+        <div class="toolbar-left">
+          <button type="button" class="tool-btn primary" id="btn-hint" title="Reveal an undiscovered hidden object">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>Hint</span>
+          </button>
+
+          <button type="button" class="tool-btn" id="btn-restart" title="Restart this level">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            <span>Restart</span>
+          </button>
+
+          <button type="button" class="tool-btn" id="btn-pause" title="Pause or resume timer and gameplay">
+            <svg class="pause-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="4" width="4" height="16"></rect>
+              <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+            <svg class="play-icon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" hidden>
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span id="pause-text">Pause</span>
+          </button>
+        </div>
+
+        <div class="toolbar-right">
+          <!-- Sound Toggle Button -->
+          <button type="button" class="tool-btn icon-only" id="btn-sound" title="Toggle sound effects" aria-label="Toggle sound">
+            <svg class="sound-on-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <svg class="sound-off-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          </button>
+
+          <!-- Zoom Control Component -->
+          <ZoomControl
+            id="ho-zoom"
+            label="Scene Zoom"
+            targetSelector="#ho-scene-board"
+            zoomVar="--zoom-scale"
+          />
+        </div>
+      </div>
+
+      <!-- 5. Toast / Hint Banner -->
+      <div id="ho-toast-banner" class="ho-toast-banner" role="status" aria-live="polite" hidden>
+        <span class="toast-icon">💡</span>
+        <span id="ho-toast-text">Hint message</span>
+      </div>
+
+      <!-- 6. Playable Zoomable Scene Viewport -->
+      <div class="ho-scene-viewport" id="ho-scene-viewport">
+        <div class="ho-scene-board" id="ho-scene-board">
+          <img
+            id="ho-scene-img"
+            class="ho-scene-img"
+            src={HIDDEN_OBJECT_LEVELS[0].image}
+            alt={`Hidden Object Scene - ${HIDDEN_OBJECT_LEVELS[0].title}`}
+            width="900"
+            height="600"
+            draggable="false"
+          />
+
+          <!-- Click Overlay for detection -->
+          <div id="ho-scene-overlay" class="ho-scene-overlay" role="application" aria-label="Interactive hidden object scene. Click or tap to locate items."></div>
+
+          <!-- Markers Layer for found objects -->
+          <div id="ho-markers-layer" class="ho-markers-layer" aria-hidden="true"></div>
+
+          <!-- Hint Pulse Layer -->
+          <div id="ho-hint-layer" class="ho-hint-layer" aria-hidden="true"></div>
+
+          <!-- Floating Feedback Layer (Correct / Miss badges) -->
+          <div id="ho-feedback-layer" class="ho-feedback-layer" aria-hidden="true"></div>
+
+          <!-- Paused Overlay -->
+          <div id="ho-paused-overlay" class="ho-paused-overlay" hidden aria-live="polite">
+            <div class="ho-paused-card card">
+              <div class="ho-paused-icon">⏸️</div>
+              <h3>Game Paused</h3>
+              <p class="muted">Take your time. Your timer and discoveries are safely paused.</p>
+              <button type="button" class="ho-btn primary" id="btn-resume">Resume Game</button>
+            </div>
+          </div>
+
+          <!-- Completion Overlay Banner/Modal -->
+          <div id="ho-completion-overlay" class="ho-completion-overlay" hidden aria-live="polite">
+            <div class="ho-completion-card card">
+              <div class="ho-completion-icon" id="ho-completion-icon">🎉</div>
+              <h3 id="ho-completion-title">Level Completed!</h3>
+              <p id="ho-completion-msg" class="muted">Magnificent observation! You found all hidden objects!</p>
+              <div class="ho-completion-stats" id="ho-completion-stats">
+                <span class="stat-badge" id="ho-stat-time">Time: 00:00</span>
+                <span class="stat-badge" id="ho-stat-hints">Hints: 0</span>
+              </div>
+              <div class="ho-completion-actions">
+                <button type="button" class="ho-btn primary" id="btn-next-level">Next Level →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Redesigned "Objects to Find" Section -->
+      <div class="ho-objects-section">
+        <div class="ho-objects-head">
+          <div class="ho-objects-title-wrap">
+            <h3>Objects to Find <span class="ho-count-tag" id="ho-remaining-tag">(5 remaining)</span></h3>
+            <p class="muted">Inspect the illustration above and tap each hidden item when spotted.</p>
+          </div>
+        </div>
+
+        <div class="ho-objects-grid" id="ho-objects-grid" role="list">
+          {HIDDEN_OBJECT_LEVELS[0].objects.slice(0, 5).map((obj) => (
+            <div class="ho-object-card" data-obj-id={obj.id} role="listitem">
+              <div class="ho-obj-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={obj.iconSvg} />
+              </div>
+              <div class="ho-obj-content">
+                <span class="ho-obj-name">{obj.name}</span>
+                <span class="ho-obj-badge">Hidden</span>
+              </div>
+              <span class="ho-obj-status" aria-hidden="true"></span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Comprehensive Informational Article (Left-Aligned) -->
+    <article class="wrap ho-article">
+      <h2>What is a Hidden Object Game?</h2>
+      <p>A <strong>Hidden Object game</strong> is a classic genre of visual puzzle where players must carefully observe a rich, detailed picture to locate specific concealed items. Originally popularized through lavishly illustrated children's books and mystery computer adventures, hidden object puzzles test your ability to distinguish visual signals from background camouflage, pattern clutter, and intricate scenery.</p>
+      <p>In our modern browser edition, each scene is an original, hand-crafted vector illustration depicting charming environments ranging from a fireplace library to pirate coves and sunken underwater reefs. With three tailored difficulty settings—Easy (5 objects), Medium (7 objects), and Hard (8 objects)—the game offers a meditative, deeply relaxing experience where patience, methodical scanning, and keen visual acuity lead to satisfying discoveries. For players who enjoy pattern recognition, this visual search pairs wonderfully with the observation required in our <a href="/spot-the-difference-game/">Spot the Difference Free Online Game</a>.</p>
+
+      <h2>How to Play Free Hidden Object Online Game</h2>
+      <p>Playing Free Hidden Object Online Game is intuitive and accessible for players of all ages:</p>
+      <ol>
+        <li><strong>Choose Your Difficulty:</strong> Select Easy (5 items), Medium (7 items), or Hard (8 items) from the difficulty bar above the board. Easy is enabled by default for a relaxed initial playthrough.</li>
+        <li><strong>Review the Target List:</strong> Look at the cards displayed in the "Objects to Find" tray below the illustration. Each card displays an authentic miniature outline and object name.</li>
+        <li><strong>Scan the Scene Systematically:</strong> Examine the illustration carefully. Use the Zoom In/Out controls in the toolbar to inspect intricate sections or zoom out for the big picture.</li>
+        <li><strong>Click or Tap to Identify:</strong> When you spot a target item, click or tap directly on it. An illuminated green focus ring highlights the discovered item on the canvas, a reassuring checkmark appears, and the item card is marked off your list.</li>
+        <li><strong>Use Hints When Needed:</strong> If an object proves particularly elusive, click the Hint button to trigger a pulsing radar beacon directly over one undiscovered target.</li>
+        <li><strong>Unlock the Next Adventure:</strong> Finding all objects clears the level, records your victory, and unlocks the next exciting level with a new environment and new items to uncover!</li>
+      </ol>
+
+      <h2>Understanding the Difficulty Modes and Progress Tracking</h2>
+      <p>Clear, responsive feedback ensures you always know your exact standing during gameplay:</p>
+      <ul>
+        <li><strong>Easy Mode (5 Objects):</strong> Highlights the five most prominent items in each scene, perfect for beginners, younger players, or casual relaxation.</li>
+        <li><strong>Medium Mode (7 Objects):</strong> Introduces seven objects with moderate camouflage, requiring balanced focus and scanning.</li>
+        <li><strong>Hard Mode (8 Objects):</strong> Requires finding all eight hidden objects in the scene, testing the sharpest observation skills.</li>
+        <li><strong>Timer Tracking:</strong> Displays your elapsed puzzle time without stressful countdown limits or rush penalties.</li>
+        <li><strong>Found States:</strong> Discovered objects are marked with a green checkmark badge, dimmed text, and subtle strikethrough so you never waste time looking for an item you have already gathered.</li>
+        <li><strong>Duplicate Protection:</strong> Tapping an already found object will never trigger a false penalty or double-count progress.</li>
+      </ul>
+
+      <h2>Exploring the 10 Unique Themed Levels</h2>
+      <p>Every single level in Free Hidden Object Online Game has been designed with its own distinct atmosphere, visual palette, and hand-placed objects:</p>
+      <ul>
+        <li><strong>Level 1 – Cozy Living Room:</strong> Warm fireplace, armchair, bookshelf, and classic parlor keepsakes like a brass key, pocket watch, and teacup.</li>
+        <li><strong>Level 2 – Beautiful Garden:</strong> Sunlit stone fountain, floral flowerbeds, butterfly net, garden trowel, and blooming sunflowers.</li>
+        <li><strong>Level 3 – Busy Kitchen:</strong> A bustling culinary setting featuring copper pots, rolling pins, chef knives, and baking ingredients.</li>
+        <li><strong>Level 4 – Pirate Treasure Island:</strong> A tropical beach shipwreck with treasure chests, brass spyglasses, anchors, and pirate flintlocks.</li>
+        <li><strong>Level 5 – Magical Library:</strong> Soaring gothic bookshelves, crystal orbs, spellbooks, hourglasses, and mystical feather quills.</li>
+        <li><strong>Level 6 – Camping Adventure:</strong> Pine forest campsite with tents, crackling fire, camping lanterns, compasses, and wooden canoes.</li>
+        <li><strong>Level 7 – Old Town Market:</strong> Cobblestone marketplace stalls brimming with fresh apples, wicker baskets, scale balances, and bakery goods.</li>
+        <li><strong>Level 8 – Underwater World:</strong> A vibrant ocean coral reef filled with starfish, seashells, pearls, sunken amphoras, and diving masks.</li>
+        <li><strong>Level 9 – Enchanted Forest:</strong> Fairytale twilight woods with glowing mushrooms, crystal lanterns, hollow trees, and fairy dust bottles.</li>
+        <li><strong>Level 10 – Mysterious Castle:</strong> Majestic throne hall with suits of armor, royal goblets, heraldic shields, and jeweled crowns.</li>
+      </ul>
+      <p>All progress is saved in your browser's local storage, meaning you can complete a few levels on your lunch break and return later to finish the remaining rooms without losing your unlocked status.</p>
+
+      <h2>Effective Strategies for Finding Difficult Hidden Objects</h2>
+      <p>If you find yourself searching for that elusive final item, try these time-tested observation methods:</p>
+      <ul>
+        <li><strong>Grid Scanning:</strong> Divide the image mentally into quadrants (top-left, top-right, bottom-left, bottom-right). Scan each quadrant thoroughly before moving to the next rather than darting your eyes randomly across the entire image.</li>
+        <li><strong>Use Zoom Controls:</strong> Zoom into the scene at 130% or 150% to inspect cluttered background details like shelves, coral crevices, and forest leaves.</li>
+        <li><strong>Negative Space Inspection:</strong> Artists frequently place objects along structural boundaries—such as window frames, tree trunks, floor lines, or furniture edges. Look along contours where background meets foreground.</li>
+        <li><strong>Color Contrast Differentiation:</strong> Search specifically for colors that stand out from the ambient palette. If a room has predominantly warm browns and ambers, look for items that introduce cool teal, violet, or brass highlights.</li>
+        <li><strong>Silhouette Recognition:</strong> Focus on the geometric shape of the target rather than its full detail. A circular magnifying glass, triangular pendant, or long thin key stem often gives itself away by silhouette alone.</li>
+        <li><strong>Cross-Training Observation Skills:</strong> Switching between different puzzle types strengthens your cognitive flexibility. After locating objects in complex scenes, test your spatial tile deduction in <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a> or exercise deductive logic with <a href="/picross-game-online/">Picross Game Online</a>.</li>
+      </ul>
+
+      <h2>Common Mistakes to Avoid</h2>
+      <p>Keep these common pitfalls in mind to enhance your puzzle-solving satisfaction:</p>
+      <ul>
+        <li><strong>Rapid Frantic Clicking:</strong> Tapping randomly across the screen rarely works and breaks the relaxing flow of the game. Take a deep breath and observe carefully.</li>
+        <li><strong>Overlooking Scale Variations:</strong> Objects are drawn in natural casual perspective. An item like a pocket compass or key might be slightly larger or smaller than you initially imagine.</li>
+        <li><strong>Fixating on One Item Too Long:</strong> If one object proves difficult to spot, shift your attention to a different item on the list. Finding other items declutters your mental map and often reveals the difficult item in peripheral vision.</li>
+        <li><strong>Ignoring Peripheral Corners:</strong> Players naturally gravitate toward the visual center of an illustration. Be sure to check the corners and outer edges of the scene.</li>
+      </ul>
+
+      <h2>Playing Seamlessly on Mobile and Desktop</h2>
+      <p>Free Hidden Object Online Game has been built from the ground up for responsive performance across all modern devices:</p>
+      <ul>
+        <li><strong>On Desktop:</strong> Enjoy wide-screen high-definition illustrations with comfortable mouse cursor precision, dedicated zoom controls, and an expansive view of both the artwork and target tray.</li>
+        <li><strong>On Mobile & Tablets:</strong> Illustrations automatically scale to your full device width without horizontal overflow. Generous touch-detection radii ensure accurate taps even on compact smartphone screens.</li>
+        <li><strong>Zero Downloads or Plug-ins:</strong> The game runs natively in HTML5, CSS, and SVG without heavy third-party app downloads or battery-draining frameworks.</li>
+      </ul>
+      <p>Whether you have five minutes to spare while commuting or an evening to unwind at home, exploring the <a href="/games/">PuzzleFeels Games Directory</a> delivers wholesome, ad-light mental recreation.</p>
+
+      <h2>Cognitive Benefits of Visual Search Puzzles</h2>
+      <p>Visual search games are more than just entertaining pastimes—they provide meaningful cognitive exercise. Searching for hidden items engages the visual cortex, trains selective attention, and strengthens visual working memory by requiring you to hold target shapes in mind while filtering out irrelevant background information. Pairing this visual workout with short-term recall drills like <a href="/memory-matching-game-online/">Memory Matching Game Online</a> or strategic territory expansion in <a href="/color-flood-game/">Color Flood Game</a> offers a well-rounded mental workout.</p>
+
+      <h2>Frequently Asked Questions</h2>
+      <FaqList items={faqs} />
+    </article>
+
+    <!-- Related Games Section -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep the fun going</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/spot-the-difference-game/">
+          <div class="related-visual spot-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon spot-icon">
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg></span>
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+            </div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">VISUAL PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Spot the Difference Free Online Game</h3>
+            <p class="muted">Compare two picture pairs side by side, discover hidden differences, and sharpen your visual focus.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/memory-matching-game-online/">
+          <div class="related-visual memory-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon memory-icon">
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.25"></polygon></svg></span>
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg></span>
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"></circle><line x1="12" y1="8" x2="12" y2="21"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path></svg></span>
+            </div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">MEMORY PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Memory Matching Game Online</h3>
+            <p class="muted">Flip cards, match pairs across icon, number, color, and shape sets, and train your short-term visual memory.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/picross-game-online/">
+          <div class="related-visual picross-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
+            <h3>Picross Game Online</h3>
+            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram picture logic challenge.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <!-- Hidden JSON payload with all 10 level definitions for client logic -->
+  <script id="ho-data" type="application/json" set:html={JSON.stringify(HIDDEN_OBJECT_LEVELS)} />
+</Base>
+
+<style>
+  .ho-page {
+    padding-bottom: 80px;
+  }
+
+  .ho-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 20px 0 10px;
+  }
+
+  .ho-breadcrumbs a {
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+
+  .ho-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+
+  /* Center-aligned H1 and intro matching existing game pages */
+  .ho-intro {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 10px 0 24px;
+  }
+
+  .ho-intro .eyebrow {
+    display: inline-block;
+  }
+
+  .ho-intro h1 {
+    font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+    line-height: 1.1;
+    margin: 8px auto 14px;
+    letter-spacing: -0.04em;
+  }
+
+  .ho-intro p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin: 0 auto;
+    max-width: 640px;
+  }
+
+  /* Main Game Shell Card */
+  .ho-shell {
+    padding: 24px;
+    margin-bottom: 50px;
+    background: var(--paper, #fff);
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: 20px;
+    box-shadow: 0 12px 36px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* 1. Difficulty Tabs Bar */
+  .ho-diff-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line, #e2e8f0);
+    padding-bottom: 14px;
+  }
+
+  .ho-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--wash, #f1f4fb);
+    color: var(--ink, #17233b);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .ho-tab-btn:hover {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+  }
+
+  .ho-tab-btn.is-active {
+    background: var(--blue, #315ee8);
+    border-color: var(--blue, #315ee8);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.28);
+  }
+
+  .diff-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .diff-dot.easy { background: #10b981; }
+  .diff-dot.medium { background: #f59e0b; }
+  .diff-dot.hard { background: #ef4444; }
+
+  .ho-tab-btn.is-active .diff-dot {
+    background: #ffffff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  }
+
+  /* 2. Level Selector Bar */
+  .ho-level-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line, #e2e8f0);
+  }
+
+  .ho-level-selector-label {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  .ho-level-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .ho-level-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 9px;
+    border-radius: 9px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--wash, #f1f4fb);
+    color: var(--ink, #17233b);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .ho-level-pill:hover:not(:disabled) {
+    background: #e2e8f0;
+    transform: translateY(-1px);
+  }
+
+  .ho-level-pill.is-active {
+    background: var(--blue, #315ee8);
+    border-color: var(--blue, #315ee8);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.28);
+  }
+
+  .ho-level-pill.is-completed {
+    border-color: #10b981;
+    color: #059669;
+  }
+
+  .ho-level-pill.is-completed.is-active {
+    background: var(--blue, #315ee8);
+    border-color: var(--blue, #315ee8);
+    color: #ffffff;
+  }
+
+  .ho-level-pill.is-locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--wash, #f8fafc);
+  }
+
+  .pill-lock {
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  /* 3. Status Header */
+  .ho-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .ho-status-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ho-level-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: var(--blue, #315ee8);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .ho-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ho-puzzle-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.25;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-puzzle-theme {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .ho-metrics {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ho-metric-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--wash, #f1f4fb);
+    border: 1px solid var(--line, #e2e8f0);
+    font-size: 13px;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-metric-chip svg {
+    color: var(--blue, #315ee8);
+    flex-shrink: 0;
+  }
+
+  .ho-metric-label {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .ho-metric-val {
+    font-weight: 800;
+    color: var(--blue, #315ee8);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* 4. Action & Utility Toolbar */
+  .ho-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: var(--wash, #f8fafc);
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--line, #e2e8f0);
+  }
+
+  .toolbar-left, .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tool-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line, #e2e8f0);
+    background: var(--paper, #fff);
+    color: var(--ink, #17233b);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .tool-btn:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  .tool-btn.primary {
+    background: #f59e0b;
+    border-color: #d97706;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
+  }
+
+  .tool-btn.primary:hover {
+    background: #d97706;
+  }
+
+  .tool-btn.icon-only {
+    padding: 6px 10px;
+  }
+
+  /* 5. Toast / Hint Banner */
+  .ho-toast-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    font-size: 13px;
+    font-weight: 600;
+    animation: slideDown 0.25s ease;
+  }
+
+  .ho-toast-banner[hidden] {
+    display: none !important;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 6. Playable Zoomable Scene Viewport */
+  .ho-scene-viewport {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 14px;
+    overflow: auto;
+    background: #0b132b;
+    border: 1px solid var(--line, #e2e8f0);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .ho-scene-board {
+    position: relative;
+    container-type: inline-size;
+    width: calc(100% * var(--zoom-scale, 1));
+    min-width: calc(100% * var(--zoom-scale, 1));
+    max-width: none;
+    aspect-ratio: 900 / 600;
+    margin-left: auto;
+    margin-right: auto;
+    flex-shrink: 0;
+    transition: width 0.2s cubic-bezier(0.2, 0, 0, 1), min-width 0.2s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .ho-scene-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .ho-scene-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: crosshair;
+    z-index: 2;
+    touch-action: manipulation;
+  }
+
+  .ho-markers-layer,
+  .ho-hint-layer,
+  .ho-feedback-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .ho-markers-layer { z-index: 3; }
+  .ho-hint-layer { z-index: 4; }
+  .ho-feedback-layer { z-index: 5; }
+
+  /* Found Marker */
+  .ho-marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    animation: markerPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .marker-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #10b981;
+    background: rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.65), inset 0 0 10px rgba(16, 185, 129, 0.3);
+    animation: ringPulse 2s infinite ease-in-out;
+  }
+
+  .marker-icon {
+    position: relative;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #10b981;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    z-index: 2;
+  }
+
+  @keyframes markerPop {
+    0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+    70% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  }
+
+  @keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.08); opacity: 0.6; }
+  }
+
+  /* Hint Radar Pulse Beacon */
+  .ho-hint-beacon {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+  }
+
+  .beacon-ping {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid #f59e0b;
+    background: rgba(245, 158, 11, 0.3);
+    animation: hintBeaconPulse 1.2s infinite ease-out;
+  }
+
+  .beacon-core {
+    position: absolute;
+    inset: 18px;
+    border-radius: 50%;
+    background: #f59e0b;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.85);
+  }
+
+  @keyframes hintBeaconPulse {
+    0% { transform: scale(0.4); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
+  /* Dedicated Object Selection Popups (Correct & Incorrect) */
+  .ho-selection-popup {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    pointer-events: none;
+    z-index: 10;
+    white-space: nowrap;
+    user-select: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    animation: popupSpring 1.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .ho-selection-popup.ho-popup-correct {
+    background: #059669;
+    color: #ffffff;
+    border: 1.5px solid #34d399;
+    box-shadow: 0 8px 24px rgba(5, 150, 105, 0.45), 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .ho-selection-popup.ho-popup-incorrect {
+    background: rgba(15, 23, 42, 0.94);
+    color: #f87171;
+    border: 1.5px solid #ef4444;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 12px rgba(239, 68, 68, 0.3);
+  }
+
+  .ho-popup-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ho-popup-icon.correct-icon {
+    background: #ffffff;
+    color: #059669;
+  }
+
+  .ho-popup-icon.incorrect-icon {
+    background: #ef4444;
+    color: #ffffff;
+  }
+
+  .ho-popup-text {
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+  }
+
+  .ho-popup-name {
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  @keyframes popupSpring {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -75%) scale(0.8);
+    }
+    15% {
+      opacity: 1;
+      transform: translate(-50%, -120%) scale(1.04);
+    }
+    25% {
+      opacity: 1;
+      transform: translate(-50%, -115%) scale(1);
+    }
+    75% {
+      opacity: 1;
+      transform: translate(-50%, -115%) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -135%) scale(0.92);
+    }
+  }
+
+  /* Floating Feedback Badges (Legacy compatibility fallback) */
+  .ho-feedback-bubble {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    white-space: nowrap;
+    animation: floatUpFade 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    z-index: 6;
+  }
+
+  .ho-feedback-bubble.success {
+    background: #10b981;
+    color: #ffffff;
+    border: 1px solid #059669;
+  }
+
+  .ho-feedback-bubble.miss {
+    background: rgba(30, 41, 59, 0.9);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    font-size: 11px;
+  }
+
+  @keyframes floatUpFade {
+    0% { transform: translate(-50%, -20%) scale(0.85); opacity: 0; }
+    20% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+    70% { transform: translate(-50%, -75%) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -100%) scale(0.95); opacity: 0; }
+  }
+
+  /* Miss Ripple */
+  .ho-miss-ripple {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(239, 68, 68, 0.65);
+    background: rgba(239, 68, 68, 0.15);
+    pointer-events: none;
+    animation: missFade 0.4s ease-out forwards;
+    z-index: 4;
+  }
+
+  @keyframes missFade {
+    0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+  }
+
+  /* Paused Overlay */
+  .ho-paused-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 19, 43, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .ho-paused-overlay[hidden] {
+    display: none !important;
+  }
+
+  .ho-paused-card {
+    max-width: 380px;
+    width: 100%;
+    background: var(--paper, #fff);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    border: 1px solid var(--line, #e2e8f0);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ho-paused-icon {
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .ho-paused-card h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-paused-card p {
+    margin: 0 0 6px;
+    font-size: 13px;
+  }
+
+  /* Completion Modal */
+  .ho-completion-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(11, 19, 43, 0.82);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10;
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  .ho-completion-overlay[hidden] {
+    display: none !important;
+  }
+
+  .ho-completion-card {
+    max-width: 420px;
+    width: 100%;
+    background: var(--paper, #fff);
+    border-radius: 18px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--line, #e2e8f0);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .ho-completion-icon {
+    font-size: 42px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .ho-completion-card h3 {
+    font-size: 1.45rem;
+    margin: 0;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-completion-card p {
+    font-size: 14px;
+    margin: 0 0 6px;
+    line-height: 1.5;
+  }
+
+  .ho-completion-stats {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .stat-badge {
+    padding: 5px 12px;
+    border-radius: 8px;
+    background: var(--wash, #f1f4fb);
+    border: 1px solid var(--line, #e2e8f0);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+  }
+
+  .ho-btn.primary {
+    background: var(--blue, #315ee8);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(49, 94, 232, 0.35);
+  }
+
+  .ho-btn.primary:hover {
+    background: #254ec8;
+    transform: translateY(-1px);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* 7. Redesigned "Objects to Find" Section */
+  .ho-objects-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 4px;
+  }
+
+  .ho-objects-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ho-objects-title-wrap h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin: 0 0 2px;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-count-tag {
+    font-size: 13px;
+    color: var(--blue, #315ee8);
+    font-weight: 700;
+  }
+
+  .ho-objects-title-wrap p {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .ho-objects-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .ho-object-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: var(--wash, #f1f4fb);
+    border: 1px solid var(--line, #e2e8f0);
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ho-object-card:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  .ho-obj-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid var(--line, #e2e8f0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--blue, #315ee8);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  .ho-obj-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ho-obj-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink, #17233b);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ho-obj-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .ho-obj-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line, #cbd5e1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+
+  /* Found Object Chip State */
+  .ho-object-card.is-found {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.35);
+    animation: foundPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .ho-object-card.is-found .ho-obj-name {
+    text-decoration: line-through;
+    color: #059669;
+    opacity: 0.85;
+  }
+
+  .ho-object-card.is-found .ho-obj-badge {
+    color: #10b981;
+  }
+
+  .ho-object-card.is-found .ho-obj-icon {
+    background: #10b981;
+    color: #ffffff;
+    border-color: #10b981;
+  }
+
+  .ho-object-card.is-found .ho-obj-status {
+    background: #10b981;
+    border-color: #10b981;
+  }
+
+  .ho-object-card.is-found .ho-obj-status::after {
+    content: "✓";
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  /* Hinted card pulse */
+  .ho-object-card.is-hinted {
+    border-color: #f59e0b;
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+    animation: cardHintGlow 1.2s infinite ease-in-out;
+  }
+
+  @keyframes foundPop {
+    0% { transform: scale(0.96); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes cardHintGlow {
+    0%, 100% { transform: scale(1); border-color: #f59e0b; }
+    50% { transform: scale(1.02); border-color: #d97706; }
+  }
+
+  /* Left-Aligned Informational Content Article */
+  .ho-article {
+    margin-top: 40px;
+    margin-bottom: 60px;
+    text-align: left;
+    max-width: 820px;
+  }
+
+  .ho-article h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 38px 0 14px;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-article h2:first-of-type {
+    margin-top: 0;
+  }
+
+  .ho-article p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink, #17233b);
+    margin: 0 0 16px;
+  }
+
+  .ho-article ol,
+  .ho-article ul {
+    margin: 0 0 20px;
+    padding-left: 24px;
+  }
+
+  .ho-article li {
+    font-size: 15px;
+    line-height: 1.75;
+    margin-bottom: 8px;
+    color: var(--ink, #17233b);
+  }
+
+  .ho-article a {
+    color: var(--blue, #315ee8);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+  }
+
+  .ho-article a:hover {
+    color: #1d40b0;
+  }
+
+  /* Explore More Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+  .related-games-head p {
+    font-size: 15px;
+    line-height: 1.65;
+    margin: 0 auto;
+  }
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+  }
+  .related-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.08);
+  }
+  .related-visual {
+    height: 160px;
+    flex: none;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+  .related-orbit {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 48px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+  .related-icon span {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: #fff;
+    color: #315ee8;
+    font-size: 17px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
+  }
+  .spot-icon span:nth-child(1) { background: #fef3c7; color: #d97706; }
+  .spot-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .spot-icon span:nth-child(3) { background: #dcfce7; color: #16a34a; }
+  .spot-icon span:nth-child(4) { background: #ede9fe; color: #7c3aed; }
+  .memory-icon span:nth-child(1) { background: #ede9fe; color: #7c3aed; }
+  .memory-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .memory-icon span:nth-child(3) { background: #fef08a; color: #a16207; }
+  .memory-icon span:nth-child(4) { background: #dcfce7; color: #15803d; }
+  .picross-icon span:nth-child(1), .picross-icon span:nth-child(4) { background: #315ee8; color: #fff; }
+  .picross-icon span:nth-child(2), .picross-icon span:nth-child(3) { background: #edf2ff; color: #315ee8; }
+  .hidden-object-icon span:nth-child(1) { background: #fef3c7; color: #d97706; }
+  .hidden-object-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .hidden-object-icon span:nth-child(3) { background: #dcfce7; color: #16a34a; }
+  .hidden-object-icon span:nth-child(4) { background: #ede9fe; color: #7c3aed; }
+
+  .related-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 20px 20px;
+  }
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+  .related-card h3 {
+    font-size: 18px;
+    line-height: 1.25;
+    margin: 12px 0 6px;
+    letter-spacing: -.025em;
+  }
+  .related-card p {
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+    color: var(--muted);
+  }
+  .related-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* Dark Theme Support */
+  :global(html[data-theme="dark"]) .ho-shell,
+  :global(html[data-theme="dark"]) .ho-completion-card,
+  :global(html[data-theme="dark"]) .ho-paused-card {
+    background: #111a33;
+    border-color: #243356;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+  }
+
+  :global(html[data-theme="dark"]) .ho-diff-bar,
+  :global(html[data-theme="dark"]) .ho-level-selector,
+  :global(html[data-theme="dark"]) .ho-scene-viewport,
+  :global(html[data-theme="dark"]) .ho-toolbar {
+    border-color: #243356;
+  }
+
+  :global(html[data-theme="dark"]) .ho-toolbar {
+    background: #14203f;
+  }
+
+  :global(html[data-theme="dark"]) .tool-btn {
+    background: #18274d;
+    border-color: #293d6c;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .tool-btn:hover {
+    background: #203363;
+    border-color: #3b5494;
+  }
+
+  :global(html[data-theme="dark"]) .tool-btn.primary {
+    background: #f59e0b;
+    border-color: #d97706;
+    color: #ffffff;
+  }
+
+  :global(html[data-theme="dark"]) .ho-tab-btn {
+    background: #1a2748;
+    border-color: #2b3d6a;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .ho-tab-btn:hover {
+    background: #233560;
+  }
+
+  :global(html[data-theme="dark"]) .ho-tab-btn.is-active {
+    background: var(--blue, #315ee8);
+    border-color: var(--blue, #315ee8);
+    color: #ffffff;
+  }
+
+  :global(html[data-theme="dark"]) .ho-level-pill {
+    background: #1a2748;
+    border-color: #2b3d6a;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .ho-level-pill.is-locked {
+    background: #151f38;
+    border-color: #1e2c4f;
+    opacity: 0.45;
+  }
+
+  :global(html[data-theme="dark"]) .ho-level-pill.is-active {
+    background: var(--blue, #315ee8);
+    border-color: var(--blue, #315ee8);
+    color: #ffffff;
+  }
+
+  :global(html[data-theme="dark"]) .ho-metric-chip,
+  :global(html[data-theme="dark"]) .stat-badge {
+    background: #1a2748;
+    border-color: #2b3d6a;
+    color: #e2e8f0;
+  }
+
+  :global(html[data-theme="dark"]) .ho-toast-banner {
+    background: #3b2d13;
+    border-color: #785215;
+    color: #fef08a;
+  }
+
+  :global(html[data-theme="dark"]) .ho-object-card {
+    background: #162240;
+    border-color: #263860;
+  }
+
+  :global(html[data-theme="dark"]) .ho-object-card:hover {
+    border-color: #3b5494;
+  }
+
+  :global(html[data-theme="dark"]) .ho-obj-icon {
+    background: #1e2c4f;
+    border-color: #2b3d6a;
+    color: #93c5fd;
+  }
+
+  :global(html[data-theme="dark"]) .ho-obj-name {
+    color: #f1f5f9;
+  }
+
+  :global(html[data-theme="dark"]) .ho-object-card.is-found {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+
+  :global(html[data-theme="dark"]) .ho-object-card.is-found .ho-obj-name {
+    color: #6ee7b7;
+  }
+
+  :global(html[data-theme="dark"]) .ho-object-card.is-found .ho-obj-status,
+  :global(html[data-theme="dark"]) .ho-object-card.is-found .ho-obj-icon {
+    background: #10b981;
+    border-color: #10b981;
+    color: #ffffff;
+  }
+
+  :global(html[data-theme="dark"]) .ho-selection-popup.ho-popup-incorrect {
+    background: rgba(15, 23, 42, 0.96);
+    border-color: #ef4444;
+    color: #fca5a5;
+  }
+
+  :global(html[data-theme="dark"]) .ho-selection-popup.ho-popup-correct {
+    background: #059669;
+    border-color: #34d399;
+    color: #ffffff;
+  }
+
+  :global(html[data-theme="dark"]) .related-games-section { border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); }
+  :global(html[data-theme="dark"]) .related-card:hover { border-color: #52678f; box-shadow: 0 16px 38px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .related-visual { background: linear-gradient(145deg, #1b294b, #222345); }
+  :global(html[data-theme="dark"]) .related-orbit { border-color: #35466c; }
+  :global(html[data-theme="dark"]) .related-icon span { background: #263553; color: #c2d0ff; box-shadow: 0 8px 20px rgba(3, 8, 23, 0.45); }
+  :global(html[data-theme="dark"]) .spot-icon span:nth-child(1) { background: #713f12; color: #fef08a; }
+  :global(html[data-theme="dark"]) .spot-icon span:nth-child(2) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .spot-icon span:nth-child(3) { background: #14532d; color: #86efac; }
+  :global(html[data-theme="dark"]) .spot-icon span:nth-child(4) { background: #3b1e75; color: #c4b5fd; }
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(1) { background: #3b1e75; color: #c4b5fd; }
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(2) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(3) { background: #713f12; color: #fef08a; }
+  :global(html[data-theme="dark"]) .memory-icon span:nth-child(4) { background: #14532d; color: #86efac; }
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(1),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(4) { background: #254dbf; color: #fff; }
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(2),
+  :global(html[data-theme="dark"]) .picross-icon span:nth-child(3) { background: #1e2d54; color: #93c5fd; }
+  :global(html[data-theme="dark"]) .hidden-object-icon span:nth-child(1) { background: #713f12; color: #fef08a; }
+  :global(html[data-theme="dark"]) .hidden-object-icon span:nth-child(2) { background: #8ea8ff; color: #0b132b; }
+  :global(html[data-theme="dark"]) .hidden-object-icon span:nth-child(3) { background: #14532d; color: #86efac; }
+  :global(html[data-theme="dark"]) .hidden-object-icon span:nth-child(4) { background: #3b1e75; color: #c4b5fd; }
+  :global(html[data-theme="dark"]) .related-labels .pill { background: #1e2d54; color: #c7d2fe; }
+  :global(html[data-theme="dark"]) .related-card h3 { color: var(--dark-text, #f1f5ff); }
+  :global(html[data-theme="dark"]) .related-card p { color: var(--dark-secondary, #b8c4dd); }
+  :global(html[data-theme="dark"]) .related-play { color: var(--dark-accent, #8ea8ff); }
+
+  /* Responsive Rules */
+  @media (max-width: 960px) {
+    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  }
+
+  /* Tablet layout: 3 columns */
+  @media (min-width: 641px) and (max-width: 900px) {
+    .ho-objects-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+  }
+
+  /* Mobile layout: STRICTLY 2 COLUMNS across all mobile screen widths (320px - 640px) */
+  @media (max-width: 640px) {
+    .ho-shell {
+      padding: 16px;
+      border-radius: 16px;
+      gap: 12px;
+    }
+
+    .ho-diff-bar {
+      gap: 6px;
+    }
+
+    .ho-tab-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .ho-level-selector {
+      gap: 6px;
+    }
+
+    .ho-level-pills {
+      gap: 4px;
+    }
+
+    .ho-level-pill {
+      min-width: 30px;
+      height: 30px;
+      padding: 0 7px;
+      font-size: 12px;
+    }
+
+    .ho-status-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .ho-metrics {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .ho-metric-chip {
+      padding: 5px 8px;
+      font-size: 11px;
+    }
+
+    .ho-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .toolbar-left, .toolbar-right {
+      justify-content: space-between;
+    }
+
+    .tool-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    /* Exactly 2 columns of cards on all mobile devices */
+    .ho-objects-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 8px;
+    }
+
+    .ho-object-card {
+      padding: 8px 10px;
+      gap: 8px;
+      border-radius: 12px;
+      min-width: 0;
+    }
+
+    .ho-obj-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    .ho-obj-icon svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .ho-obj-content {
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .ho-obj-name {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ho-obj-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .ho-obj-status {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .ho-object-card.is-found .ho-obj-status::after {
+      font-size: 10px;
+    }
+
+    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
+    .related-games-head { margin-bottom: 24px; }
+    .related-games-grid { grid-template-columns: 1fr; gap: 14px; }
+    .related-card { display: grid; grid-template-columns: 110px minmax(0, 1fr); min-height: 150px; border-radius: 16px; }
+    .related-visual { height: auto; min-height: 150px; }
+    .related-orbit { width: 90px; height: 90px; }
+    .related-icon { grid-template-columns: repeat(2, 34px); gap: 5px; }
+    .related-icon span { width: 34px; height: 34px; border-radius: 9px; font-size: 13px; }
+    .related-card-body { padding: 14px 12px; }
+    .related-card h3 { font-size: 16px; margin: 8px 0 4px; }
+    .related-card p { font-size: 12px; margin-bottom: 10px; }
+    .related-play { font-size: 12px; }
+  }
+
+  @media (max-width: 360px) {
+    .related-card { grid-template-columns: 92px minmax(0, 1fr); }
+    .related-orbit { width: 76px; height: 76px; }
+    .related-icon { grid-template-columns: repeat(2, 28px); gap: 4px; }
+    .related-icon span { width: 28px; height: 28px; font-size: 11px; border-radius: 7px; }
+    .related-card-body { padding: 10px 8px; }
+    .related-card h3 { font-size: 15px; margin: 6px 0 3px; }
+    .related-card p { font-size: 11px; line-height: 1.5; margin-bottom: 8px; }
+  }
+</style>
+
+<script>
+  import type { HiddenObjectLevel, HiddenObjectItem } from '../data/hiddenObjectData';
+
+  type Difficulty = 'easy' | 'medium' | 'hard';
+
+  const DIFF_COUNTS: Record<Difficulty, number> = {
+    easy: 5,
+    medium: 7,
+    hard: 8
+  };
+
+  const STORAGE_KEY_UNLOCKED = 'puzzlefeels-ho-unlocked';
+  const STORAGE_KEY_COMPLETED = 'puzzlefeels-ho-completed';
+  const STORAGE_KEY_DIFF = 'puzzlefeels-ho-diff';
+  const STORAGE_KEY_SOUND = 'puzzlefeels-ho-sound';
+
+  const dataScript = document.getElementById('ho-data');
+  const levels: HiddenObjectLevel[] = dataScript?.textContent ? JSON.parse(dataScript.textContent) : [];
+
+  if (levels.length > 0) {
+    // 1. Settings & Progress State
+    let currentDiff: Difficulty = 'easy';
+    let soundEnabled = true;
+    let unlockedLevel = 1;
+    let completedLevels: number[] = [];
+
+    try {
+      const u = localStorage.getItem(STORAGE_KEY_UNLOCKED);
+      if (u) {
+        const parsed = parseInt(u, 10);
+        if (!isNaN(parsed) && parsed >= 1 && parsed <= 10) unlockedLevel = parsed;
+      }
+      const c = localStorage.getItem(STORAGE_KEY_COMPLETED);
+      if (c) {
+        const parsed = JSON.parse(c);
+        if (Array.isArray(parsed)) completedLevels = parsed;
+      }
+      const d = localStorage.getItem(STORAGE_KEY_DIFF) as Difficulty;
+      if (d === 'easy' || d === 'medium' || d === 'hard') {
+        currentDiff = d;
+      }
+      const s = localStorage.getItem(STORAGE_KEY_SOUND);
+      if (s !== null) {
+        soundEnabled = s === 'true';
+      }
+    } catch {
+      // LocalStorage unavailable
+    }
+
+    // 2. Active Session State
+    let currentLevelIndex = 0;
+    let foundObjects = new Set<string>();
+    let activeTargets: HiddenObjectItem[] = [];
+    let elapsedSeconds = 0;
+    let timerInterval: number | null = null;
+    let isPaused = false;
+    let hintsUsed = 0;
+    let toastTimeout: number | null = null;
+
+    // 3. Audio Synthesizer (Web Audio API)
+    let audioCtx: AudioContext | null = null;
+
+    function initAudio() {
+      if (!audioCtx && typeof window !== 'undefined') {
+        const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        if (AudioCtxClass) {
+          audioCtx = new AudioCtxClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playTone(freq: number, type: OscillatorType, duration: number, delay = 0, gainLevel = 0.15) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const startTime = audioCtx.currentTime + delay;
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, startTime);
+
+        gain.gain.setValueAtTime(gainLevel, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      } catch {
+        // Audio policy fallback
+      }
+    }
+
+    function playSuccessSound() {
+      playTone(523.25, 'triangle', 0.15, 0, 0.18);      // C5
+      playTone(659.25, 'triangle', 0.18, 0.08, 0.18);   // E5
+      playTone(783.99, 'triangle', 0.25, 0.16, 0.20);   // G5
+    }
+
+    function playMissSound() {
+      playTone(220, 'sine', 0.15, 0, 0.12);             // Low muted tap
+    }
+
+    function playHintSound() {
+      playTone(784, 'sine', 0.12, 0, 0.16);             // G5
+      playTone(988, 'sine', 0.15, 0.08, 0.16);          // B5
+      playTone(1318, 'sine', 0.25, 0.16, 0.18);         // E6
+    }
+
+    function playVictorySound() {
+      playTone(523.25, 'triangle', 0.18, 0, 0.22);      // C5
+      playTone(659.25, 'triangle', 0.18, 0.12, 0.22);   // E5
+      playTone(783.99, 'triangle', 0.18, 0.24, 0.22);   // G5
+      playTone(1046.50, 'triangle', 0.45, 0.36, 0.25);  // C6
+    }
+
+    function playClickSound() {
+      playTone(600, 'sine', 0.05, 0, 0.08);
+    }
+
+    // 4. DOM Elements
+    const pillsContainer = document.getElementById('ho-level-pills');
+    const diffButtons = document.querySelectorAll<HTMLButtonElement>('.ho-tab-btn');
+    const levelBadge = document.getElementById('ho-level-badge');
+    const puzzleTitle = document.getElementById('ho-puzzle-title');
+    const puzzleTheme = document.getElementById('ho-puzzle-theme');
+    const foundCounter = document.getElementById('ho-found-counter');
+    const timerDisplay = document.getElementById('ho-timer');
+    const hintsDisplay = document.getElementById('ho-hints-counter');
+    const sceneImg = document.getElementById('ho-scene-img') as HTMLImageElement;
+    const sceneOverlay = document.getElementById('ho-scene-overlay');
+    const markersLayer = document.getElementById('ho-markers-layer');
+    const hintLayer = document.getElementById('ho-hint-layer');
+    const feedbackLayer = document.getElementById('ho-feedback-layer');
+    const objectsGrid = document.getElementById('ho-objects-grid');
+    const remainingTag = document.getElementById('ho-remaining-tag');
+    const toastBanner = document.getElementById('ho-toast-banner');
+    const toastText = document.getElementById('ho-toast-text');
+    const pausedOverlay = document.getElementById('ho-paused-overlay');
+    const btnResume = document.getElementById('btn-resume');
+    const completionOverlay = document.getElementById('ho-completion-overlay');
+    const completionTitle = document.getElementById('ho-completion-title');
+    const completionMsg = document.getElementById('ho-completion-msg');
+    const completionIcon = document.getElementById('ho-completion-icon');
+    const statTime = document.getElementById('ho-stat-time');
+    const statHints = document.getElementById('ho-stat-hints');
+    const btnNextLevel = document.getElementById('btn-next-level');
+
+    // Controls
+    const btnHint = document.getElementById('btn-hint');
+    const btnRestart = document.getElementById('btn-restart');
+    const btnPause = document.getElementById('btn-pause');
+    const pauseText = document.getElementById('pause-text');
+    const pauseIcon = btnPause?.querySelector('.pause-icon') as HTMLElement | null;
+    const playIcon = btnPause?.querySelector('.play-icon') as HTMLElement | null;
+    const btnSound = document.getElementById('btn-sound');
+    const soundOnSvg = btnSound?.querySelector('.sound-on-svg') as HTMLElement | null;
+    const soundOffSvg = btnSound?.querySelector('.sound-off-svg') as HTMLElement | null;
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY_UNLOCKED, String(unlockedLevel));
+        localStorage.setItem(STORAGE_KEY_COMPLETED, JSON.stringify(completedLevels));
+        localStorage.setItem(STORAGE_KEY_DIFF, currentDiff);
+        localStorage.setItem(STORAGE_KEY_SOUND, String(soundEnabled));
+      } catch {
+        // Storage fallback
+      }
+    }
+
+    function formatTime(sec: number): string {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function showToast(msg: string, duration = 3000) {
+      if (!toastBanner || !toastText) return;
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastText.textContent = msg;
+      toastBanner.hidden = false;
+      toastTimeout = window.setTimeout(() => {
+        toastBanner.hidden = true;
+      }, duration);
+    }
+
+    // 5. Timer Controls
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = window.setInterval(() => {
+        if (!isPaused) {
+          elapsedSeconds++;
+          if (timerDisplay) timerDisplay.textContent = formatTime(elapsedSeconds);
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function resetTimer() {
+      stopTimer();
+      elapsedSeconds = 0;
+      if (timerDisplay) timerDisplay.textContent = '00:00';
+      startTimer();
+    }
+
+    // 6. Sound UI Update
+    function updateSoundUI() {
+      if (!soundOnSvg || !soundOffSvg) return;
+      soundOnSvg.hidden = !soundEnabled;
+      soundOffSvg.hidden = soundEnabled;
+      if (btnSound) {
+        btnSound.setAttribute('title', soundEnabled ? 'Mute sound effects' : 'Unmute sound effects');
+        btnSound.setAttribute('aria-label', soundEnabled ? 'Mute sound effects' : 'Unmute sound effects');
+      }
+    }
+
+    // 7. Render UI
+    function renderDifficultyUI() {
+      diffButtons.forEach((btn) => {
+        const d = btn.dataset.difficulty as Difficulty;
+        const active = d === currentDiff;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+    }
+
+    function renderLevelSelector() {
+      if (!pillsContainer) return;
+      const buttons = pillsContainer.querySelectorAll<HTMLButtonElement>('.ho-level-pill');
+      buttons.forEach((btn) => {
+        const lvlNum = parseInt(btn.dataset.level || '1', 10);
+        const isCurrent = lvlNum === currentLevelIndex + 1;
+        const isUnlocked = lvlNum <= unlockedLevel;
+        const isCompleted = completedLevels.includes(lvlNum);
+
+        btn.disabled = !isUnlocked;
+        btn.classList.toggle('is-active', isCurrent);
+        btn.classList.toggle('is-locked', !isUnlocked);
+        btn.classList.toggle('is-completed', isCompleted);
+
+        btn.setAttribute('aria-label', `Level ${lvlNum}: ${levels[lvlNum - 1]?.title || ''}${!isUnlocked ? ' (Locked)' : ''}`);
+        btn.innerHTML = `<span class="pill-num">${lvlNum}</span>${!isUnlocked ? '<span class="pill-lock" aria-hidden="true">🔒</span>' : ''}`;
+      });
+    }
+
+    function loadLevel(index: number) {
+      if (index < 0 || index >= levels.length) return;
+      const level = levels[index];
+      if (!level) return;
+
+      currentLevelIndex = index;
+      foundObjects.clear();
+      hintsUsed = 0;
+      isPaused = false;
+
+      // Slice target objects according to difficulty
+      const targetCount = DIFF_COUNTS[currentDiff];
+      activeTargets = level.objects.slice(0, targetCount);
+
+      // Reset Paused state
+      if (pausedOverlay) pausedOverlay.hidden = true;
+      if (pauseText) pauseText.textContent = 'Pause';
+      if (pauseIcon) pauseIcon.hidden = false;
+      if (playIcon) playIcon.hidden = true;
+
+      // Update Header Info
+      if (levelBadge) levelBadge.textContent = `Level ${level.level}`;
+      if (puzzleTitle) puzzleTitle.textContent = level.title;
+      const diffLabel = currentDiff.charAt(0).toUpperCase() + currentDiff.slice(1);
+      if (puzzleTheme) puzzleTheme.textContent = `${level.theme} · ${diffLabel} · ${targetCount} Hidden Objects`;
+      if (foundCounter) foundCounter.textContent = `0 of ${targetCount} Found`;
+      if (hintsDisplay) hintsDisplay.textContent = '0';
+      if (remainingTag) remainingTag.textContent = `(${targetCount} remaining)`;
+
+      // Update Scene Image
+      if (sceneImg) {
+        sceneImg.src = level.image;
+        sceneImg.alt = `Hidden Object Scene - ${level.title}`;
+      }
+
+      // Clear layers & active popups
+      if (activePopupTimeout) clearTimeout(activePopupTimeout);
+      activePopup = null;
+      activePopupTimeout = null;
+      if (markersLayer) markersLayer.innerHTML = '';
+      if (hintLayer) hintLayer.innerHTML = '';
+      if (feedbackLayer) feedbackLayer.innerHTML = '';
+      if (completionOverlay) completionOverlay.hidden = true;
+      if (toastBanner) toastBanner.hidden = true;
+
+      // Render Object Cards
+      if (objectsGrid) {
+        objectsGrid.innerHTML = activeTargets.map(obj => `
+          <div class="ho-object-card" data-obj-id="${obj.id}" role="listitem">
+            <div class="ho-obj-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                ${obj.iconSvg}
+              </svg>
+            </div>
+            <div class="ho-obj-content">
+              <span class="ho-obj-name">${obj.name}</span>
+              <span class="ho-obj-badge">Hidden</span>
+            </div>
+            <span class="ho-obj-status" aria-hidden="true"></span>
+          </div>
+        `).join('');
+      }
+
+      renderDifficultyUI();
+      renderLevelSelector();
+      resetTimer();
+    }
+
+    function addFoundMarker(obj: HiddenObjectItem) {
+      if (!markersLayer) return;
+      const marker = document.createElement('div');
+      marker.className = 'ho-marker';
+      marker.style.left = `${obj.x}%`;
+      marker.style.top = `${obj.y}%`;
+
+      const ring = document.createElement('div');
+      ring.className = 'marker-ring';
+      const diameterPercent = Math.max(obj.radius * 2.2, 5.5);
+      ring.style.width = `${diameterPercent}cqi`;
+      ring.style.height = `${diameterPercent}cqi`;
+      if (!window.CSS || !CSS.supports || !CSS.supports('width', '1cqi')) {
+        const boardW = sceneOverlay?.getBoundingClientRect().width || 900;
+        const px = Math.round((diameterPercent / 100) * boardW);
+        ring.style.width = `${px}px`;
+        ring.style.height = `${px}px`;
+      }
+
+      const icon = document.createElement('div');
+      icon.className = 'marker-icon';
+      icon.textContent = '✓';
+
+      marker.appendChild(ring);
+      marker.appendChild(icon);
+      markersLayer.appendChild(marker);
+    }
+
+    let activePopup: HTMLElement | null = null;
+    let activePopupTimeout: number | null = null;
+
+    function showSelectionPopup(x: number, y: number, isCorrect: boolean, objName?: string) {
+      if (!feedbackLayer) return;
+
+      // Dismiss any active popup immediately on rapid clicks to prevent clutter
+      if (activePopup) {
+        activePopup.remove();
+        activePopup = null;
+      }
+      if (activePopupTimeout) {
+        clearTimeout(activePopupTimeout);
+        activePopupTimeout = null;
+      }
+
+      const popup = document.createElement('div');
+      popup.className = `ho-selection-popup ${isCorrect ? 'ho-popup-correct success' : 'ho-popup-incorrect miss'}`;
+
+      // Clamp horizontal coordinates (14% - 86%) to keep inside the board boundaries
+      const clampedX = Math.max(14, Math.min(x, 86));
+
+      // Near top (<18%) position below click point; otherwise position above
+      if (y < 18) {
+        popup.style.top = `${Math.min(y + 4, 88)}%`;
+        popup.style.transform = 'translate(-50%, 0)';
+      } else {
+        popup.style.top = `${Math.max(y - 2, 10)}%`;
+        popup.style.transform = 'translate(-50%, -100%)';
+      }
+      popup.style.left = `${clampedX}%`;
+
+      if (isCorrect) {
+        popup.innerHTML = `
+          <span class="ho-popup-icon correct-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+          <span class="ho-popup-text ho-popup-name">${objName || 'Object Found'}</span>
+        `;
+      } else {
+        popup.innerHTML = `
+          <span class="ho-popup-icon incorrect-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </span>
+          <span class="ho-popup-text">Not quite! Keep looking.</span>
+        `;
+      }
+
+      feedbackLayer.appendChild(popup);
+      activePopup = popup;
+
+      // Auto-dismiss after 1.2s
+      activePopupTimeout = window.setTimeout(() => {
+        if (activePopup === popup) {
+          popup.remove();
+          activePopup = null;
+          activePopupTimeout = null;
+        }
+      }, 1200);
+    }
+
+    function showMissRipple(x: number, y: number) {
+      if (!sceneOverlay) return;
+      const ripple = document.createElement('div');
+      ripple.className = 'ho-miss-ripple';
+      ripple.style.left = `${x}%`;
+      ripple.style.top = `${y}%`;
+      sceneOverlay.appendChild(ripple);
+      setTimeout(() => {
+        ripple.remove();
+      }, 400);
+    }
+
+    function triggerHint() {
+      if (isPaused) return;
+      initAudio();
+
+      // Find undiscovered objects in the current active target list
+      const undiscovered = activeTargets.filter(o => !foundObjects.has(o.id));
+      if (undiscovered.length === 0) {
+        showToast('All objects for this level have already been found!');
+        return;
+      }
+
+      // Select random or first undiscovered object
+      const hintObj = undiscovered[Math.floor(Math.random() * undiscovered.length)];
+
+      hintsUsed++;
+      if (hintsDisplay) hintsDisplay.textContent = String(hintsUsed);
+      playHintSound();
+
+      // Pulse on Scene
+      if (hintLayer) {
+        hintLayer.innerHTML = '';
+        const beacon = document.createElement('div');
+        beacon.className = 'ho-hint-beacon';
+        beacon.style.left = `${hintObj.x}%`;
+        beacon.style.top = `${hintObj.y}%`;
+        beacon.innerHTML = `
+          <div class="beacon-ping"></div>
+          <div class="beacon-core"></div>
+        `;
+        hintLayer.appendChild(beacon);
+
+        setTimeout(() => {
+          beacon.remove();
+        }, 3000);
+      }
+
+      // Highlight card in list
+      const card = document.querySelector<HTMLElement>(`.ho-object-card[data-obj-id="${hintObj.id}"]`);
+      if (card) {
+        card.classList.add('is-hinted');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => {
+          card.classList.remove('is-hinted');
+        }, 3000);
+      }
+
+      showToast(`Hint: Search closely for the ${hintObj.name}!`, 3000);
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      if (pausedOverlay) pausedOverlay.hidden = !isPaused;
+      if (pauseText) pauseText.textContent = isPaused ? 'Resume' : 'Pause';
+      if (pauseIcon) pauseIcon.hidden = isPaused;
+      if (playIcon) playIcon.hidden = !isPaused;
+      playClickSound();
+    }
+
+    function checkLevelComplete() {
+      const level = levels[currentLevelIndex];
+      if (!level) return;
+
+      if (foundObjects.size >= activeTargets.length) {
+        stopTimer();
+        playVictorySound();
+
+        const lvlNum = level.level;
+        if (!completedLevels.includes(lvlNum)) {
+          completedLevels.push(lvlNum);
+        }
+
+        if (lvlNum < 10 && unlockedLevel < lvlNum + 1) {
+          unlockedLevel = lvlNum + 1;
+        }
+
+        saveState();
+        renderLevelSelector();
+
+        setTimeout(() => {
+          if (!completionOverlay) return;
+          if (statTime) statTime.textContent = `Time: ${formatTime(elapsedSeconds)}`;
+          if (statHints) statHints.textContent = `Hints: ${hintsUsed}`;
+
+          if (lvlNum < 10) {
+            if (completionIcon) completionIcon.textContent = '🎉';
+            if (completionTitle) completionTitle.textContent = `Level ${lvlNum} Complete!`;
+            if (completionMsg) completionMsg.textContent = `Magnificent observation! You found all ${activeTargets.length} hidden objects in ${level.title}!`;
+            if (btnNextLevel) {
+              btnNextLevel.textContent = `Next Level (${levels[lvlNum]?.title || `Level ${lvlNum + 1}`}) →`;
+              btnNextLevel.onclick = () => {
+                loadLevel(lvlNum);
+              };
+            }
+          } else {
+            // Level 10 Grand Victory
+            if (completionIcon) completionIcon.textContent = '🏆';
+            if (completionTitle) completionTitle.textContent = 'Congratulations! All 10 Levels Completed!';
+            if (completionMsg) completionMsg.textContent = `Outstanding! You have mastered all 10 illustrated scenes on ${currentDiff.toUpperCase()} difficulty!`;
+            if (btnNextLevel) {
+              btnNextLevel.textContent = 'Play Again (Level 1)';
+              btnNextLevel.onclick = () => {
+                loadLevel(0);
+              };
+            }
+          }
+          completionOverlay.hidden = false;
+        }, 400);
+      }
+    }
+
+    // 8. Event Handlers
+    // Scene Click Detection
+    sceneOverlay?.addEventListener('pointerdown', (e: PointerEvent) => {
+      if (isPaused) return;
+      initAudio();
+
+      const rect = sceneOverlay.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      const clickX = ((e.clientX - rect.left) / rect.width) * 100;
+      const clickY = ((e.clientY - rect.top) / rect.height) * 100;
+      const aspectCorrection = 600 / 900; // 0.6667 for 900x600 viewBox
+
+      let foundItem: HiddenObjectItem | null = null;
+
+      // Check strictly against undiscovered targets for the active difficulty
+      for (const obj of activeTargets) {
+        if (foundObjects.has(obj.id)) continue;
+
+        const dx = clickX - obj.x;
+        const dy = (clickY - obj.y) * aspectCorrection;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance <= obj.radius) {
+          foundItem = obj;
+          break;
+        }
+      }
+
+      if (foundItem) {
+        foundObjects.add(foundItem.id);
+        addFoundMarker(foundItem);
+        playSuccessSound();
+        showSelectionPopup(clickX, clickY, true, foundItem.name);
+
+        // Update Object Card
+        const card = document.querySelector<HTMLElement>(`.ho-object-card[data-obj-id="${foundItem.id}"]`);
+        if (card) {
+          card.classList.add('is-found');
+          const badge = card.querySelector('.ho-obj-badge');
+          if (badge) badge.textContent = 'Found';
+        }
+
+        // Update Progress Counters
+        const foundCount = foundObjects.size;
+        const totalCount = activeTargets.length;
+        if (foundCounter) foundCounter.textContent = `${foundCount} of ${totalCount} Found`;
+        if (remainingTag) remainingTag.textContent = `(${totalCount - foundCount} remaining)`;
+
+        checkLevelComplete();
+      } else {
+        // Check if user tapped an already found object
+        let alreadyFound = false;
+        for (const obj of activeTargets) {
+          if (!foundObjects.has(obj.id)) continue;
+          const dx = clickX - obj.x;
+          const dy = (clickY - obj.y) * aspectCorrection;
+          if (Math.sqrt(dx * dx + dy * dy) <= obj.radius) {
+            alreadyFound = true;
+            break;
+          }
+        }
+
+        if (!alreadyFound) {
+          playMissSound();
+          showMissRipple(clickX, clickY);
+          showSelectionPopup(clickX, clickY, false);
+        }
+      }
+    });
+
+    // Zoom Change Handler to keep viewport center aligned smoothly
+    const sceneBoard = document.getElementById('ho-scene-board');
+    const sceneViewport = document.getElementById('ho-scene-viewport');
+
+    sceneBoard?.addEventListener('puzzlefeels:zoomchange', (e: Event) => {
+      const customEvent = e as CustomEvent<{ pct: number; scale: number }>;
+      const scale = customEvent.detail?.scale ?? 1;
+      if (!sceneViewport) return;
+      if (scale <= 1) {
+        sceneViewport.scrollLeft = 0;
+        sceneViewport.scrollTop = 0;
+      } else {
+        requestAnimationFrame(() => {
+          const scrollableX = sceneViewport.scrollWidth - sceneViewport.clientWidth;
+          const scrollableY = sceneViewport.scrollHeight - sceneViewport.clientHeight;
+          if (scrollableX > 0) sceneViewport.scrollLeft = scrollableX / 2;
+          if (scrollableY > 0) sceneViewport.scrollTop = scrollableY / 2;
+        });
+      }
+    });
+
+    // Level Pills Selection
+    pillsContainer?.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.ho-level-pill');
+      if (!btn || btn.disabled) return;
+      playClickSound();
+      const lvlNum = parseInt(btn.dataset.level || '1', 10);
+      if (lvlNum <= unlockedLevel) {
+        loadLevel(lvlNum - 1);
+      }
+    });
+
+    // Difficulty Tabs Selection
+    diffButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const d = btn.dataset.difficulty as Difficulty;
+        if (d === currentDiff) return;
+        playClickSound();
+        currentDiff = d;
+        saveState();
+        loadLevel(currentLevelIndex);
+      });
+    });
+
+    // Toolbar Buttons
+    btnHint?.addEventListener('click', triggerHint);
+    btnPause?.addEventListener('click', togglePause);
+    btnResume?.addEventListener('click', togglePause);
+
+    btnRestart?.addEventListener('click', () => {
+      playClickSound();
+      loadLevel(currentLevelIndex);
+      showToast('Level restarted');
+    });
+
+    btnSound?.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      updateSoundUI();
+      saveState();
+      if (soundEnabled) {
+        initAudio();
+        playClickSound();
+      }
+    });
+
+    // Keyboard Shortcuts (Space to Pause)
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && e.target === document.body) {
+        e.preventDefault();
+        togglePause();
+      }
+    });
+
+    // Initialize UI
+    updateSoundUI();
+    renderDifficultyUI();
+    loadLevel(0);
+  }
+</script>

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="100%" height="100%" aria-label="Hidden Object Scene - Enchanted Forest">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="1" dy="3" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <defs>
+    <linearGradient id="l9-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#022c22"/>
+      <stop offset="60%" stop-color="#064e3b"/>
+      <stop offset="100%" stop-color="#065f46"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Twilight Forest Background -->
+  <rect x="0" y="0" width="900" height="600" fill="url(#l9-bg)"/>
+
+  <!-- Ancient Giant Oak Trunk on Left -->
+  <path d="M120 600 C150 400 120 200 60 0 H260 C220 200 300 400 350 600 Z" fill="#1c1917" stroke="#0c0a09" stroke-width="4"/>
+  <!-- Gnarled Roots -->
+  <path d="M280 480 Q380 460 480 540" fill="none" stroke="#292524" stroke-width="24" stroke-linecap="round"/>
+  <path d="M180 500 Q140 550 80 580" fill="none" stroke="#292524" stroke-width="20" stroke-linecap="round"/>
+
+  <!-- Magic Stream in Center -->
+  <path d="M500 600 Q540 460 620 400 T740 320 L790 320 Q680 420 600 600 Z" fill="#06b6d4" opacity="0.7" filter="url(#glow)"/>
+
+  <!-- Stone Ruin Pillars on Right -->
+  <rect x="760" y="160" width="70" height="280" fill="#334155" stroke="#1e293b" stroke-width="4"/>
+  <rect x="740" y="140" width="110" height="24" fill="#475569"/>
+
+  <!-- Glowing Fireflies -->
+  <circle cx="320" cy="120" r="4" fill="#a7f3d0" filter="url(#glow)"/>
+  <circle cx="580" cy="180" r="3.5" fill="#fef08a" filter="url(#glow)"/>
+  <circle cx="480" cy="280" r="4" fill="#67e8f9" filter="url(#glow)"/>
+
+  <!-- ==================== 8 TARGET OBJECTS ==================== -->
+  <!-- 1. Magic Mushroom (cx: 280, cy: 250) -->
+  <g id="target-glowing-mushroom" transform="translate(280, 250)">
+    <path d="M0 6 V20" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+    <path d="M-16 6 C-16 -12 16 -12 16 6 Z" fill="#06b6d4" stroke="#0891b2" stroke-width="2" filter="url(#glow)"/>
+    <circle cx="-6" cy="-2" r="2.5" fill="#ffffff"/>
+    <circle cx="6" cy="-2" r="2" fill="#ffffff"/>
+  </g>
+
+  <!-- 2. Golden Acorn (cx: 720, cy: 460) -->
+  <g id="target-golden-acorn" transform="translate(720, 460)">
+    <ellipse cx="0" cy="4" rx="10" ry="14" fill="#facc15" stroke="#ca8a04" stroke-width="2" filter="url(#glow)"/>
+    <path d="M-11 -2 H11 V-8 C11 -12 -11 -12 -11 -8 Z" fill="#78350f"/>
+    <line x1="0" y1="-12" x2="0" y2="-16" stroke="#78350f" stroke-width="2.5"/>
+  </g>
+
+  <!-- 3. Fairy Wings (cx: 180, cy: 190) -->
+  <g id="target-fairy-wings" transform="translate(180, 190)">
+    <ellipse cx="-8" cy="-6" rx="12" ry="18" fill="#e0e7ff" opacity="0.8" stroke="#818cf8" stroke-width="1.8" filter="url(#glow)"/>
+    <ellipse cx="8" cy="-6" rx="12" ry="18" fill="#e0e7ff" opacity="0.8" stroke="#818cf8" stroke-width="1.8" filter="url(#glow)"/>
+  </g>
+
+  <!-- 4. Wooden Flute (cx: 410, cy: 480) -->
+  <g id="target-wooden-flute" transform="translate(410, 480) rotate(-25)">
+    <rect x="-24" y="-3" width="48" height="6" rx="3" fill="#b45309" stroke="#78350f" stroke-width="1.5"/>
+    <circle cx="-10" cy="0" r="1.5" fill="#1c1917"/>
+    <circle cx="0" cy="0" r="1.5" fill="#1c1917"/>
+    <circle cx="10" cy="0" r="1.5" fill="#1c1917"/>
+  </g>
+
+  <!-- 5. Blue Feather (cx: 530, cy: 520) -->
+  <g id="target-blue-feather" transform="translate(530, 520) rotate(45)">
+    <path d="M0 -22 C-10 -8 0 16 0 16 C0 16 10 -8 0 -22 Z" fill="#3b82f6" stroke="#1d4ed8" stroke-width="1.5"/>
+    <line x1="0" y1="-22" x2="0" y2="20" stroke="#bfdbfe" stroke-width="1.5"/>
+  </g>
+
+  <!-- 6. Dragonfly (cx: 630, cy: 370) -->
+  <g id="target-emerald-dragonfly" transform="translate(630, 370)">
+    <line x1="0" y1="-14" x2="0" y2="16" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="-12" cy="-4" rx="12" ry="3" fill="#6ee7b7" opacity="0.8"/>
+    <ellipse cx="12" cy="-4" rx="12" ry="3" fill="#6ee7b7" opacity="0.8"/>
+  </g>
+
+  <!-- 7. Enchanted Key (cx: 810, cy: 280) -->
+  <g id="target-ivy-key" transform="translate(810, 280) rotate(15)">
+    <circle cx="0" cy="-14" r="8" fill="none" stroke="#f59e0b" stroke-width="3.5" filter="url(#glow)"/>
+    <rect x="-2" y="-6" width="4" height="24" rx="1" fill="#f59e0b"/>
+    <rect x="0" y="8" width="6" height="4" fill="#f59e0b"/>
+  </g>
+
+  <!-- 8. Forest Elixir (cx: 340, cy: 390) -->
+  <g id="target-magic-potion" transform="translate(340, 390)">
+    <circle cx="0" cy="4" r="14" fill="#a855f7" stroke="#7e22ce" stroke-width="2" filter="url(#glow)"/>
+    <rect x="-4" y="-12" width="8" height="6" fill="#cbd5e1"/>
+    <rect x="-3" y="-16" width="6" height="4" fill="#78350f"/>
+  </g>
+  </svg>
