@@ -65,6 +65,7 @@ test('main routes render, expose a page heading, and use valid local links', asy
     { path: '/sliding-number-puzzle-game/', heading: 'Sliding Number Puzzle Game' },
     { path: '/word-ladder-game-online/', heading: 'Word Ladder Game Online' },
     { path: '/reaction-time-challenge/', heading: 'Reaction Time Challenge' },
+    { path: '/mahjong-variants-online-game/', heading: 'Mahjong Variants Online Game' },
   ];
   for (const route of routes) {
     const response = await page.goto(route.path);
@@ -84,7 +85,7 @@ test('main routes render, expose a page heading, and use valid local links', asy
 test('All Games search, empty state, clear action, and game links work', async ({ page }) => {
   await page.goto('/games/');
   const cards = page.locator('.directory-card:visible');
-  await expect(cards).toHaveCount(11);
+  await expect(cards).toHaveCount(12);
 
   const search = page.getByRole('searchbox', { name: 'Search games by name' });
   await search.fill('number sequence');
@@ -132,13 +133,16 @@ test('All Games search, empty state, clear action, and game links work', async (
   await search.fill('hidden object');
   await expect(cards).toHaveCount(1);
   await expect(cards.first()).toContainText('Free Hidden Object Online Game');
+  await search.fill('mahjong');
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText('Mahjong Variants Online Game');
 
   await search.fill('nothing-matches-this');
   await expect(page.getByRole('heading', { name: 'No games found' })).toBeVisible();
   await expect(page.getByText('Try searching with a different game name.')).toBeVisible();
   await page.getByRole('button', { name: 'Clear search' }).click();
   await expect(search).toBeFocused();
-  await expect(cards).toHaveCount(11);
+  await expect(cards).toHaveCount(12);
 
   for (const [index, href, heading] of [
     [0, '/number-sequence-game/', 'Play Number Sequence Game Online'],
@@ -152,13 +156,14 @@ test('All Games search, empty state, clear action, and game links work', async (
     [8, '/norinori-game/', 'Norinori Game'],
     [9, '/spot-the-difference-game/', 'Spot the Difference Free Online Game'],
     [10, '/hidden-object-game/', 'Free Hidden Object Online Game'],
+    [11, '/mahjong-variants-online-game/', 'Mahjong Variants Online Game'],
   ]) {
     await expect(cards.nth(index)).toHaveAttribute('href', href);
     await cards.nth(index).click();
     await expect(page).toHaveURL(new RegExp(href.replaceAll('/', '\\/') + '$'));
     await expect(page.locator('h1').first()).toContainText(heading);
     await page.goBack();
-    await expect(page.locator('.directory-card')).toHaveCount(11);
+    await expect(page.locator('.directory-card')).toHaveCount(12);
   }
 });
 
@@ -189,7 +194,7 @@ test('All Games page is responsive and theme-aware', async ({ page }, testInfo) 
     await page.goto('/games/');
     const metrics = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
     expect(metrics.document, `${width}px page overflow`).toBeLessThanOrEqual(metrics.viewport + 1);
-    await expect(page.locator('.directory-card')).toHaveCount(11);
+    await expect(page.locator('.directory-card')).toHaveCount(12);
     if (width === 1280 || width === 390) await screenshot(page, testInfo, `games-light-${width}`);
   }
   const toggle = page.getByRole('switch');
@@ -1494,10 +1499,11 @@ test('Homepage featured games (exactly 5), Daily Moments (exactly 3, without Pic
   // 4. All Games directory (/games/) displays all games from catalog
   await page.goto('/games/');
   const directoryCards = page.locator('.directory-card:visible');
-  await expect(directoryCards).toHaveCount(11);
+  await expect(directoryCards).toHaveCount(12);
   await expect(directoryCards.locator('h3', { hasText: 'Reaction Time Challenge' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Memory Matching Game Online' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Murdoku Online Game' })).toBeVisible();
+  await expect(directoryCards.locator('h3', { hasText: 'Mahjong Variants Online Game' })).toBeVisible();
 
   await screenshot(page, testInfo, 'homepage-games-featured-and-daily');
 });

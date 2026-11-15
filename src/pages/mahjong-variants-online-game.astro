@@ -1,0 +1,2955 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+import { TILE_DEFINITIONS } from '../lib/mahjong/tiles';
+
+const title = 'Mahjong Variants Online Game – Play 3 Modes Free | PuzzleFeels';
+const description = 'Play Mahjong Variants Online Game free on PuzzleFeels. Enjoy Classic Mahjong Solitaire, 2-turn Mahjong Connect, and Triple Match with daily puzzles and hints.';
+
+const faqs = [
+  {
+    question: 'What is the Mahjong Variants Online Game on PuzzleFeels?',
+    answer: 'Mahjong Variants Online Game is a free, web-based casual puzzle game that brings together three distinct Mahjong-inspired gameplay styles in one interface: Classic Mahjong Solitaire (layered 3D tile matching), Mahjong Connect (2-turn orthogonal path matching), and Triple Mahjong (match-3 tile tray collection). You can freely switch between all three modes, choose from three difficulty levels, and play a fresh daily challenge every day.'
+  },
+  {
+    question: 'What makes a tile "free" in Classic Mahjong Solitaire?',
+    answer: 'In Classic Solitaire, a tile is considered free and eligible for matching only when two conditions are met: first, no other tile is resting on top of it or partially overlapping it from a higher layer; second, either its left edge or its right edge is completely open without an adjacent tile on the same layer. Blocked tiles cannot be selected until obstructing tiles are cleared.'
+  },
+  {
+    question: 'How does the 2-turn rule work in Mahjong Connect?',
+    answer: 'In Mahjong Connect (also called Shisen-Sho or Nikakudori), two identical tiles can be matched and eliminated only if they can be connected by an unobstructed line that turns at right angles no more than twice. This means the path consists of at most three straight segments (a direct straight line, an L-shape with one turn, or a Z/U-shape with two turns). The path may travel through cleared board cells or wrap through the empty perimeter surrounding the board.'
+  },
+  {
+    question: 'How do you play Triple Mahjong without losing?',
+    answer: 'In Triple Mahjong, you click eligible uncovered tiles to move them into your 7-slot selection tray at the bottom of the board. Whenever three identical tiles accumulate in the tray, they are instantly matched and removed, freeing up space. The key to winning is planning ahead: never let the tray fill with seven unmatched tiles, as a completely full tray with no valid match-3 results in an immediate game over.'
+  },
+  {
+    question: 'Are all generated Mahjong puzzles guaranteed to be solvable?',
+    answer: 'Yes. On PuzzleFeels, our Classic Mahjong Solitaire puzzles are generated using reverse-assembly forward pairing. This algorithm simulates solving the board from an empty layout to the full arrangement, mathematically guaranteeing that at least one valid winning sequence exists. Mahjong Connect and Triple Mahjong boards are similarly verified with automated solver checks so players never encounter an impossible starting board.'
+  },
+  {
+    question: 'What does the Shuffle button do and when should I use it?',
+    answer: 'The Shuffle feature rearranges all currently remaining tiles on the board into new positions. You should use Shuffle when you cannot spot any available matches or when all legal moves have been exhausted. The game verifies that shuffled boards contain valid matching opportunities so you can continue your puzzle run without restarting.'
+  },
+  {
+    question: 'How does the Daily Challenge work?',
+    answer: 'The Daily Challenge generates a special puzzle uniquely seeded by the current UTC date. Every player around the world receives the exact same puzzle on that date. Refreshing the browser preserves your daily board and progress, and completing the challenge records your time and score in your local achievements.'
+  },
+  {
+    question: 'Can I undo a move if I make a mistake?',
+    answer: 'Yes. Clicking the Undo button reverses your previous matching action and restores the exact previous positions of the tiles, as well as updating your move counter and score. In Triple Mahjong, Undo returns the most recently collected tile from your tray back to its board position.'
+  },
+  {
+    question: 'How does the Hint system work?',
+    answer: 'The Hint feature scans the current board using the exact rule set of your active mode. In Classic Solitaire, it highlights two matching free tiles; in Connect, it highlights two tiles with an unobstructed 2-turn connecting path; in Triple, it highlights an eligible tile that helps complete a triplet. Using a hint applies a small, fair score penalty.'
+  },
+  {
+    question: 'Do I need to download an app or register an account to play?',
+    answer: 'No. Mahjong Variants Online Game runs 100% in your web browser with no downloads, plugins, or account registration required. Your personal records, sound preferences, and active game progress are safely stored directly on your device via LocalStorage.'
+  },
+  {
+    question: 'What are the main Mahjong tile suits used in this game?',
+    answer: 'Our game features traditional Mahjong suits rendered in crisp vector art: Dots (筒 / Circles 1–9), Bamboo (條 / Sticks 1–9), Characters (萬 / Wan 1–9), the Four Winds (East, South, West, North), the Three Dragons (Red 中, Green 發, White 白), and ornamental Flower tiles (Plum, Orchid, Bamboo, Chrysanthemum).'
+  },
+  {
+    question: 'How do the zoom controls work on mobile devices?',
+    answer: 'Reusing our site-wide ZoomControl component, you can zoom into the board at 125% or 150%, zoom out to 75%, or tap Fit to Screen (100%) to reset. Zooming adjusts only the playable puzzle area, ensuring clear visibility on small phone viewports while keeping navigation and controls rock-solid.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Mahjong Variants Online Game',
+  url: 'https://puzzlefeels.com/mahjong-variants-online-game/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Puzzle game',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Mahjong Variants Online Game', item: 'https://puzzlefeels.com/mahjong-variants-online-game/' }
+  ]
+};
+---
+
+<Base {title} {description} path="/mahjong-variants-online-game/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="mahjong-page">
+    <nav class="wrap mahjong-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Mahjong Variants Online Game</span>
+    </nav>
+
+    <section class="wrap mahjong-intro">
+      <span class="eyebrow">Three Mahjong Puzzle Modes In One</span>
+      <h1>Mahjong Variants Online Game</h1>
+      <p class="muted">
+        Experience the timeless art of Mahjong tile puzzles reimagined in three captivating styles. Play classic 3D layered Solitaire, fast-paced 2-turn Mahjong Connect, or strategic match-3 Triple Mahjong. Enjoy verified solvable layouts, daily UTC puzzles, and smooth controls on any device.
+      </p>
+    </section>
+
+    <!-- Main Game Shell -->
+    <section class="wrap mahjong-shell card" data-mahjong-game aria-label="Mahjong Variants Game Board">
+      <!-- Mode Selection Tabs -->
+      <div class="mahjong-mode-tabs" role="tablist" aria-label="Select Mahjong game mode">
+        <button
+          type="button"
+          class="mahjong-mode-tab is-active"
+          role="tab"
+          id="tab-mode-solitaire"
+          data-mode="solitaire"
+          aria-selected="true"
+          aria-controls="solitaire-board"
+        >
+          <span class="tab-badge">Mode A</span>
+          <strong><span class="mode-full">Classic </span>Solitaire</strong>
+          <small>Layered 3D Tile Matching</small>
+        </button>
+        <button
+          type="button"
+          class="mahjong-mode-tab"
+          role="tab"
+          id="tab-mode-connect"
+          data-mode="connect"
+          aria-selected="false"
+          aria-controls="connect-board"
+        >
+          <span class="tab-badge">Mode B</span>
+          <strong><span class="mode-full">Mahjong </span>Connect</strong>
+          <small>2-Turn Path Linking</small>
+        </button>
+        <button
+          type="button"
+          class="mahjong-mode-tab"
+          role="tab"
+          id="tab-mode-triple"
+          data-mode="triple"
+          aria-selected="false"
+          aria-controls="triple-board"
+        >
+          <span class="tab-badge">Mode C</span>
+          <strong>Triple<span class="mode-full"> Mahjong</span></strong>
+          <small>Match-3 Tray Puzzle</small>
+        </button>
+      </div>
+
+      <!-- Difficulty and Utility Bar -->
+      <div class="mahjong-header-bar">
+        <div class="mahjong-difficulties" role="group" aria-label="Select puzzle difficulty">
+          <button type="button" class="mahjong-diff-btn is-active" data-difficulty="easy" aria-pressed="true">
+            <strong>Easy</strong>
+            <span id="diff-sub-easy"><span class="sub-tiles">36 Tiles</span><span class="sub-desc"> · Accessible</span></span>
+          </button>
+          <button type="button" class="mahjong-diff-btn" data-difficulty="medium" aria-pressed="false">
+            <strong>Medium</strong>
+            <span id="diff-sub-med"><span class="sub-tiles">60–72 Tiles</span><span class="sub-desc"> · Strategic</span></span>
+          </button>
+          <button type="button" class="mahjong-diff-btn" data-difficulty="hard" aria-pressed="false">
+            <strong>Hard</strong>
+            <span id="diff-sub-hard"><span class="sub-tiles">90–144 Tiles</span><span class="sub-desc"> · Master</span></span>
+          </button>
+        </div>
+
+        <div class="mahjong-header-actions">
+          <button type="button" class="btn secondary mahjong-daily-btn" id="mahjong-daily-toggle" aria-pressed="false" title="Switch to UTC Daily Challenge">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span id="mahjong-daily-label"><span class="daily-full">Daily Challenge</span><span class="daily-short">Daily</span></span>
+          </button>
+
+          <ZoomControl id="mahjong-zoom" label="Board Zoom" targetSelector="#mahjong-board-container" zoomVar="--mahjong-zoom" />
+
+          <button type="button" class="btn secondary mahjong-sound-btn" id="mahjong-sound-toggle" aria-label="Toggle audio effects" aria-pressed="true">
+            <svg class="sound-on-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <svg class="sound-off-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+            <span id="mahjong-sound-label">Sound: On</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Statistics Track -->
+      <div class="mahjong-stats-bar">
+        <div class="mahjong-stat-item">
+          <small>Active Mode</small>
+          <strong id="stat-mode-label" class="stat-pill-label">Classic Solitaire</strong>
+        </div>
+        <div class="mahjong-stat-item">
+          <small>Score</small>
+          <strong id="stat-score">0</strong>
+        </div>
+        <div class="mahjong-stat-item">
+          <small>Moves</small>
+          <strong id="stat-moves">0</strong>
+        </div>
+        <div class="mahjong-stat-item">
+          <small>Tiles Left</small>
+          <strong id="stat-remaining">36</strong>
+        </div>
+        <div class="mahjong-stat-item">
+          <small>Timer</small>
+          <strong id="stat-timer">00:00</strong>
+        </div>
+        <div class="mahjong-stat-item">
+          <small>Best Record</small>
+          <strong id="stat-best">—</strong>
+        </div>
+      </div>
+
+      <!-- Main Playable Board Area -->
+      <div class="mahjong-board-wrapper" id="mahjong-board-wrapper">
+        <!-- Scale target for ZoomControl -->
+        <div class="mahjong-board-container" id="mahjong-board-container">
+          <!-- Solitaire Play Area -->
+          <div id="solitaire-board" class="mahjong-view solitaire-view" role="region" aria-label="Classic Mahjong Solitaire Board">
+            <!-- Tiles rendered dynamically -->
+          </div>
+
+          <!-- Connect Play Area -->
+          <div id="connect-board" class="mahjong-view connect-view" role="region" aria-label="Mahjong Connect Board" hidden>
+            <!-- SVG overlay for path animation -->
+            <svg id="connect-svg-overlay" class="connect-overlay-svg" aria-hidden="true"></svg>
+            <div id="connect-grid" class="connect-grid">
+              <!-- Grid cells rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Triple Mahjong Play Area -->
+          <div id="triple-board" class="mahjong-view triple-view" role="region" aria-label="Triple Mahjong Board" hidden>
+            <div id="triple-board-tiles" class="triple-board-tiles">
+              <!-- Layered board tiles rendered dynamically -->
+            </div>
+            <!-- Selection Tray -->
+            <div class="triple-tray-container" aria-label="Tile Selection Tray">
+              <div class="triple-tray-header">
+                <span>Selection Tray (Max 7 Tiles)</span>
+                <small id="tray-count-label">0 / 7</small>
+              </div>
+              <div id="triple-tray" class="triple-tray" role="list" aria-label="Selected tiles tray">
+                <!-- 7 Tray slots rendered dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlays -->
+        <!-- Paused Screen -->
+        <div id="mahjong-paused" class="mahjong-overlay" hidden>
+          <div class="mahjong-overlay-box">
+            <span class="eyebrow">Game Paused</span>
+            <h2>Take a Moment</h2>
+            <p class="muted">The timer is paused and your board layout is safely preserved. Resume whenever you are ready to continue matching.</p>
+            <button type="button" class="btn" id="mahjong-resume">Resume Game <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Victory Modal -->
+        <div id="mahjong-victory" class="mahjong-overlay" hidden>
+          <div class="mahjong-overlay-box victory-box">
+            <span class="pill victory-pill">✦ PUZZLE SOLVED!</span>
+            <h2>Magnificent!</h2>
+            <p class="muted">You cleared the entire Mahjong board with outstanding concentration and focus.</p>
+
+            <div id="mahjong-pb-badge" class="mahjong-pb-badge" hidden>
+              <span>★ New Personal Best!</span>
+            </div>
+
+            <div class="victory-stats-grid">
+              <div>
+                <small>Game Mode</small>
+                <strong id="victory-mode">Classic Solitaire</strong>
+              </div>
+              <div>
+                <small>Difficulty</small>
+                <strong id="victory-diff">Easy</strong>
+              </div>
+              <div>
+                <small>Time</small>
+                <strong id="victory-time">00:00</strong>
+              </div>
+              <div>
+                <small>Moves</small>
+                <strong id="victory-moves">0</strong>
+              </div>
+              <div>
+                <small>Score</small>
+                <strong id="victory-score">0</strong>
+              </div>
+            </div>
+
+            <div class="victory-actions">
+              <button type="button" class="btn" id="mahjong-play-again">Play Again <span>→</span></button>
+              <button type="button" class="btn secondary" id="mahjong-victory-new">New Puzzle</button>
+              <button type="button" class="btn secondary" id="mahjong-share-result">Share Result</button>
+            </div>
+            <p id="mahjong-share-status" class="mahjong-share-status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="mahjong-gameover" class="mahjong-overlay" hidden>
+          <div class="mahjong-overlay-box gameover-box">
+            <span class="pill gameover-pill">GAME OVER</span>
+            <h2 id="gameover-title">Round Ended</h2>
+            <p id="gameover-desc" class="muted">Your selection tray reached maximum capacity with no valid triplets available. Don't worry, every puzzle is a chance to refine your strategy!</p>
+            <div class="gameover-actions">
+              <button type="button" class="btn" id="mahjong-retry">Try Again <span>→</span></button>
+              <button type="button" class="btn secondary" id="mahjong-gameover-new">New Game</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmation Dialog -->
+        <div id="mahjong-confirm" class="mahjong-overlay" hidden>
+          <div class="mahjong-overlay-box confirm-box">
+            <span class="eyebrow">Confirm Action</span>
+            <h3 id="confirm-title">Start a New Game?</h3>
+            <p id="confirm-desc" class="muted">You have an active puzzle in progress. Starting a new game will reset your current board and score.</p>
+            <div class="confirm-actions">
+              <button type="button" class="btn secondary" id="confirm-cancel">Keep Playing</button>
+              <button type="button" class="btn" id="confirm-proceed">Confirm Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Toolbar -->
+      <div class="mahjong-controls" role="group" aria-label="Game controls">
+        <button type="button" class="btn secondary" id="btn-new-game" title="Generate a fresh puzzle board">New Game</button>
+        <button type="button" class="btn secondary" id="btn-restart" title="Restart this puzzle from the beginning">Restart</button>
+        <button type="button" class="btn secondary" id="btn-undo" disabled title="Reverse previous move">Undo</button>
+        <button type="button" class="btn secondary" id="btn-hint" title="Highlight a valid matching move">Hint</button>
+        <button type="button" class="btn secondary" id="btn-shuffle" title="Shuffle remaining tiles">Shuffle</button>
+        <button type="button" class="btn secondary" id="btn-pause" title="Pause the game">Pause</button>
+      </div>
+
+      <div class="mahjong-footer-meta">
+        <p class="mahjong-help-text" id="mahjong-help-text">
+          <strong>Mode Tips:</strong> Click two matching free tiles to clear them. A tile is free when no tile is covering it and at least one lateral side is open. The timer begins on your first match.
+        </p>
+        <p class="mahjong-save-note">Your game progress, sound preferences, and high scores save automatically on this device.</p>
+      </div>
+
+      <p id="mahjong-aria-live" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <!-- Comprehensive Educational Article (1,200–1,500 words) -->
+    <article class="wrap game-article-content mahjong-article">
+      <h2>What Is Mahjong Variants Online Game?</h2>
+      <p>
+        <strong>Mahjong Variants Online Game</strong> is an all-in-one puzzle experience crafted for enthusiasts of Mahjong matching challenges. Rather than limiting players to a single layout or fixed rule set, this game unites three beloved, internationally recognized styles into one clean, seamless interface: <em>Classic Mahjong Solitaire</em>, <em>Mahjong Connect</em>, and <em>Triple Mahjong</em>.
+      </p>
+      <p>
+        The origins of Mahjong trace back to 19th-century Qing dynasty China, where it evolved as a four-player social strategy game using intricately carved bone and bamboo tiles. In 1981, computer scientist Brodie Lockard created the very first digital single-player adaptation, known universally as <em>Shanghai</em> or <em>Mahjong Solitaire</em>. Instead of rummy-style hands, Lockard turned the tiles into a multi-tiered archaeological structure where solvers match exposed twin tiles to dismantle the pyramid piece by piece. Over the decades that followed, puzzle designers innovated further, giving rise to the rapid orthogonal pathfinding of <em>Mahjong Connect</em> (popularized in arcade culture as <em>Shisen-Sho</em>) and modern mobile-first match-3 mechanics in <em>Triple Mahjong</em>.
+      </p>
+      <p>
+        On PuzzleFeels, our online edition celebrates these three distinct traditions. Every board is designed with mathematically verified solvability, intuitive responsive scaling, zero downloads, and authentic vector-crafted Mahjong tiles. Whether you want a contemplative spatial puzzle, a quick pattern-finding sprint, or a high-stakes tray-management brain teaser, you can jump between modes with a single click. If you love exercising visual focus and logical deduction, you can also explore our <a href="/memory-matching-game-online/">Memory Matching Game Online</a>, test your grid deduction in <a href="/picross-game-online/">Picross Game Online</a>, or enjoy classic tile rearranging in the <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a>.
+      </p>
+
+      <h2>Explore the Three Mahjong Game Modes</h2>
+      <p>
+        Understanding how the three modes differ ensures you enjoy each puzzle style to its fullest potential. While all three modes utilize identical, authentic Mahjong tile suits—Dots, Bamboo, Characters, Winds, Dragons, and Flowers—their spatial mechanics and clearing conditions offer completely unique mental workouts:
+      </p>
+      <ul>
+        <li>
+          <strong>Mode A: Classic Mahjong Solitaire:</strong> Traditional layered tile matching. The puzzle presents an ornate three-dimensional pyramid or fortress. Tiles rest atop one another, and only pieces that are completely uncovered and open on at least one lateral flank can be selected. Your goal is to methodically dismantle the structure from the outside in without stranding matching pairs beneath unmovable stacks.
+        </li>
+        <li>
+          <strong>Mode B: Mahjong Connect:</strong> Also known as <em>Two-Turn Matching</em> or <em>Shisen-Sho</em>. Tiles are arranged in a flat two-dimensional grid. Pairs can only be matched if an imaginary connecting line between them turns no more than twice at 90-degree angles and encounters no other tiles along its route. Solvers must scan empty perimeter corridors and newly carved interior channels to link distant twins.
+        </li>
+        <li>
+          <strong>Mode C: Triple Mahjong:</strong> A thrilling match-3 variation inspired by casual tile-clearing games. Uncovered tiles are collected into a seven-slot selection tray at the bottom of the screen. Instead of matching pairs, you must gather triplets of three identical tiles. When a triplet gathers in the tray, it vanishes in a burst of points. However, if your tray fills with seven unmatched tiles, the round is lost immediately.
+        </li>
+      </ul>
+
+      <h2>How to Play Classic Mahjong Solitaire</h2>
+      <p>
+        Mastering Classic Solitaire requires patience, spatial awareness, and strategic foresight. When the game begins, tiles are stacked in overlapping layers according to the chosen difficulty layout (Mini Crown on Easy, The Fortress on Medium, and Classic Shanghai Turtle on Hard). Here is how to play:
+      </p>
+      <ol>
+        <li>
+          <strong>Identify Free Tiles:</strong> A tile is eligible for selection only when it is <em>free</em>. A tile is free if: (1) no tile on a higher level rests directly on top of it or overlaps its boundaries, and (2) its left side or right side is open without an adjacent tile on the exact same layer. In our game, free tiles appear crisp, bright, and interactive, while blocked tiles are gently shaded.
+        </li>
+        <li>
+          <strong>Select and Match Pairs:</strong> Click or tap an available free tile to highlight it in glowing blue. Next, click an identical free tile elsewhere on the board. If the match is valid, both tiles are removed, revealing previously covered tiles beneath them.
+        </li>
+        <li>
+          <strong>Dismantle the Layers:</strong> Continue pairing open tiles, prioritizing pieces that liberate long rows or uncover tall stacks. Your ultimate objective is to clear every single tile from the board.
+        </li>
+        <li>
+          <strong>Use Hints and Shuffles Sparingly:</strong> If you find yourself stuck, tap <strong>Hint</strong> to reveal an active match or <strong>Shuffle</strong> to rearrange remaining tiles into a fresh solvable configuration.
+        </li>
+      </ol>
+
+      <h2>How to Play Mahjong Connect</h2>
+      <p>
+        Mahjong Connect challenges your peripheral vision and geometric intuition. Played on a flat rectangular grid, it requires players to draw visual links between matching tiles:
+      </p>
+      <ol>
+        <li>
+          <strong>The 2-Turn Connection Rule:</strong> Two identical tiles can be matched if and only if they can be connected by a path consisting of at most three straight orthogonal segments. This means the path can make <em>zero turns</em> (a direct horizontal or vertical straight line), <em>one turn</em> (an L-shaped corner), or <em>two turns</em> (a Z-shape or U-shape).
+        </li>
+        <li>
+          <strong>Path Restrictions:</strong> The connecting line cannot pass through any other remaining tile. It can only travel through empty cells where tiles have already been eliminated, or through the open perimeter border that frames the grid.
+        </li>
+        <li>
+          <strong>Visual Feedback:</strong> When you select a valid pair, a connecting beam traces the exact geometric route between them before both tiles vanish.
+        </li>
+        <li>
+          <strong>Carve Open Lanes:</strong> Start by clearing adjacent identical tiles and edge pairs along the perimeter. As you clear perimeter tiles, you open up wide exterior pathways that allow interior tiles to connect with ease.
+        </li>
+      </ol>
+
+      <h2>How to Play Triple Mahjong</h2>
+      <p>
+        Triple Mahjong introduces the high-stakes tension of inventory buffer management. With only seven slots in your tray, every click matters:
+      </p>
+      <ol>
+        <li>
+          <strong>Select Eligible Tiles:</strong> You may click any uncovered tile on the board. The clicked tile slides smoothly into your selection tray.
+        </li>
+        <li>
+          <strong>Automatic Tray Organization:</strong> Identical tiles in your tray automatically snap together side by side, making it easy to track how close you are to completing a set.
+        </li>
+        <li>
+          <strong>Eliminate Triplets:</strong> As soon as three matching tiles assemble in your tray, they are instantly eliminated, freeing up three valuable slots and awarding a score bonus.
+        </li>
+        <li>
+          <strong>Avoid Tray Overflow:</strong> If you collect seven tiles without triggering a match-3, your tray overflows and the game ends. Always prioritize tiles that immediately complete an existing pair in your tray before picking unrelated pieces.
+        </li>
+      </ol>
+
+      <h2>Understanding Mahjong Tiles and Matching Rules</h2>
+      <p>
+        Authentic Mahjong uses an exquisite system of suits and special honor pieces. Familiarizing yourself with these symbols will greatly increase your pattern recognition speed:
+      </p>
+      <ul>
+        <li>
+          <strong>The Suit of Dots (筒 / Circles):</strong> Numbered 1 through 9. Tile 1 features an ornate circular medallion representing a copper coin. Tiles 2 through 9 showcase balanced geometric configurations of blue, green, and red circles.
+        </li>
+        <li>
+          <strong>The Suit of Bamboo (條 / Sticks):</strong> Numbered 1 through 9. Tile 1 is traditionally depicted as a colorful bird (a sparrow or peacock) perched gracefully, while tiles 2 through 9 feature vibrant green and red bamboo reeds representing strings of currency.
+        </li>
+        <li>
+          <strong>The Suit of Characters (萬 / Wan):</strong> Numbered 1 through 9. Each tile displays a traditional Chinese numeral on top (一, 二, 三, 四, 五, 六, 七, 八, 九) and the red character 萬 (meaning 10,000) underneath.
+        </li>
+        <li>
+          <strong>The Four Winds (風):</strong> Representing the cardinal directions: East (東), South (南), West (西), and North (北). Winds must match their exact direction to be removed.
+        </li>
+        <li>
+          <strong>The Three Dragons (三元牌):</strong> Representing cardinal virtues: The Red Dragon (中 - Zhong), the Green Dragon (發 - Fa), and the White Dragon (白 - Bai, styled with an ornate blue rectangular border).
+        </li>
+        <li>
+          <strong>Flowers & Seasons (花/季):</strong> Represented by Plum (梅), Orchid (蘭), Bamboo (竹), and Chrysanthemum (菊). In our online puzzle rules, flower tiles match with their exact botanical partner.
+        </li>
+      </ul>
+
+      <h2>Tips and Strategies for Beginners</h2>
+      <p>
+        To consistently clear boards and climb the leaderboard, adopt these proven puzzle strategies:
+      </p>
+      <ul>
+        <li>
+          <strong>Focus on Tall Stacks First (Classic Solitaire):</strong> In multi-layered layouts, the tallest central peaks hide the highest number of trapped tiles. Whenever you have a choice between matching a tile from a high stack versus an isolated perimeter wing, always liberate the tall stack first.
+        </li>
+        <li>
+          <strong>Check Underlying Tiles Before Matching:</strong> When multiple identical tiles are available, check which match will unlock the greatest number of covered tiles. Never eliminate an easy pair if an alternative match unlocks a heavily buried tier.
+        </li>
+        <li>
+          <strong>Work the Outer Perimeter (Mahjong Connect):</strong> In Connect mode, edge tiles are your greatest asset. Clearing edge pairs establishes wide-open exterior highways that make two-turn U-shape connections trivial across opposite ends of the board.
+        </li>
+        <li>
+          <strong>Maintain Buffer Space in Triple Mahjong:</strong> Keep at least two to three empty slots open in your tray at all times. If you have four singletons in your tray, avoid clicking any new tile unless it immediately matches one of your four existing items.
+        </li>
+        <li>
+          <strong>Use Undo to Learn from Dead Ends:</strong> If a sequence leaves you with no moves, hit Undo. Step back two or three turns and take an alternative matching route to see how the board reacts.
+        </li>
+      </ul>
+
+      <h2>Common Mistakes to Avoid</h2>
+      <p>
+        Even experienced solvers can stumble into traps if they rush their decisions. Be mindful of these common pitfalls:
+      </p>
+      <ul>
+        <li>
+          <strong>Greedy Matching:</strong> Snapping up the very first matching pair you spot without scanning the entire board often leads to premature dead ends. Take three seconds to examine all available free tiles before committing to a move.
+        </li>
+        <li>
+          <strong>Over-Collecting in Triple Mode:</strong> Clicking attractive top tiles in Triple Mahjong just because they are accessible will rapidly clog your 7-slot tray with mismatched singles. Only grab a tile if you see its partners on the board.
+        </li>
+        <li>
+          <strong>Ignoring Horizontal Blockers:</strong> In Classic Solitaire, remember that tiles touching on either flank block lateral movement. Solvers often forget that an open top is not enough—at least one lateral side must also be completely free.
+        </li>
+        <li>
+          <strong>Rushing the Daily Challenge:</strong> Daily Challenge puzzles offer a unique global test. Since the puzzle is consistent for all players, taking your time to plan each turn pays much higher dividends than rushing and relying on shuffles.
+        </li>
+      </ul>
+
+      <h2>How Difficulty Levels Work</h2>
+      <p>
+        Mahjong Variants Online Game offers three carefully calibrated difficulty tiers tailored to every level of puzzle experience:
+      </p>
+      <ul>
+        <li>
+          <strong>Easy (Beginner Friendly):</strong> Features compact boards with 36 tiles (18 pairs or 12 triplets). In Solitaire, the layout uses two gentle tiers with broad open wings; in Connect, a 6×6 grid allows quick perimeter clearances; in Triple, shallow layers ensure matching triplets are readily accessible. Easy mode is pre-selected for first-time visitors.
+        </li>
+        <li>
+          <strong>Medium (Balanced & Strategic):</strong> Features 60 to 72 tiles arranged across three layers or a 6×10 grid. Medium introduces deeper stacks, narrower corridors, and more complex blocking patterns that require two-to-three move lookahead planning.
+        </li>
+        <li>
+          <strong>Hard (Master Challenge):</strong> Built for dedicated puzzle veterans, featuring 90 to 144 tiles (including the legendary 144-tile Shanghai Turtle in Solitaire, an 8×12 grid in Connect, and multi-tier pyramids in Triple). Hard mode demands thorough board inspection, methodical stack dismantling, and flawless tray discipline.
+        </li>
+      </ul>
+
+      <h2>Benefits of Playing Mahjong Puzzle Games</h2>
+      <p>
+        Beyond pure entertainment, engaging with Mahjong puzzle variants offers scientifically documented cognitive benefits. Navigating dense tile arrangements stimulates spatial reasoning, improves short-term visual memory, and sharpens visual discrimination as you distinguish subtle differences between tile glyphs and numerals.
+      </p>
+      <p>
+        Furthermore, playing Mahjong variants serves as a grounding mindfulness exercise. The rhythmic clicking of tiles, harmonic chime sound effects, and rewarding visual feedback promote a state of relaxed focus, commonly known as flow. Whether you enjoy a five-minute mental break during a busy workday or unwind with the daily challenge before bed, Mahjong puzzles provide a satisfying, calming workout for the mind.
+      </p>
+
+      <h2>Frequently Asked Questions</h2>
+      <FaqList items={faqs} />
+    </article>
+
+    <!-- Related Games Section (Explore More Puzzle Games) -->
+    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
+      <div class="related-games-head">
+        <span class="eyebrow">Keep the fun going</span>
+        <h2>Explore More Puzzle Games</h2>
+        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
+      </div>
+
+      <div class="related-games-grid">
+        <a class="related-card card" href="/memory-matching-game-online/">
+          <div class="related-visual memory-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon memory-icon">
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.25"></polygon></svg></span>
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg></span>
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
+              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"></circle><line x1="12" y1="8" x2="12" y2="21"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path></svg></span>
+            </div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">MEMORY GAME</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Memory Matching Game Online</h3>
+            <p class="muted">Flip cards, match pairs across icon, number, color, and shape sets, and train your short-term visual memory.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/picross-game-online/">
+          <div class="related-visual picross-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
+            <h3>Picross Game Online</h3>
+            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram puzzle.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a class="related-card card" href="/sliding-number-puzzle-game/">
+          <div class="related-visual slide-visual" aria-hidden="true">
+            <div class="related-orbit"></div>
+            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
+          </div>
+          <div class="related-card-body">
+            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
+            <h3>Sliding Number Puzzle Game</h3>
+            <p class="muted">Slide numbered tiles into ascending order in classic 8, 15, and 24-tile sliding challenges.</p>
+            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<!-- Client Game Implementation Script -->
+<script>
+  import { TILE_DEFINITIONS } from '../lib/mahjong/tiles';
+  import {
+    isTileFree,
+    findSolitaireHint,
+    generateSolvableSolitaireBoard,
+    shuffleSolitaireTiles,
+    type SolitaireTile,
+  } from '../lib/mahjong/solitaire';
+  import {
+    findConnectPath,
+    findConnectHint,
+    generateConnectBoard,
+    shuffleConnectTiles,
+    buildConnectGridMatrix,
+    type ConnectTile,
+    type ConnectPoint,
+  } from '../lib/mahjong/connect';
+  import {
+    isTripleTileFree,
+    findTripleHint,
+    generateTripleBoard,
+    shuffleTripleTiles,
+    insertTileIntoTray,
+    type TripleTile,
+  } from '../lib/mahjong/triple';
+  import { soundManager } from '../lib/mahjong/sound';
+  import {
+    storage,
+    getUtcDateString,
+    createSeededRng,
+    type GameMode,
+    type GameDifficulty,
+  } from '../lib/mahjong/storage';
+
+  // --- Client State ---
+  let currentMode: GameMode = 'solitaire';
+  let currentDifficulty: GameDifficulty = 'easy';
+  let isDaily = false;
+  let moves = 0;
+  let score = 0;
+  let timerSeconds = 0;
+  let timerInterval: number | null = null;
+  let isTimerRunning = false;
+  let isPaused = false;
+  let isCompleted = false;
+  let isGameOver = false;
+
+  // Active Boards
+  let solitaireTiles: SolitaireTile[] = [];
+  let selectedSolitaireTileId: string | null = null;
+
+  let connectTiles: ConnectTile[] = [];
+  let connectRows = 6;
+  let connectCols = 6;
+  let selectedConnectTileId: string | null = null;
+
+  let tripleBoardTiles: TripleTile[] = [];
+  let tripleTrayTiles: TripleTile[] = [];
+
+  // Undo Stack
+  interface UndoState {
+    solitaireTiles?: SolitaireTile[];
+    connectTiles?: ConnectTile[];
+    tripleBoardTiles?: TripleTile[];
+    tripleTrayTiles?: TripleTile[];
+    score: number;
+    moves: number;
+  }
+  let undoStack: UndoState[] = [];
+
+  // DOM Elements
+  const modeTabs = document.querySelectorAll<HTMLButtonElement>('.mahjong-mode-tab');
+  const diffBtns = document.querySelectorAll<HTMLButtonElement>('.mahjong-diff-btn');
+  const dailyToggle = document.getElementById('mahjong-daily-toggle') as HTMLButtonElement;
+  const soundToggle = document.getElementById('mahjong-sound-toggle') as HTMLButtonElement;
+  const soundLabel = document.getElementById('mahjong-sound-label') as HTMLElement;
+  const soundOnIcon = soundToggle?.querySelector('.sound-on-icon') as HTMLElement;
+  const soundOffIcon = soundToggle?.querySelector('.sound-off-icon') as HTMLElement;
+
+  const statModeLabel = document.getElementById('stat-mode-label') as HTMLElement;
+  const statScore = document.getElementById('stat-score') as HTMLElement;
+  const statMoves = document.getElementById('stat-moves') as HTMLElement;
+  const statRemaining = document.getElementById('stat-remaining') as HTMLElement;
+  const statTimer = document.getElementById('stat-timer') as HTMLElement;
+  const statBest = document.getElementById('stat-best') as HTMLElement;
+
+  const solitaireBoardEl = document.getElementById('solitaire-board') as HTMLElement;
+  const connectBoardEl = document.getElementById('connect-board') as HTMLElement;
+  const connectGridEl = document.getElementById('connect-grid') as HTMLElement;
+  const connectSvgOverlay = document.getElementById('connect-svg-overlay') as unknown as SVGSVGElement;
+  const tripleBoardEl = document.getElementById('triple-board') as HTMLElement;
+  const tripleBoardTilesEl = document.getElementById('triple-board-tiles') as HTMLElement;
+  const tripleTrayEl = document.getElementById('triple-tray') as HTMLElement;
+  const trayCountLabel = document.getElementById('tray-count-label') as HTMLElement;
+
+  const btnNew = document.getElementById('btn-new-game') as HTMLButtonElement;
+  const btnRestart = document.getElementById('btn-restart') as HTMLButtonElement;
+  const btnUndo = document.getElementById('btn-undo') as HTMLButtonElement;
+  const btnHint = document.getElementById('btn-hint') as HTMLButtonElement;
+  const btnShuffle = document.getElementById('btn-shuffle') as HTMLButtonElement;
+  const btnPause = document.getElementById('btn-pause') as HTMLButtonElement;
+
+  const pausedOverlay = document.getElementById('mahjong-paused') as HTMLElement;
+  const btnResume = document.getElementById('mahjong-resume') as HTMLButtonElement;
+  const victoryOverlay = document.getElementById('mahjong-victory') as HTMLElement;
+  const btnPlayAgain = document.getElementById('mahjong-play-again') as HTMLButtonElement;
+  const btnVictoryNew = document.getElementById('mahjong-victory-new') as HTMLButtonElement;
+  const btnShareResult = document.getElementById('mahjong-share-result') as HTMLButtonElement;
+  const shareStatusEl = document.getElementById('mahjong-share-status') as HTMLElement;
+
+  const gameoverOverlay = document.getElementById('mahjong-gameover') as HTMLElement;
+  const btnRetry = document.getElementById('mahjong-retry') as HTMLButtonElement;
+  const btnGameoverNew = document.getElementById('mahjong-gameover-new') as HTMLButtonElement;
+
+  const confirmOverlay = document.getElementById('mahjong-confirm') as HTMLElement;
+  const confirmCancel = document.getElementById('confirm-cancel') as HTMLButtonElement;
+  const confirmProceed = document.getElementById('confirm-proceed') as HTMLButtonElement;
+  let pendingResetAction: (() => void) | null = null;
+
+  const helpText = document.getElementById('mahjong-help-text') as HTMLElement;
+  const ariaLive = document.getElementById('mahjong-aria-live') as HTMLElement;
+
+  // --- Sound Initialization ---
+  function updateSoundUI() {
+    const enabled = storage.getSoundEnabled();
+    soundManager.setEnabled(enabled);
+    if (soundLabel) soundLabel.textContent = enabled ? 'Sound: On' : 'Sound: Off';
+    if (soundOnIcon) soundOnIcon.hidden = !enabled;
+    if (soundOffIcon) soundOffIcon.hidden = enabled;
+    soundToggle?.setAttribute('aria-pressed', String(enabled));
+  }
+
+  soundToggle?.addEventListener('click', () => {
+    const next = !storage.getSoundEnabled();
+    storage.setSoundEnabled(next);
+    updateSoundUI();
+    if (next) soundManager.playSelect();
+  });
+
+  // --- Timer Management ---
+  function formatTime(totalSeconds: number): string {
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
+  function startTimer() {
+    if (isTimerRunning || isCompleted || isGameOver || isPaused) return;
+    isTimerRunning = true;
+    timerInterval = window.setInterval(() => {
+      timerSeconds++;
+      if (statTimer) statTimer.textContent = formatTime(timerSeconds);
+    }, 1000);
+  }
+
+  function stopTimer() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    isTimerRunning = false;
+  }
+
+  function resetTimer() {
+    stopTimer();
+    timerSeconds = 0;
+    if (statTimer) statTimer.textContent = '00:00';
+  }
+
+  // --- Stats and Best Records ---
+  function updateStatsUI() {
+    if (statScore) statScore.textContent = String(score);
+    if (statMoves) statMoves.textContent = String(moves);
+    if (statTimer) statTimer.textContent = formatTime(timerSeconds);
+    if (btnUndo) btnUndo.disabled = undoStack.length === 0 || isCompleted || isGameOver || isPaused;
+
+    let remaining = 0;
+    if (currentMode === 'solitaire') remaining = solitaireTiles.length;
+    else if (currentMode === 'connect') remaining = connectTiles.filter((t) => t.tileId).length;
+    else if (currentMode === 'triple') remaining = tripleBoardTiles.length + tripleTrayTiles.length;
+    if (statRemaining) statRemaining.textContent = String(remaining);
+
+    // Update best record
+    const best = storage.getBestRecord(currentMode, currentDifficulty);
+    if (statBest) {
+      statBest.textContent = best && best.bestTime !== Infinity ? `${formatTime(best.bestTime)} (${best.bestScore} pts)` : '—';
+    }
+
+    saveCurrentState();
+  }
+
+  function saveCurrentState() {
+    let boardState: any = null;
+    let trayState: any = null;
+
+    if (currentMode === 'solitaire') boardState = solitaireTiles;
+    else if (currentMode === 'connect') boardState = { tiles: connectTiles, rows: connectRows, cols: connectCols };
+    else if (currentMode === 'triple') {
+      boardState = tripleBoardTiles;
+      trayState = tripleTrayTiles;
+    }
+
+    storage.saveGame({
+      mode: currentMode,
+      difficulty: currentDifficulty,
+      isDaily,
+      dailyDate: getUtcDateString(),
+      moves,
+      score,
+      elapsedSeconds: timerSeconds,
+      boardState,
+      trayState,
+      status: isCompleted ? 'won' : isGameOver ? 'lost' : isPaused ? 'paused' : 'playing',
+      timestamp: Date.now(),
+    });
+  }
+
+  // --- Confirm Dialog Helper ---
+  function requireResetConfirmation(action: () => void) {
+    if (moves > 0 && !isCompleted && !isGameOver) {
+      pendingResetAction = action;
+      if (confirmOverlay) confirmOverlay.hidden = false;
+    } else {
+      action();
+    }
+  }
+
+  confirmCancel?.addEventListener('click', () => {
+    if (confirmOverlay) confirmOverlay.hidden = true;
+    pendingResetAction = null;
+  });
+
+  confirmProceed?.addEventListener('click', () => {
+    if (confirmOverlay) confirmOverlay.hidden = true;
+    if (pendingResetAction) {
+      pendingResetAction();
+      pendingResetAction = null;
+    }
+  });
+
+  // --- Tile Rendering Helper ---
+  function createTileHtml(tileId: string, className = '', customAttrs = ''): string {
+    const def = TILE_DEFINITIONS[tileId] || { svg: '', label: '?' };
+    return `<div class="mahjong-tile ${className}" data-tile-id="${tileId}" ${customAttrs} tabindex="0" role="button" aria-label="${def.name || tileId}">
+      <div class="tile-face">
+        ${def.svg}
+      </div>
+      <div class="tile-side-bevel" aria-hidden="true"></div>
+    </div>`;
+  }
+
+  // --- Solitaire Mode Controller ---
+  function updateSolitaireSelectionUI() {
+    if (!solitaireBoardEl) return;
+    solitaireBoardEl.querySelectorAll<HTMLElement>('.solitaire-tile').forEach((el) => {
+      const isSelected = el.dataset.id === selectedSolitaireTileId;
+      el.classList.toggle('is-selected', isSelected);
+    });
+  }
+
+  function renderSolitaireBoard() {
+    if (!solitaireBoardEl) return;
+    solitaireBoardEl.innerHTML = '';
+
+    if (solitaireTiles.length === 0) {
+      solitaireBoardEl.style.width = '0px';
+      solitaireBoardEl.style.height = '0px';
+      return;
+    }
+
+    // Calculate bounding dimensions for responsive scaling
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+    let maxZ = 0;
+    for (const t of solitaireTiles) {
+      if (t.x < minX) minX = t.x;
+      if (t.x > maxX) maxX = t.x;
+      if (t.y < minY) minY = t.y;
+      if (t.y > maxY) maxY = t.y;
+      if (t.z > maxZ) maxZ = t.z;
+    }
+
+    const unitW = 24; // unit step in px
+    const unitH = 28;
+    const tileW = 44;
+    const tileH = 56;
+    const padX = 8;
+    const padY = maxZ * 6 + 10;
+
+    const boardWidth = (maxX - minX) * unitW + tileW + padX * 2;
+    const boardHeight = padY + (maxY - minY) * unitH + tileH + 16;
+    solitaireBoardEl.style.width = `${boardWidth}px`;
+    solitaireBoardEl.style.height = `${boardHeight}px`;
+
+    const wrapper = solitaireBoardEl.closest('.mahjong-board-wrapper') as HTMLElement;
+    const wrapperW = wrapper?.clientWidth || (window.innerWidth - 32);
+    const availableW = wrapperW - 16;
+    if (availableW > 0 && availableW < boardWidth) {
+      const scale = Math.min(1, Math.max(0.35, availableW / boardWidth));
+      solitaireBoardEl.style.transform = `scale(${scale})`;
+      solitaireBoardEl.style.transformOrigin = 'top center';
+      solitaireBoardEl.style.marginBottom = `-${boardHeight * (1 - scale)}px`;
+    } else {
+      solitaireBoardEl.style.transform = '';
+      solitaireBoardEl.style.transformOrigin = 'top center';
+      solitaireBoardEl.style.marginBottom = '';
+    }
+    solitaireBoardEl.style.marginLeft = '';
+    solitaireBoardEl.style.marginRight = '';
+
+    for (const t of solitaireTiles) {
+      const free = isTileFree(t, solitaireTiles);
+      const isSelected = selectedSolitaireTileId === t.id;
+      const left = padX + (t.x - minX) * unitW;
+      const top = padY + (t.y - minY) * unitH - t.z * 6; // elevation 3D shift
+
+      const el = document.createElement('div');
+      el.className = `mahjong-tile solitaire-tile ${free ? 'is-free' : 'is-blocked'} ${isSelected ? 'is-selected' : ''}`;
+      el.id = t.id;
+      el.dataset.id = t.id;
+      el.dataset.tileId = t.tileId;
+      el.style.left = `${left}px`;
+      el.style.top = `${top}px`;
+      el.style.zIndex = String(t.z * 100 + t.y);
+
+      const def = TILE_DEFINITIONS[t.tileId] || { svg: '', name: t.tileId };
+      el.innerHTML = `
+        <div class="tile-face">
+          ${def.svg}
+        </div>
+        <div class="tile-side-bevel" aria-hidden="true"></div>
+      `;
+
+      el.addEventListener('click', () => onSolitaireTileClick(t));
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSolitaireTileClick(t);
+        }
+      });
+      solitaireBoardEl.appendChild(el);
+    }
+  }
+
+  function onSolitaireTileClick(target: SolitaireTile) {
+    if (isPaused || isCompleted || isGameOver) return;
+    startTimer();
+
+    const free = isTileFree(target, solitaireTiles);
+    if (!free) {
+      soundManager.playInvalid();
+      const el = document.getElementById(target.id);
+      if (el) {
+        el.classList.add('is-shaking');
+        setTimeout(() => el.classList.remove('is-shaking'), 300);
+      }
+      return;
+    }
+
+    if (!selectedSolitaireTileId) {
+      // First tile selected
+      selectedSolitaireTileId = target.id;
+      soundManager.playSelect();
+      updateSolitaireSelectionUI();
+    } else if (selectedSolitaireTileId === target.id) {
+      // Deselect
+      selectedSolitaireTileId = null;
+      soundManager.playSelect();
+      updateSolitaireSelectionUI();
+    } else {
+      // Second tile selected
+      const first = solitaireTiles.find((t) => t.id === selectedSolitaireTileId);
+      if (!first) {
+        selectedSolitaireTileId = target.id;
+        updateSolitaireSelectionUI();
+        return;
+      }
+
+      if (first.tileId === target.tileId) {
+        // MATCH!
+        pushUndoState();
+        moves++;
+        score += 100;
+        soundManager.playMatch();
+
+        // Animate match
+        const el1 = document.getElementById(first.id);
+        const el2 = document.getElementById(target.id);
+        if (el1) el1.classList.add('is-matching');
+        if (el2) el2.classList.add('is-matching');
+
+        setTimeout(() => {
+          solitaireTiles = solitaireTiles.filter((t) => t.id !== first.id && t.id !== target.id);
+          selectedSolitaireTileId = null;
+          renderSolitaireBoard();
+          updateStatsUI();
+
+          if (solitaireTiles.length === 0) {
+            handleVictory();
+          } else {
+            // Check if moves remain; if not, prompt or shuffle
+            const hint = findSolitaireHint(solitaireTiles);
+            if (!hint && solitaireTiles.length > 0) {
+              if (ariaLive) ariaLive.textContent = 'No matching free tiles remaining! Shuffle available.';
+            }
+          }
+        }, 180);
+      } else {
+        // Mismatch
+        soundManager.playInvalid();
+        selectedSolitaireTileId = target.id;
+        updateSolitaireSelectionUI();
+      }
+    }
+  }
+
+  // --- Connect Mode Controller ---
+  function renderConnectBoard() {
+    if (!connectGridEl || !connectBoardEl) return;
+    connectGridEl.innerHTML = '';
+
+    const cellW = 46;
+    const cellH = 58;
+    const gap = 8;
+    const pad = 16;
+    const gridW = connectCols * cellW + (connectCols - 1) * gap;
+    const gridH = connectRows * cellH + (connectRows - 1) * gap;
+    const boardWidth = gridW + pad * 2;
+    const boardHeight = gridH + pad * 2;
+
+    connectBoardEl.style.width = `${boardWidth}px`;
+    connectBoardEl.style.height = `${boardHeight}px`;
+    connectGridEl.style.width = `${gridW}px`;
+    connectGridEl.style.height = `${gridH}px`;
+    connectGridEl.style.gridTemplateColumns = `repeat(${connectCols}, ${cellW}px)`;
+    connectGridEl.style.gap = `${gap}px`;
+
+    for (const t of connectTiles) {
+      const cell = document.createElement('div');
+      cell.className = 'connect-cell';
+      cell.style.width = `${cellW}px`;
+      cell.style.height = `${cellH}px`;
+      cell.dataset.r = String(t.r);
+      cell.dataset.c = String(t.c);
+
+      if (t.tileId) {
+        const isSelected = selectedConnectTileId === t.id;
+        const def = TILE_DEFINITIONS[t.tileId] || { svg: '', name: t.tileId };
+        const tile = document.createElement('div');
+        tile.className = `mahjong-tile connect-tile ${isSelected ? 'is-selected' : ''}`;
+        tile.id = t.id;
+        tile.dataset.id = t.id;
+        tile.tabIndex = 0;
+        tile.role = 'button';
+        tile.setAttribute('aria-label', def.name || t.tileId);
+        tile.innerHTML = `
+          <div class="tile-face">${def.svg}</div>
+          <div class="tile-side-bevel" aria-hidden="true"></div>
+        `;
+        tile.addEventListener('click', () => onConnectTileClick(t));
+        tile.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onConnectTileClick(t);
+          }
+        });
+        cell.appendChild(tile);
+      }
+      connectGridEl.appendChild(cell);
+    }
+
+    // Dynamic responsive scaling for Connect grid on smaller screens
+    const wrapper = connectBoardEl.closest('.mahjong-board-wrapper') as HTMLElement;
+    const wrapperW = wrapper?.clientWidth || (window.innerWidth - 32);
+    const availableW = wrapperW - 16;
+    if (availableW > 0 && availableW < boardWidth) {
+      const scale = Math.min(1, Math.max(0.35, availableW / boardWidth));
+      connectBoardEl.style.transform = `scale(${scale})`;
+      connectBoardEl.style.transformOrigin = 'top center';
+      connectBoardEl.style.marginBottom = `-${boardHeight * (1 - scale)}px`;
+    } else {
+      connectBoardEl.style.transform = '';
+      connectBoardEl.style.transformOrigin = 'top center';
+      connectBoardEl.style.marginBottom = '';
+    }
+    connectBoardEl.style.marginLeft = '';
+    connectBoardEl.style.marginRight = '';
+  }
+
+  function drawConnectPathAnimation(path: ConnectPoint[], onDone: () => void) {
+    if (!connectSvgOverlay || !connectGridEl) {
+      onDone();
+      return;
+    }
+
+    const cellW = 46;
+    const cellH = 58;
+    const gap = 8;
+    const gridW = connectCols * cellW + (connectCols - 1) * gap;
+    const gridH = connectRows * cellH + (connectRows - 1) * gap;
+
+    // Helper to get pixel center from (r, c)
+    // Note: r=1..rows, c=1..cols. r=0 or r=rows+1 are outside border!
+    function pointToPx(p: ConnectPoint): { x: number; y: number } {
+      let x = (p.c - 0.5) * (cellW + gap) - gap / 2;
+      let y = (p.r - 0.5) * (cellH + gap) - gap / 2;
+      // Clamp/offset outer borders
+      if (p.c === 0) x = -10;
+      if (p.c === connectCols + 1) x = gridW + 10;
+      if (p.r === 0) y = -10;
+      if (p.r === connectRows + 1) y = gridH + 10;
+      return { x, y };
+    }
+
+    const points = path.map(pointToPx);
+    const d = points.map((pt, i) => `${i === 0 ? 'M' : 'L'} ${pt.x} ${pt.y}`).join(' ');
+
+    connectSvgOverlay.setAttribute('viewBox', `0 0 ${gridW} ${gridH}`);
+    connectSvgOverlay.innerHTML = `
+      <path d="${d}" class="connect-beam-glow" />
+      <path d="${d}" class="connect-beam-core" />
+    `;
+
+    setTimeout(() => {
+      connectSvgOverlay.innerHTML = '';
+      onDone();
+    }, 280);
+  }
+
+  function updateConnectSelectionUI() {
+    if (!connectGridEl) return;
+    connectGridEl.querySelectorAll<HTMLElement>('.connect-tile').forEach((el) => {
+      const isSelected = el.dataset.id === selectedConnectTileId;
+      el.classList.toggle('is-selected', isSelected);
+    });
+  }
+
+  function onConnectTileClick(target: ConnectTile) {
+    if (isPaused || isCompleted || isGameOver || !target.tileId) return;
+    startTimer();
+
+    if (!selectedConnectTileId) {
+      selectedConnectTileId = target.id;
+      soundManager.playSelect();
+      updateConnectSelectionUI();
+    } else if (selectedConnectTileId === target.id) {
+      selectedConnectTileId = null;
+      soundManager.playSelect();
+      updateConnectSelectionUI();
+    } else {
+      const first = connectTiles.find((t) => t.id === selectedConnectTileId);
+      if (!first || !first.tileId) {
+        selectedConnectTileId = target.id;
+        updateConnectSelectionUI();
+        return;
+      }
+
+      if (first.tileId !== target.tileId) {
+        soundManager.playInvalid();
+        selectedConnectTileId = target.id;
+        updateConnectSelectionUI();
+        return;
+      }
+
+      // Check path
+      const p1: ConnectPoint = { r: first.r, c: first.c };
+      const p2: ConnectPoint = { r: target.r, c: target.c };
+      const grid = buildConnectGridMatrix(connectTiles, connectRows, connectCols);
+      const path = findConnectPath(p1, p2, grid, connectRows + 2, connectCols + 2);
+
+      if (path) {
+        // MATCH!
+        pushUndoState();
+        moves++;
+        score += 120;
+        soundManager.playMatch();
+
+        drawConnectPathAnimation(path, () => {
+          first.tileId = '';
+          target.tileId = '';
+          selectedConnectTileId = null;
+          renderConnectBoard();
+          updateStatsUI();
+
+          const remaining = connectTiles.filter((t) => t.tileId).length;
+          if (remaining === 0) {
+            handleVictory();
+          } else {
+            // Check if moves remain
+            const hint = findConnectHint(connectTiles, connectRows, connectCols);
+            if (!hint) {
+              if (ariaLive) ariaLive.textContent = 'No direct connect moves available! Shuffling remaining tiles...';
+              setTimeout(handleShuffle, 300);
+            }
+          }
+        });
+      } else {
+        soundManager.playInvalid();
+        const el = document.getElementById(target.id);
+        if (el) {
+          el.classList.add('is-shaking');
+          setTimeout(() => el.classList.remove('is-shaking'), 300);
+        }
+      }
+    }
+  }
+
+  // --- Triple Mahjong Mode Controller ---
+  function renderTripleBoard() {
+    if (!tripleBoardTilesEl || !tripleTrayEl) return;
+    tripleBoardTilesEl.innerHTML = '';
+
+    if (tripleBoardTiles.length === 0) {
+      tripleBoardTilesEl.style.width = '0px';
+      tripleBoardTilesEl.style.height = '0px';
+    } else {
+      // Calculate dimensions
+      let minX = Infinity;
+      let maxX = -Infinity;
+      let minY = Infinity;
+      let maxY = -Infinity;
+      let maxZ = 0;
+      for (const t of tripleBoardTiles) {
+        if (t.x < minX) minX = t.x;
+        if (t.x > maxX) maxX = t.x;
+        if (t.y < minY) minY = t.y;
+        if (t.y > maxY) maxY = t.y;
+        if (t.z > maxZ) maxZ = t.z;
+      }
+
+      const unitW = 26;
+      const unitH = 30;
+      const tileW = 44;
+      const tileH = 56;
+      const padX = 8;
+      const padY = maxZ * 6 + 10;
+
+      const boardWidth = (maxX - minX) * unitW + tileW + padX * 2;
+      const boardHeight = padY + (maxY - minY) * unitH + tileH + 16;
+      tripleBoardTilesEl.style.width = `${boardWidth}px`;
+      tripleBoardTilesEl.style.height = `${boardHeight}px`;
+
+      const wrapper = tripleBoardEl.closest('.mahjong-board-wrapper') as HTMLElement;
+      const wrapperW = wrapper?.clientWidth || (window.innerWidth - 32);
+      const availableW = wrapperW - 16;
+      if (availableW > 0 && availableW < boardWidth) {
+        const scale = Math.min(1, Math.max(0.35, availableW / boardWidth));
+        tripleBoardTilesEl.style.transform = `scale(${scale})`;
+        tripleBoardTilesEl.style.transformOrigin = 'top center';
+        tripleBoardTilesEl.style.marginBottom = `-${boardHeight * (1 - scale)}px`;
+      } else {
+        tripleBoardTilesEl.style.transform = '';
+        tripleBoardTilesEl.style.transformOrigin = 'top center';
+        tripleBoardTilesEl.style.marginBottom = '';
+      }
+      tripleBoardTilesEl.style.marginLeft = '';
+      tripleBoardTilesEl.style.marginRight = '';
+
+      for (const t of tripleBoardTiles) {
+        const free = !isTripleTileFree(t, tripleBoardTiles);
+        const left = padX + (t.x - minX) * unitW;
+        const top = padY + (t.y - minY) * unitH - t.z * 6;
+
+        const el = document.createElement('div');
+        el.className = `mahjong-tile triple-tile ${free ? 'is-free' : 'is-blocked'}`;
+        el.id = t.id;
+        el.dataset.id = t.id;
+        el.dataset.tileId = t.tileId;
+        el.style.left = `${left}px`;
+        el.style.top = `${top}px`;
+        el.style.zIndex = String(t.z * 100 + t.y);
+
+        const def = TILE_DEFINITIONS[t.tileId] || { svg: '', name: t.tileId };
+        el.innerHTML = `
+          <div class="tile-face">${def.svg}</div>
+          <div class="tile-side-bevel" aria-hidden="true"></div>
+        `;
+
+        el.addEventListener('click', () => onTripleTileClick(t));
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onTripleTileClick(t);
+          }
+        });
+        tripleBoardTilesEl.appendChild(el);
+      }
+    }
+
+    // Render Tray (7 slots)
+    tripleTrayEl.innerHTML = '';
+    for (let slot = 0; slot < 7; slot++) {
+      const slotEl = document.createElement('div');
+      slotEl.className = 'triple-tray-slot';
+      if (slot < tripleTrayTiles.length) {
+        const item = tripleTrayTiles[slot];
+        const def = TILE_DEFINITIONS[item.tileId] || { svg: '', name: item.tileId };
+        slotEl.innerHTML = `
+          <div class="mahjong-tile tray-tile" id="${item.id}">
+            <div class="tile-face">${def.svg}</div>
+            <div class="tile-side-bevel" aria-hidden="true"></div>
+          </div>
+        `;
+      }
+      tripleTrayEl.appendChild(slotEl);
+    }
+
+    if (trayCountLabel) {
+      trayCountLabel.textContent = `${tripleTrayTiles.length} / 7`;
+    }
+  }
+
+  function onTripleTileClick(target: TripleTile) {
+    if (isPaused || isCompleted || isGameOver) return;
+    startTimer();
+
+    const free = !isTripleTileFree(target, tripleBoardTiles);
+    if (!free) {
+      soundManager.playInvalid();
+      const el = document.getElementById(target.id);
+      if (el) {
+        el.classList.add('is-shaking');
+        setTimeout(() => el.classList.remove('is-shaking'), 300);
+      }
+      return;
+    }
+
+    // Pick tile into tray
+    pushUndoState();
+    moves++;
+    soundManager.playSelect();
+
+    // Remove from board
+    tripleBoardTiles = tripleBoardTiles.filter((t) => t.id !== target.id);
+
+    // Insert into tray
+    const res = insertTileIntoTray(tripleTrayTiles, target);
+    tripleTrayTiles = res.newTray;
+
+    if (res.matched) {
+      score += 150;
+      soundManager.playMatch();
+      renderTripleBoard();
+      updateStatsUI();
+
+      if (tripleBoardTiles.length === 0 && tripleTrayTiles.length === 0) {
+        handleVictory();
+      }
+    } else {
+      renderTripleBoard();
+      updateStatsUI();
+
+      if (res.isFull) {
+        handleGameOver('Your selection tray has reached maximum capacity (7 tiles) with no matching triplets. Plan ahead to keep your tray clear!');
+      }
+    }
+  }
+
+  // --- Undo Mechanism ---
+  function pushUndoState() {
+    undoStack.push({
+      solitaireTiles: currentMode === 'solitaire' ? JSON.parse(JSON.stringify(solitaireTiles)) : undefined,
+      connectTiles: currentMode === 'connect' ? JSON.parse(JSON.stringify(connectTiles)) : undefined,
+      tripleBoardTiles: currentMode === 'triple' ? JSON.parse(JSON.stringify(tripleBoardTiles)) : undefined,
+      tripleTrayTiles: currentMode === 'triple' ? JSON.parse(JSON.stringify(tripleTrayTiles)) : undefined,
+      score,
+      moves,
+    });
+    if (undoStack.length > 25) undoStack.shift();
+    if (btnUndo) btnUndo.disabled = false;
+  }
+
+  function handleUndo() {
+    if (undoStack.length === 0 || isCompleted || isGameOver || isPaused) return;
+    const prev = undoStack.pop();
+    if (!prev) return;
+
+    soundManager.playSelect();
+    score = prev.score;
+    moves = prev.moves;
+
+    if (currentMode === 'solitaire' && prev.solitaireTiles) {
+      solitaireTiles = prev.solitaireTiles;
+      selectedSolitaireTileId = null;
+      renderSolitaireBoard();
+    } else if (currentMode === 'connect' && prev.connectTiles) {
+      connectTiles = prev.connectTiles;
+      selectedConnectTileId = null;
+      renderConnectBoard();
+    } else if (currentMode === 'triple' && prev.tripleBoardTiles && prev.tripleTrayTiles) {
+      tripleBoardTiles = prev.tripleBoardTiles;
+      tripleTrayTiles = prev.tripleTrayTiles;
+      renderTripleBoard();
+    }
+
+    updateStatsUI();
+  }
+
+  btnUndo?.addEventListener('click', handleUndo);
+
+  // --- Hint System ---
+  function handleHint() {
+    if (isCompleted || isGameOver || isPaused) return;
+
+    if (currentMode === 'solitaire') {
+      const pair = findSolitaireHint(solitaireTiles);
+      if (pair) {
+        soundManager.playHint();
+        score = Math.max(0, score - 25);
+        updateStatsUI();
+        for (const t of pair) {
+          const el = document.getElementById(t.id);
+          if (el) {
+            el.classList.add('is-hinted');
+            setTimeout(() => el.classList.remove('is-hinted'), 2000);
+          }
+        }
+      } else {
+        soundManager.playInvalid();
+        if (ariaLive) ariaLive.textContent = 'No matching free tiles available. Try shuffling!';
+      }
+    } else if (currentMode === 'connect') {
+      const hint = findConnectHint(connectTiles, connectRows, connectCols);
+      if (hint) {
+        soundManager.playHint();
+        score = Math.max(0, score - 25);
+        updateStatsUI();
+        const el1 = document.getElementById(hint.tile1.id);
+        const el2 = document.getElementById(hint.tile2.id);
+        if (el1) el1.classList.add('is-hinted');
+        if (el2) el2.classList.add('is-hinted');
+        setTimeout(() => {
+          if (el1) el1.classList.remove('is-hinted');
+          if (el2) el2.classList.remove('is-hinted');
+        }, 2000);
+      } else {
+        soundManager.playInvalid();
+        if (ariaLive) ariaLive.textContent = 'No connectable moves available. Try shuffling!';
+      }
+    } else if (currentMode === 'triple') {
+      const hint = findTripleHint(tripleBoardTiles, tripleTrayTiles);
+      if (hint) {
+        soundManager.playHint();
+        score = Math.max(0, score - 25);
+        updateStatsUI();
+        const el = document.getElementById(hint.id);
+        if (el) {
+          el.classList.add('is-hinted');
+          setTimeout(() => el.classList.remove('is-hinted'), 2000);
+        }
+      } else {
+        soundManager.playInvalid();
+      }
+    }
+  }
+
+  btnHint?.addEventListener('click', handleHint);
+
+  // --- Shuffle System ---
+  function handleShuffle() {
+    if (isCompleted || isGameOver || isPaused) return;
+    soundManager.playShuffle();
+
+    if (currentMode === 'solitaire') {
+      pushUndoState();
+      solitaireTiles = shuffleSolitaireTiles(solitaireTiles);
+      selectedSolitaireTileId = null;
+      renderSolitaireBoard();
+    } else if (currentMode === 'connect') {
+      pushUndoState();
+      connectTiles = shuffleConnectTiles(connectTiles, connectRows, connectCols);
+      selectedConnectTileId = null;
+      renderConnectBoard();
+    } else if (currentMode === 'triple') {
+      pushUndoState();
+      tripleBoardTiles = shuffleTripleTiles(tripleBoardTiles);
+      renderTripleBoard();
+    }
+
+    updateStatsUI();
+  }
+
+  btnShuffle?.addEventListener('click', handleShuffle);
+
+  // --- Pause / Resume ---
+  function togglePause() {
+    if (isCompleted || isGameOver) return;
+    isPaused = !isPaused;
+
+    if (isPaused) {
+      stopTimer();
+      if (pausedOverlay) pausedOverlay.hidden = false;
+      if (btnPause) btnPause.textContent = 'Resume';
+    } else {
+      if (pausedOverlay) pausedOverlay.hidden = true;
+      if (btnPause) btnPause.textContent = 'Pause';
+      if (moves > 0) startTimer();
+    }
+    updateStatsUI();
+  }
+
+  btnPause?.addEventListener('click', togglePause);
+  btnResume?.addEventListener('click', togglePause);
+
+  // --- Victory and Game Over Handlers ---
+  function handleVictory() {
+    isCompleted = true;
+    stopTimer();
+    soundManager.playVictory();
+
+    const isPB = storage.updateBestRecord(currentMode, currentDifficulty, timerSeconds, moves, score);
+    if (isDaily) {
+      storage.markDailyCompleted({
+        date: getUtcDateString(),
+        mode: currentMode,
+        time: timerSeconds,
+        moves,
+        score,
+      });
+    }
+
+    const pbBadge = document.getElementById('mahjong-pb-badge');
+    if (pbBadge) pbBadge.hidden = !isPB;
+
+    const modeLabels: Record<GameMode, string> = {
+      solitaire: 'Classic Solitaire',
+      connect: 'Mahjong Connect',
+      triple: 'Triple Mahjong',
+    };
+    const vMode = document.getElementById('victory-mode');
+    const vDiff = document.getElementById('victory-diff');
+    const vTime = document.getElementById('victory-time');
+    const vMoves = document.getElementById('victory-moves');
+    const vScore = document.getElementById('victory-score');
+
+    if (vMode) vMode.textContent = modeLabels[currentMode];
+    if (vDiff) vDiff.textContent = `${currentDifficulty.charAt(0).toUpperCase()}${currentDifficulty.slice(1)}`;
+    if (vTime) vTime.textContent = formatTime(timerSeconds);
+    if (vMoves) vMoves.textContent = String(moves);
+    if (vScore) vScore.textContent = String(score);
+
+    if (victoryOverlay) victoryOverlay.hidden = false;
+    storage.clearSavedGame(currentMode, isDaily);
+  }
+
+  function handleGameOver(reason: string) {
+    isGameOver = true;
+    stopTimer();
+    soundManager.playGameOver();
+
+    const descEl = document.getElementById('gameover-desc');
+    if (descEl) descEl.textContent = reason;
+
+    if (gameoverOverlay) gameoverOverlay.hidden = false;
+  }
+
+  btnPlayAgain?.addEventListener('click', () => {
+    if (victoryOverlay) victoryOverlay.hidden = true;
+    startNewGame(false);
+  });
+  btnVictoryNew?.addEventListener('click', () => {
+    if (victoryOverlay) victoryOverlay.hidden = true;
+    startNewGame(true);
+  });
+  btnRetry?.addEventListener('click', () => {
+    if (gameoverOverlay) gameoverOverlay.hidden = true;
+    startNewGame(false);
+  });
+  btnGameoverNew?.addEventListener('click', () => {
+    if (gameoverOverlay) gameoverOverlay.hidden = true;
+    startNewGame(true);
+  });
+
+  // Share Result Handler
+  btnShareResult?.addEventListener('click', () => {
+    const text = `PuzzleFeels Mahjong Variants (${currentMode.toUpperCase()}) 🏆 Solved in ${formatTime(timerSeconds)} with ${moves} moves and ${score} points! Play free: https://puzzlefeels.com/mahjong-variants-online-game/`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (shareStatusEl) {
+          shareStatusEl.textContent = 'Result copied to clipboard!';
+          setTimeout(() => { if (shareStatusEl) shareStatusEl.textContent = ''; }, 3000);
+        }
+      });
+    }
+  });
+
+  // --- Game Lifecycle & Mode Initialization ---
+  function startNewGame(freshSeed: boolean = true) {
+    stopTimer();
+    resetTimer();
+    moves = 0;
+    score = 0;
+    isCompleted = false;
+    isGameOver = false;
+    isPaused = false;
+    undoStack = [];
+    selectedSolitaireTileId = null;
+    selectedConnectTileId = null;
+
+    if (pausedOverlay) pausedOverlay.hidden = true;
+    if (victoryOverlay) victoryOverlay.hidden = true;
+    if (gameoverOverlay) gameoverOverlay.hidden = true;
+
+    // Deterministic seed if daily
+    const rng = isDaily
+      ? createSeededRng(`${getUtcDateString()}_${currentMode}_${currentDifficulty}`)
+      : Math.random;
+
+    if (currentMode === 'solitaire') {
+      solitaireTiles = generateSolvableSolitaireBoard(currentDifficulty, rng);
+      renderSolitaireBoard();
+    } else if (currentMode === 'connect') {
+      const res = generateConnectBoard(currentDifficulty, rng);
+      connectTiles = res.tiles;
+      connectRows = res.rows;
+      connectCols = res.cols;
+      renderConnectBoard();
+    } else if (currentMode === 'triple') {
+      tripleBoardTiles = generateTripleBoard(currentDifficulty, rng);
+      tripleTrayTiles = [];
+      renderTripleBoard();
+    }
+
+    updateStatsUI();
+  }
+
+  function switchMode(newMode: GameMode) {
+    if (newMode === currentMode) return;
+    requireResetConfirmation(() => {
+      currentMode = newMode;
+      modeTabs.forEach((tab) => {
+        const active = tab.dataset.mode === newMode;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', String(active));
+      });
+
+      // Switch active view container
+      if (solitaireBoardEl) solitaireBoardEl.hidden = newMode !== 'solitaire';
+      if (connectBoardEl) connectBoardEl.hidden = newMode !== 'connect';
+      if (tripleBoardEl) tripleBoardEl.hidden = newMode !== 'triple';
+
+      // Update stat pill label
+      const modeLabels: Record<GameMode, string> = {
+        solitaire: 'Classic Solitaire',
+        connect: 'Mahjong Connect',
+        triple: 'Triple Mahjong',
+      };
+      if (statModeLabel) statModeLabel.textContent = modeLabels[newMode];
+
+      // Update help text
+      if (helpText) {
+        if (newMode === 'solitaire') {
+          helpText.innerHTML = '<strong>Solitaire Tips:</strong> Match two identical free tiles. A tile is free when nothing is covering it and at least one lateral edge is open.';
+        } else if (newMode === 'connect') {
+          helpText.innerHTML = '<strong>Connect Tips:</strong> Match identical tiles that can be linked with at most two 90-degree turns. Paths can travel through cleared spaces or outer boundaries.';
+        } else {
+          helpText.innerHTML = '<strong>Triple Tips:</strong> Click available uncovered tiles to collect them into your 7-slot tray. Group three identical tiles to clear them before the tray fills up!';
+        }
+      }
+
+      startNewGame(true);
+    });
+  }
+
+  function switchDifficulty(newDiff: GameDifficulty) {
+    if (newDiff === currentDifficulty) return;
+    requireResetConfirmation(() => {
+      currentDifficulty = newDiff;
+      diffBtns.forEach((btn) => {
+        const active = btn.dataset.difficulty === newDiff;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+      startNewGame(true);
+    });
+  }
+
+  // Bind Mode Tabs
+  modeTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const m = tab.dataset.mode as GameMode;
+      if (m) switchMode(m);
+    });
+  });
+
+  // Bind Difficulty Buttons
+  diffBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const d = btn.dataset.difficulty as GameDifficulty;
+      if (d) switchDifficulty(d);
+    });
+  });
+
+  // Bind Daily Challenge Toggle
+  dailyToggle?.addEventListener('click', () => {
+    requireResetConfirmation(() => {
+      isDaily = !isDaily;
+      storage.setIsDailyActive(isDaily);
+      dailyToggle.classList.toggle('is-active', isDaily);
+      dailyToggle.setAttribute('aria-pressed', String(isDaily));
+      const label = document.getElementById('mahjong-daily-label');
+      if (label) label.textContent = isDaily ? `Daily (${getUtcDateString().slice(5)})` : 'Daily Challenge';
+      startNewGame(true);
+    });
+  });
+
+  btnNew?.addEventListener('click', () => requireResetConfirmation(() => startNewGame(true)));
+  btnRestart?.addEventListener('click', () => requireResetConfirmation(() => startNewGame(false)));
+
+  // --- Initial Load / Restore ---
+  function initGame() {
+    updateSoundUI();
+
+    // Check daily mode via URL parameter or stored active state
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('daily') === 'today' || storage.getIsDailyActive()) {
+      isDaily = true;
+      if (dailyToggle) {
+        dailyToggle.classList.add('is-active');
+        dailyToggle.setAttribute('aria-pressed', 'true');
+        const label = document.getElementById('mahjong-daily-label');
+        if (label) label.textContent = `Daily (${getUtcDateString().slice(5)})`;
+      }
+    }
+
+    // Check saved state
+    const saved = storage.loadGame(currentMode, isDaily);
+    if (saved && saved.moves > 0 && saved.status === 'playing') {
+      currentMode = saved.mode;
+      currentDifficulty = saved.difficulty;
+      moves = saved.moves;
+      score = saved.score;
+      timerSeconds = saved.elapsedSeconds;
+
+      // Update UI tabs and buttons
+      modeTabs.forEach((t) => t.classList.toggle('is-active', t.dataset.mode === currentMode));
+      diffBtns.forEach((b) => b.classList.toggle('is-active', b.dataset.difficulty === currentDifficulty));
+      if (solitaireBoardEl) solitaireBoardEl.hidden = currentMode !== 'solitaire';
+      if (connectBoardEl) connectBoardEl.hidden = currentMode !== 'connect';
+      if (tripleBoardEl) tripleBoardEl.hidden = currentMode !== 'triple';
+
+      if (currentMode === 'solitaire' && saved.boardState) {
+        solitaireTiles = saved.boardState;
+        renderSolitaireBoard();
+      } else if (currentMode === 'connect' && saved.boardState) {
+        connectTiles = saved.boardState.tiles;
+        connectRows = saved.boardState.rows;
+        connectCols = saved.boardState.cols;
+        renderConnectBoard();
+      } else if (currentMode === 'triple' && saved.boardState) {
+        tripleBoardTiles = saved.boardState;
+        tripleTrayTiles = saved.trayState || [];
+        renderTripleBoard();
+      }
+      updateStatsUI();
+      startTimer();
+    } else {
+      startNewGame(true);
+    }
+  }
+
+  // Keyboard navigation shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'p' || e.key === 'P') togglePause();
+    else if (e.key === 'h' || e.key === 'H') handleHint();
+    else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) handleUndo();
+    else if (e.key === 'Escape' && isPaused) togglePause();
+  });
+
+  // Responsive board re-scaling on viewport resize
+  let resizeTimeout: number | null = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimeout) window.clearTimeout(resizeTimeout);
+    resizeTimeout = window.setTimeout(() => {
+      if (currentMode === 'solitaire') renderSolitaireBoard();
+      else if (currentMode === 'connect') renderConnectBoard();
+      else if (currentMode === 'triple') renderTripleBoard();
+    }, 120);
+  });
+
+  // Launch on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGame);
+  } else {
+    initGame();
+  }
+</script>
+
+<style>
+  .mahjong-page { padding-bottom: 70px; }
+  .mahjong-breadcrumbs { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 18px 0 6px; flex-wrap: wrap; }
+  .mahjong-breadcrumbs a { color: var(--muted); text-decoration: none; transition: color 0.15s ease; }
+  .mahjong-breadcrumbs a:hover { color: var(--blue); }
+
+  /* Intro Section - Centered matching Sliding Number Puzzle */
+  .mahjong-intro {
+    padding: 16px 0 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .mahjong-intro .eyebrow {
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .mahjong-intro h1 {
+    margin: 8px auto 14px;
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    letter-spacing: -.035em;
+    text-align: center;
+    max-width: 820px;
+  }
+  .mahjong-intro p {
+    max-width: 680px;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  /* Shell Container */
+  .mahjong-shell {
+    padding: 24px 28px 30px;
+    margin-bottom: 48px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    box-shadow: 0 12px 36px rgba(23, 35, 59, 0.05);
+  }
+
+  /* Mode Tabs */
+  .mahjong-mode-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .mahjong-mode-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px;
+    border-radius: 14px;
+    border: 1.5px solid var(--line);
+    background: var(--wash, #f1f4fb);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: center;
+    min-height: 52px;
+    transition: all 0.18s ease;
+  }
+  .mahjong-mode-tab:hover {
+    border-color: #b5c7f8;
+    background: #f8faff;
+  }
+  .mahjong-mode-tab:active {
+    transform: scale(0.98);
+  }
+  .mahjong-mode-tab.is-active {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 14px rgba(49, 94, 232, 0.14);
+  }
+  .tab-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+    margin-bottom: 3px;
+  }
+  .mahjong-mode-tab strong {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .mahjong-mode-tab.is-active strong {
+    color: var(--blue);
+  }
+  .mahjong-mode-tab small {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Header Bar (Difficulty & Utility Actions) */
+  .mahjong-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 18px;
+  }
+  .mahjong-difficulties {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mahjong-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    min-height: 48px;
+    transition: all .16s ease;
+  }
+  .mahjong-diff-btn strong {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .mahjong-diff-btn span {
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .mahjong-diff-btn:hover {
+    border-color: var(--blue);
+  }
+  .mahjong-diff-btn:active {
+    transform: scale(0.98);
+  }
+  .mahjong-diff-btn.is-active {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .mahjong-diff-btn.is-active span {
+    color: var(--blue);
+    opacity: .85;
+  }
+
+  .mahjong-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mahjong-daily-btn.is-active {
+    background: #10b981;
+    border-color: #10b981;
+    color: #fff;
+  }
+  .mahjong-sound-btn, .mahjong-daily-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 12px;
+    gap: 6px;
+    border-radius: 11px;
+  }
+  .daily-short {
+    display: none;
+  }
+
+  /* Stats Bar */
+  .mahjong-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: var(--wash, #f1f4fb);
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .mahjong-stat-item small {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .mahjong-stat-item strong {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .stat-pill-label {
+    font-size: 13px !important;
+    color: var(--blue) !important;
+  }
+
+  /* Board Area */
+  .mahjong-board-wrapper {
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: hidden;
+    padding: 24px 12px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 50% 50%, #fdfbf7 0%, #edf1f7 100%);
+    border: 1.5px solid var(--line);
+  }
+
+  .mahjong-board-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    transform: scale(var(--mahjong-zoom, 1));
+    transform-origin: top center;
+    transition: transform 0.15s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-items: unsafe center;
+  }
+
+  .mahjong-view {
+    position: relative;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  /* Mahjong Tile Component Styling */
+  :global(.mahjong-tile) {
+    position: relative;
+    width: 44px;
+    height: 56px;
+    border-radius: 7px;
+    background: #fffdfa;
+    border: 1.5px solid #d5cbbe;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.15s ease, filter 0.15s ease;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  :global(.tile-face) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+    box-sizing: border-box;
+  }
+  :global(.tile-face svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  :global(.tile-side-bevel) {
+    position: absolute;
+    bottom: -4px;
+    left: 2px;
+    right: 2px;
+    height: 4px;
+    background: #15803d; /* Jade acrylic back layer */
+    border-radius: 0 0 5px 5px;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  }
+
+  /* Tile Interaction States */
+  :global(.mahjong-tile.is-free:hover) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+    border-color: #315ee8;
+  }
+  :global(.mahjong-tile.is-blocked) {
+    filter: brightness(0.72) contrast(0.92);
+    cursor: not-allowed;
+  }
+  :global(.mahjong-tile.is-selected) {
+    outline: 3px solid #315ee8;
+    outline-offset: 2px;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(49, 94, 232, 0.35);
+  }
+  :global(.mahjong-tile.is-hinted) {
+    animation: mahjong-pulse 0.8s infinite alternate ease-in-out;
+  }
+  :global(.mahjong-tile.is-matching) {
+    transform: scale(1.15);
+    opacity: 0;
+    transition: all 0.22s ease-out;
+  }
+  :global(.mahjong-tile.is-shaking) {
+    animation: mahjong-shake 0.3s ease-in-out;
+  }
+
+  @keyframes mahjong-pulse {
+    0% { outline: 3px solid #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+    100% { outline: 3px solid #ef4444; box-shadow: 0 0 16px #ef4444; }
+  }
+  @keyframes mahjong-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  /* Solitaire View */
+  .solitaire-view {
+    position: relative;
+    margin: 10px 0;
+    max-width: none;
+    flex-shrink: 0;
+    align-self: center;
+    align-self: unsafe center;
+  }
+  :global(.solitaire-tile) {
+    position: absolute;
+  }
+
+  /* Connect View */
+  .connect-view {
+    position: relative;
+    padding: 16px;
+    margin: 10px 0;
+    max-width: none;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    align-self: unsafe center;
+  }
+  .connect-overlay-svg {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: calc(100% - 32px);
+    height: calc(100% - 32px);
+    pointer-events: none;
+    z-index: 10;
+    overflow: visible;
+  }
+  :global(.connect-beam-glow) {
+    fill: none;
+    stroke: #60a5fa;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+  }
+  :global(.connect-beam-core) {
+    fill: none;
+    stroke: #315ee8;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .connect-grid {
+    display: grid;
+    gap: 8px;
+    position: relative;
+  }
+  .connect-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 58px;
+  }
+
+  /* Triple Mahjong View & Tray */
+  .triple-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .triple-board-tiles {
+    position: relative;
+    max-width: none;
+    flex-shrink: 0;
+    align-self: center;
+    align-self: unsafe center;
+  }
+  :global(.triple-tile) {
+    position: absolute;
+  }
+  .triple-tray-container {
+    width: min(100%, 420px);
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px 16px;
+    border-radius: 16px;
+    background: var(--paper);
+    border: 2px solid #b5c7f8;
+    box-shadow: 0 6px 20px rgba(49, 94, 232, 0.08);
+  }
+  .triple-tray-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--blue);
+    margin-bottom: 10px;
+  }
+  .triple-tray {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    background: var(--wash, #f1f4fb);
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px dashed #cad5fa;
+    min-height: 68px;
+  }
+  .triple-tray-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    height: 58px;
+  }
+  :global(.tray-tile) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Overlays */
+  .mahjong-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: 20px;
+    border-radius: 16px;
+  }
+  .mahjong-overlay-box {
+    max-width: 480px;
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.25);
+  }
+  .victory-box h2, .gameover-box h2, .confirm-box h3 {
+    margin: 8px 0 10px;
+    font-size: 26px;
+  }
+  .victory-pill {
+    background: #dcfce7;
+    color: #15803d;
+    margin-bottom: 8px;
+  }
+  .gameover-pill {
+    background: #fee2e2;
+    color: #b91c1c;
+    margin-bottom: 8px;
+  }
+  .mahjong-pb-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 99px;
+    background: #fef3c7;
+    color: #b45309;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+  .victory-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    background: var(--wash, #f1f4fb);
+    padding: 14px;
+    border-radius: 12px;
+    margin: 16px 0 22px;
+  }
+  .victory-stats-grid small {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+  .victory-stats-grid strong {
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .victory-actions, .gameover-actions, .confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .mahjong-share-status {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  /* Controls Toolbar */
+  .mahjong-controls {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    margin: 24px 0 20px;
+  }
+  .mahjong-controls .btn {
+    min-height: 44px;
+    font-size: 13px;
+    padding: 0 10px;
+    border-radius: 11px;
+  }
+
+  /* Help & Footer Meta */
+  .mahjong-footer-meta {
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .mahjong-save-note {
+    font-size: 11px;
+    margin-top: 4px;
+    color: var(--muted);
+    opacity: 0.85;
+  }
+
+  /* Educational Article Typography & Spacing - Matches Sliding Number Puzzle */
+  .wrap.game-article-content.mahjong-article {
+    width: min(780px, calc(100% - 40px));
+    margin-top: 68px;
+    margin-bottom: 48px;
+    font-size: 16px;
+    line-height: 1.72;
+    text-align: left;
+  }
+  .wrap.game-article-content.mahjong-article h2,
+  :global(.wrap.game-article-content.mahjong-article h2) {
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: -.025em;
+    margin: 36px 0 12px;
+    text-align: left;
+  }
+  .wrap.game-article-content.mahjong-article h2:first-child,
+  :global(.wrap.game-article-content.mahjong-article h2:first-child) {
+    margin-top: 0;
+  }
+  .wrap.game-article-content.mahjong-article h3,
+  :global(.wrap.game-article-content.mahjong-article h3) {
+    font-size: 18px;
+    line-height: 1.3;
+    letter-spacing: -.02em;
+    margin: 26px 0 10px;
+    text-align: left;
+  }
+  .wrap.game-article-content.mahjong-article h4,
+  :global(.wrap.game-article-content.mahjong-article h4) {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    text-align: left;
+  }
+  .wrap.game-article-content.mahjong-article p,
+  :global(.wrap.game-article-content.mahjong-article p) {
+    font-size: 16px;
+    line-height: 1.72;
+    margin: 0 0 16px;
+    text-align: left;
+  }
+  .wrap.game-article-content.mahjong-article ol,
+  .wrap.game-article-content.mahjong-article ul {
+    padding-inline-start: 24px;
+    margin: 0 0 20px;
+  }
+  .wrap.game-article-content.mahjong-article li {
+    font-size: 16px;
+    line-height: 1.68;
+    margin: 0 0 8px;
+    padding-inline-start: 2px;
+  }
+  .wrap.game-article-content.mahjong-article a {
+    color: var(--blue);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Related Games Section */
+  .related-games-section {
+    padding: 56px 0 36px;
+    border-top: 1px solid var(--line);
+    margin-top: 48px;
+  }
+  .related-games-head {
+    max-width: 620px;
+    margin: 0 auto 36px;
+    text-align: center;
+  }
+  .related-games-head h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+    margin: 10px 0 12px;
+    letter-spacing: -.03em;
+  }
+  .related-games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+  }
+  .related-card {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    border-color: #cfd8ef;
+    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.08);
+  }
+  .related-visual {
+    height: 160px;
+    flex: none;
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
+  }
+  .related-orbit {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border: 1px dashed #cad5fa;
+    border-radius: 50%;
+  }
+  .related-icon {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 48px);
+    gap: 8px;
+    transform: rotate(-7deg);
+  }
+  .related-icon span {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: #fff;
+    color: #315ee8;
+    font-size: 17px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
+  }
+  .memory-icon span:nth-child(1) { background: #ede9fe; color: #7c3aed; }
+  .memory-icon span:nth-child(2) { background: #315ee8; color: #fff; }
+  .memory-icon span:nth-child(3) { background: #fef08a; color: #a16207; }
+  .memory-icon span:nth-child(4) { background: #dcfce7; color: #15803d; }
+  .picross-icon span:nth-child(1), .picross-icon span:nth-child(4) { background: #315ee8; color: #fff; }
+  .picross-icon span:nth-child(2), .picross-icon span:nth-child(3) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(1) { background: #315ee8; color: #fff; }
+  .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
+  .slide-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
+  .slide-icon .slide-empty { background: transparent; border: 2px dashed #b9c8f5; box-shadow: none; }
+  .related-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 20px 20px;
+  }
+  .related-labels {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
+  .difficulty-label { font-size: 10px; color: var(--muted); }
+  .related-card h3 { font-size: 18px; line-height: 1.25; margin: 12px 0 6px; letter-spacing: -.025em; }
+  .related-card p { font-size: 12px; line-height: 1.6; margin: 0 0 14px; color: var(--muted); }
+  .related-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: var(--blue);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 960px) {
+    .mahjong-shell { padding: 20px 16px 24px; }
+    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  }
+
+  @media (max-width: 768px) {
+    .mahjong-stats-bar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .mahjong-controls { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  }
+
+  @media (max-width: 640px) {
+    .mahjong-shell {
+      padding: 18px 12px 22px;
+      border-radius: 18px;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+
+    /* Mode selector on mobile: 3 equal, clean tabs */
+    .mahjong-mode-tabs {
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .mahjong-mode-tab {
+      padding: 9px 4px;
+      border-radius: 12px;
+      min-height: 48px;
+    }
+    .tab-badge {
+      font-size: 9px;
+      margin-bottom: 1px;
+    }
+    .mahjong-mode-tab strong {
+      font-size: 12px;
+      margin-bottom: 0;
+    }
+    .mahjong-mode-tab small {
+      display: none;
+    }
+    .mode-full {
+      display: none;
+    }
+
+    /* Header bar layout */
+    .mahjong-header-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* Redesigned Difficulty Selector: Comfortable, equal height, balanced */
+    .mahjong-difficulties {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+    }
+    .mahjong-diff-btn {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 9px 6px;
+      text-align: center;
+      align-items: center;
+      min-height: 48px;
+      border-radius: 12px;
+    }
+    .mahjong-diff-btn strong {
+      font-size: 12.5px;
+    }
+    .mahjong-diff-btn span {
+      font-size: 9.5px;
+      white-space: nowrap;
+    }
+    .sub-desc {
+      display: none;
+    }
+
+    /* Utility actions (Daily, Zoom, Sound) */
+    .mahjong-header-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      width: 100%;
+    }
+    .mahjong-header-actions .btn,
+    .mahjong-header-actions :global(.tool-utility-btn) {
+      width: 100%;
+      min-height: 40px;
+      padding: 0 6px;
+      font-size: 11.5px;
+      border-radius: 11px;
+      justify-content: center;
+      gap: 5px;
+    }
+    .mahjong-header-actions :global(.zoom-control-wrapper) {
+      width: 100%;
+    }
+    .daily-full {
+      display: none;
+    }
+    .daily-short {
+      display: inline;
+    }
+
+    /* Stats bar: 3 columns x 2 rows, clean and balanced */
+    .mahjong-stats-bar {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px 8px;
+    }
+    .mahjong-stat-item strong {
+      font-size: 15px;
+    }
+    .mahjong-stat-item small {
+      font-size: 10px;
+    }
+
+    /* Board wrapper and controls */
+    .mahjong-board-wrapper {
+      padding: 14px 6px;
+      min-height: 380px;
+      border-radius: 14px;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .mahjong-controls {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 18px 0 16px;
+    }
+    .mahjong-controls .btn {
+      font-size: 12px;
+      padding: 0 6px;
+      min-height: 42px;
+      border-radius: 11px;
+    }
+
+    /* Modals & Overlays mobile layout */
+    .mahjong-overlay {
+      padding: 12px;
+    }
+    .mahjong-overlay-box {
+      padding: 22px 16px;
+      max-width: 100%;
+      border-radius: 16px;
+    }
+    .victory-box h2, .gameover-box h2, .confirm-box h3 {
+      font-size: 22px;
+      margin: 6px 0 8px;
+    }
+    .victory-stats-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 10px 8px;
+      gap: 6px;
+      margin: 12px 0 16px;
+    }
+    .victory-stats-grid small {
+      font-size: 9.5px;
+    }
+    .victory-stats-grid strong {
+      font-size: 13.5px;
+    }
+    .victory-actions, .gameover-actions, .confirm-actions {
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+    .victory-actions .btn, .gameover-actions .btn, .confirm-actions .btn {
+      width: 100%;
+      min-height: 42px;
+    }
+
+    /* Triple Tray mobile layout */
+    .triple-tray-container {
+      width: 100%;
+      padding: 10px 8px;
+      border-radius: 14px;
+    }
+    .triple-tray {
+      gap: 4px;
+      padding: 6px;
+      min-height: 52px;
+    }
+    .triple-tray-slot {
+      height: clamp(40px, 11vw, 54px);
+      border-radius: 6px;
+    }
+
+    /* Related games mobile list */
+    .related-games-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .related-card {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      min-height: 150px;
+      border-radius: 16px;
+    }
+    .related-visual {
+      height: auto;
+      min-height: 150px;
+    }
+    .related-orbit {
+      width: 90px;
+      height: 90px;
+    }
+    .related-icon {
+      grid-template-columns: repeat(2, 34px);
+      gap: 5px;
+    }
+    .related-icon span {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+    .related-card-body {
+      padding: 14px 12px;
+    }
+
+    /* Educational article typography on mobile matching Sliding Number Puzzle */
+    .wrap.game-article-content.mahjong-article {
+      width: calc(100% - 32px);
+      margin-top: 48px;
+      margin-bottom: 40px;
+      font-size: 15px;
+    }
+    .wrap.game-article-content.mahjong-article h2,
+    :global(.wrap.game-article-content.mahjong-article h2) {
+      font-size: 21px;
+      margin-top: 28px;
+    }
+    .wrap.game-article-content.mahjong-article h3,
+    :global(.wrap.game-article-content.mahjong-article h3) {
+      font-size: 17px;
+    }
+    .wrap.game-article-content.mahjong-article p,
+    .wrap.game-article-content.mahjong-article li,
+    :global(.wrap.game-article-content.mahjong-article p),
+    :global(.wrap.game-article-content.mahjong-article li) {
+      font-size: 15px;
+      line-height: 1.68;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .mahjong-shell {
+      padding: 14px 8px 18px;
+    }
+    .mahjong-diff-btn {
+      padding: 8px 4px;
+      min-height: 46px;
+    }
+    .mahjong-diff-btn strong {
+      font-size: 12px;
+    }
+    .mahjong-diff-btn span {
+      font-size: 9px;
+    }
+    .mahjong-header-actions .btn,
+    .mahjong-header-actions :global(.tool-utility-btn) {
+      font-size: 10.5px;
+      padding: 0 4px;
+    }
+  }
+
+  @media (max-width: 390px) {
+    .mahjong-mode-tab strong {
+      font-size: 11.5px;
+    }
+    .mahjong-controls .btn {
+      font-size: 11.5px;
+      padding: 0 4px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .mahjong-mode-tabs {
+      gap: 4px;
+    }
+    .mahjong-mode-tab {
+      padding: 7px 2px;
+      min-height: 44px;
+    }
+    .mahjong-mode-tab strong {
+      font-size: 11px;
+    }
+    .tab-badge {
+      font-size: 8px;
+    }
+    .mahjong-difficulties {
+      gap: 5px;
+    }
+    .mahjong-diff-btn {
+      padding: 7px 2px;
+      min-height: 44px;
+    }
+    .mahjong-diff-btn strong {
+      font-size: 11px;
+    }
+    .mahjong-diff-btn span {
+      font-size: 8.5px;
+    }
+    .mahjong-controls .btn {
+      font-size: 11px;
+      min-height: 38px;
+    }
+    .mahjong-stats-bar {
+      gap: 5px;
+      padding: 8px 4px;
+    }
+    .mahjong-stat-item strong {
+      font-size: 13.5px;
+    }
+    .mahjong-stat-item small {
+      font-size: 9px;
+    }
+  }
+
+  /* Dark Theme Palette */
+  :global(html[data-theme="dark"]) .mahjong-shell {
+    background: var(--dark-card, #151f3d);
+    border-color: var(--dark-border, #293858);
+  }
+  :global(html[data-theme="dark"]) .mahjong-mode-tab {
+    background: #0e172e;
+    border-color: #263654;
+    color: #f1f5ff;
+  }
+  :global(html[data-theme="dark"]) .mahjong-mode-tab strong {
+    color: #f1f5ff;
+  }
+  :global(html[data-theme="dark"]) .mahjong-mode-tab.is-active {
+    background: #263960;
+    border-color: #8ea8ff;
+    color: #d5dfff;
+  }
+  :global(html[data-theme="dark"]) .mahjong-mode-tab.is-active strong {
+    color: #d5dfff;
+  }
+  :global(html[data-theme="dark"]) .mahjong-diff-btn {
+    background: var(--dark-card, #151f3d);
+    border-color: var(--dark-border, #293858);
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"]) .mahjong-diff-btn:hover {
+    border-color: var(--dark-accent, #8ea8ff);
+  }
+  :global(html[data-theme="dark"]) .mahjong-diff-btn.is-active {
+    background: #263960;
+    border-color: #8ea8ff;
+    color: #d5dfff;
+    box-shadow: 0 4px 12px rgba(91, 132, 255, 0.18);
+  }
+  :global(html[data-theme="dark"]) .mahjong-diff-btn.is-active span {
+    color: #a9bcff;
+    opacity: 0.95;
+  }
+  :global(html[data-theme="dark"]) .mahjong-stats-bar {
+    background: var(--dark-surface, #111b36);
+    border-color: var(--dark-border, #293858);
+  }
+  :global(html[data-theme="dark"]) .mahjong-stat-item strong {
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"]) .mahjong-board-wrapper {
+    background: radial-gradient(circle at 50% 50%, #16203d 0%, #0b132b 100%);
+    border-color: #263654;
+  }
+  :global(html[data-theme="dark"]) .mahjong-tile {
+    background: #fbf9f4;
+    border-color: #a89c8a;
+  }
+  :global(html[data-theme="dark"]) .triple-tray-container {
+    background: var(--dark-card, #151f3d);
+    border-color: #3b5284;
+  }
+  :global(html[data-theme="dark"]) .triple-tray {
+    background: #0e172e;
+    border-color: #263654;
+  }
+  :global(html[data-theme="dark"]) .triple-tray-slot {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  :global(html[data-theme="dark"]) .mahjong-overlay-box {
+    background: var(--dark-card, #151f3d);
+    border-color: var(--dark-border, #293858);
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"]) .victory-stats-grid {
+    background: #0e172e;
+    border-color: var(--dark-border, #293858);
+  }
+  :global(html[data-theme="dark"]) .victory-stats-grid strong {
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"]) .related-card {
+    background: var(--dark-card, #151f3d);
+    border-color: var(--dark-border, #293858);
+    color: var(--dark-text, #f1f5ff);
+  }
+  :global(html[data-theme="dark"]) .related-visual {
+    background: linear-gradient(145deg, #1b294b, #222345);
+  }
+  :global(html[data-theme="dark"]) .related-orbit {
+    border-color: #35466c;
+  }
+  :global(html[data-theme="dark"]) .related-icon span {
+    background: #263553;
+    color: #c2d0ff;
+    box-shadow: 0 8px 20px #03081755;
+  }
+  :global(html[data-theme="dark"]) .mahjong-footer-meta {
+    border-color: var(--dark-border, #293858);
+  }
+</style>

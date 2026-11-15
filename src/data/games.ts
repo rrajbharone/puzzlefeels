@@ -168,6 +168,19 @@ export const ALL_GAMES: GameCatalogItem[] = [
     visualClass: 'hidden-object-visual',
     iconClass: 'hidden-object-icon',
   },
+  {
+    id: 'mahjong-variants',
+    title: 'Mahjong Variants Online Game',
+    shortTitle: 'Mahjong Variants',
+    href: '/mahjong-variants-online-game/',
+    search: 'mahjong variants online game mahjong solitaire mahjong connect triple mahjong matching tile puzzle chinese tile game daily mahjong free',
+    pill: 'TILE PUZZLE',
+    difficulty: 'Easy · Medium · Hard',
+    description: 'Play three distinct Mahjong puzzle styles in one game: Classic Solitaire, Mahjong Connect, and Triple Match with daily challenges.',
+    visualClass: 'mahjong-visual',
+    iconClass: 'mahjong-icon',
+    dailyHref: '/mahjong-variants-online-game/?daily=today',
+  },
 ];
 
 /**
