@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FaqList from '../components/FaqList.astro';
+import ExploreMore from '../components/ExploreMore.astro';
 import ZoomControl from '../components/ZoomControl.astro';
 
 const title = 'Memory Matching Game Online – Play Free Memory Card Games';
@@ -495,54 +496,7 @@ const faqSchema = {
     </article>
 
     <!-- Explore More Puzzle Games Section -->
-    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
-      <div class="related-games-head">
-        <span class="eyebrow">Keep the fun going</span>
-        <h2>Explore More Puzzle Games</h2>
-        <p class="muted">Enjoyed matching pairs? Keep your brain active with more free online challenges on PuzzleFeels. Choose a game and start playing instantly!</p>
-      </div>
-
-      <div class="related-games-grid">
-        <a class="related-card card" href="/sliding-number-puzzle-game/">
-          <div class="related-visual slide-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Sliding Number Puzzle Game</h3>
-            <p class="muted">Slide numbered tiles into numerical order across 3×3, 4×4, and 5×5 classic sliding boards.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/reaction-time-challenge/">
-          <div class="related-visual reaction-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon reaction-icon"><span>⚡</span><span>⏱️</span><span>🎯</span><span>🚀</span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">REFLEX TEST</span><span class="difficulty-label">All Skill Levels</span></div>
-            <h3>Reaction Time Challenge</h3>
-            <p class="muted">Test your reflexes and measure your visual reaction speed in milliseconds across 4 game modes.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/word-ladder-game-online/">
-          <div class="related-visual ladder-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon ladder-icon"><span>W</span><span>O</span><span>R</span><span>D</span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">WORD PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Word Ladder Game Online</h3>
-            <p class="muted">Transform words one letter at a time to bridge the gap from start to target in Lewis Carroll's classic doublets.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-      </div>
-    </section>
+    <ExploreMore currentGameId="memory-matching" />
   </main>
 
   <Footer />
@@ -2637,68 +2591,8 @@ const faqSchema = {
     text-underline-offset: 3px;
   }
 
-  /* Related Games Section */
-  .related-games-section {
-    padding: 56px 0 36px;
-    border-top: 1px solid var(--line);
-    margin-top: 48px;
-  }
-  .related-games-head {
-    max-width: 620px;
-    margin: 0 auto 36px;
-    text-align: center;
-  }
-  .related-games-head h2 {
-    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
-    margin: 10px 0 12px;
-    letter-spacing: -.03em;
-  }
-  .related-games-head p {
-    font-size: 15px;
-    line-height: 1.65;
-    margin: 0 auto;
-  }
+  
 
-  .related-games-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    align-items: stretch;
-  }
-  .related-card {
-    text-decoration: none;
-    color: var(--ink);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 18px;
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-  }
-  .related-card:hover {
-    transform: translateY(-3px);
-    border-color: #cfd8ef;
-    box-shadow: 0 14px 34px rgba(23, 35, 59, 0.08);
-  }
-  .related-visual {
-    height: 170px;
-    position: relative;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
-  }
-  .related-orbit {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border: 1px dashed #cad5fa;
-    border-radius: 50%;
-  }
-  .related-icon {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    gap: 6px;
-  }
   .slide-icon {
     grid-template-columns: repeat(2, 42px);
   }
@@ -2742,40 +2636,7 @@ const faqSchema = {
     font-weight: 800;
     box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
   }
-  .related-card-body {
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-  .related-labels {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 2px;
-  }
-  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
   .difficulty-label { font-size: 10px; color: var(--muted); }
-  .related-card h3 {
-    font-size: 17px;
-    margin: 0 0 8px;
-    letter-spacing: -.02em;
-  }
-  .related-card p {
-    font-size: 13px;
-    line-height: 1.6;
-    margin: 0 0 14px;
-    flex: 1;
-  }
-  .related-play {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--blue);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
 
   /* ==========================================
      DARK THEME SUPPORT (#0B132B)
@@ -2913,27 +2774,11 @@ const faqSchema = {
     color: #a7f3d0;
   }
 
-  html[data-theme="dark"] .related-visual {
-    background: linear-gradient(145deg, #1b294b, #222345);
-  }
-  html[data-theme="dark"] .related-orbit {
-    border-color: #35466c;
-  }
-  html[data-theme="dark"] .related-icon span {
-    background: #263553;
-    color: #c2d0ff;
-    box-shadow: 0 8px 20px rgba(3, 8, 23, 0.35);
-  }
-
   /* ==========================================
      RESPONSIVE RULES (320px to 1280px)
      ========================================== */
 
   @media (max-width: 900px) {
-    .related-games-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
   }
 
   @media (max-width: 768px) {
@@ -3006,43 +2851,6 @@ const faqSchema = {
       font-size: 9px;
     }
 
-    .related-games-grid {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    .related-card {
-      display: grid;
-      grid-template-columns: 110px minmax(0, 1fr);
-      min-height: 150px;
-    }
-    .related-visual {
-      height: auto;
-      min-height: 150px;
-    }
-    .related-orbit {
-      width: 96px;
-      height: 96px;
-    }
-    .related-icon span {
-      width: 32px;
-      height: 32px;
-      font-size: 14px;
-    }
-    .related-card-body {
-      padding: 14px 12px;
-    }
-    .related-card h3 {
-      font-size: 15px;
-      margin: 6px 0 4px;
-    }
-    .related-card p {
-      font-size: 12px;
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-    .related-play {
-      font-size: 12px;
-    }
   }
 
   @media (max-width: 420px) {
@@ -3075,23 +2883,11 @@ const faqSchema = {
     .memory-grid {
       gap: 8px;
     }
-    .related-card {
-      grid-template-columns: 96px minmax(0, 1fr);
-    }
-    .related-icon span {
-      width: 28px;
-      height: 28px;
-      font-size: 12px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .memory-card-inner,
     .memory-progress-bar,
-    .related-card {
-      transition: none !important;
-      animation: none !important;
-    }
     .memory-card.is-hinted {
       animation: none !important;
     }

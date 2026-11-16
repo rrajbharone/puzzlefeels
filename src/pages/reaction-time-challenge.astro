@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FaqList from '../components/FaqList.astro';
+import ExploreMore from '../components/ExploreMore.astro';
 import ZoomControl from '../components/ZoomControl.astro';
 
 const title = 'Reaction Time Test – Play Free Reaction Time Challenge Online | PuzzleFeels';
@@ -72,12 +73,26 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 3, name: 'Reaction Time Challenge', item: 'https://puzzlefeels.com/reaction-time-challenge/' }
   ]
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
 ---
 
 <Base {title} {description} path="/reaction-time-challenge/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   </Fragment>
 
   <Header />
@@ -448,54 +463,7 @@ const breadcrumbSchema = {
     </article>
 
     <!-- Explore More Puzzle Games Section -->
-    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
-      <div class="related-games-head">
-        <span class="eyebrow">Keep Your Brain Sharp</span>
-        <h2>Explore More Puzzle Games</h2>
-        <p class="muted">Challenge your mind with our curated collection of free, high-focus browser puzzle games.</p>
-      </div>
-
-      <div class="related-games-grid">
-        <a class="related-card card" href="/sliding-number-puzzle-game/">
-          <div class="related-visual slide-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">CLASSIC PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Sliding Number Puzzle Game</h3>
-            <p class="muted">Slide numbered tiles into order in classic 8-puzzle, 15-puzzle, and 24-puzzle configurations.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/word-ladder-game-online/">
-          <div class="related-visual ladder-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon ladder-icon"><span>W</span><span>O</span><span>R</span><span>D</span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">WORD PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Word Ladder Game Online</h3>
-            <p class="muted">Transform words one letter at a time to bridge the gap from start to target in Lewis Carroll's classic doublets.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/color-flood-game/">
-          <div class="related-visual flood-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon flood-icon"><span></span><span></span><span></span><span></span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">STRATEGY PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Color Flood Game</h3>
-            <p class="muted">Grow the connected territory by choosing colors and flood the entire board within the allotted move limit.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-      </div>
-    </section>
+    <ExploreMore currentGameId="reaction-time" />
   </main>
 
   <Footer />
@@ -2212,91 +2180,7 @@ const breadcrumbSchema = {
     margin: 20px 0;
   }
 
-  /* Related Games Section */
-  .related-games-section {
-    padding: 56px 0 36px;
-    border-top: 1px solid var(--line);
-    margin-top: 48px;
-  }
-
-  .related-games-head {
-    max-width: 620px;
-    margin: 0 auto 36px;
-    text-align: center;
-  }
-
-  .related-games-head h2 {
-    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
-    margin: 10px 0 12px;
-    letter-spacing: -.03em;
-  }
-
-  .related-games-head p {
-    font-size: 15px;
-    line-height: 1.65;
-    margin: 0 auto;
-  }
-
-  .related-games-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    align-items: stretch;
-  }
-
-  .related-card {
-    text-decoration: none;
-    color: var(--ink);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 18px;
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-  }
-
-  .related-card:hover {
-    transform: translateY(-3px);
-    border-color: #cfd8ef;
-    box-shadow: 0 14px 34px #17233b12;
-  }
-
-  .related-visual {
-    height: 170px;
-    position: relative;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
-  }
-
-  .related-orbit {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border: 1px dashed #cad5fa;
-    border-radius: 50%;
-  }
-
-  .related-icon {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 50px);
-    gap: 8px;
-    transform: rotate(-7deg);
-  }
-
-  .related-icon span {
-    width: 50px;
-    height: 50px;
-    display: grid;
-    place-items: center;
-    border-radius: 14px;
-    background: white;
-    color: #315ee8;
-    font-size: 18px;
-    font-weight: 800;
-    box-shadow: 0 6px 16px #293e8b14;
-  }
+  
 
   .slide-icon span:nth-child(1) { background: #315ee8; color: #fff; }
   .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
@@ -2313,42 +2197,7 @@ const breadcrumbSchema = {
   .flood-icon span:nth-child(3) { background: #48ad83; }
   .flood-icon span:nth-child(4) { background: #5187dc; }
 
-  .related-card-body {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex: 1;
-  }
-
-  .related-labels {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 2px;
-  }
-  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
   .difficulty-label { font-size: 10px; color: var(--muted); }
-
-  .related-card h3 {
-    margin: 8px 0;
-    font-size: 18px;
-    letter-spacing: -.02em;
-  }
-
-  .related-card p {
-    font-size: 13px;
-    line-height: 1.6;
-    margin: 0 0 16px;
-  }
-
-  .related-play {
-    margin-top: auto;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--blue);
-  }
 
   /* Dark Theme Adaptations */
   :global(html[data-theme="dark"]) .reaction-shell {
@@ -2469,20 +2318,6 @@ const breadcrumbSchema = {
     background: #101932;
   }
 
-  :global(html[data-theme="dark"]) .related-visual {
-    background: linear-gradient(145deg, #1b294b, #222345);
-  }
-
-  :global(html[data-theme="dark"]) .related-orbit {
-    border-color: #35466c;
-  }
-
-  :global(html[data-theme="dark"]) .related-icon span {
-    background: #263553;
-    color: #c2d0ff;
-    box-shadow: 0 8px 20px #03081755;
-  }
-
   :global(html[data-theme="dark"]) .slide-icon span:nth-child(1) { background: #8ea8ff; color: #0b132b; }
   :global(html[data-theme="dark"]) .slide-icon span:nth-child(2) { background: #1b294b; color: #c2d0ff; }
   :global(html[data-theme="dark"]) .slide-icon span:nth-child(3) { background: #173c43; color: #7be0ba; }
@@ -2495,10 +2330,6 @@ const breadcrumbSchema = {
 
   /* Responsive Rules */
   @media (max-width: 900px) {
-    .related-games-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
   }
 
   @media (max-width: 768px) {
@@ -2554,9 +2385,6 @@ const breadcrumbSchema = {
   }
 
   @media (max-width: 560px) {
-    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
-    .related-games-head { margin-bottom: 24px; }
-    .related-games-grid { grid-template-columns: 1fr; gap: 16px; }
 
     .reaction-intro {
       padding: 12px 0 24px;

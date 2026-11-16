@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FaqList from '../components/FaqList.astro';
+import ExploreMore from '../components/ExploreMore.astro';
 import ZoomControl from '../components/ZoomControl.astro';
 import { TILE_DEFINITIONS } from '../lib/mahjong/tiles';
 
@@ -81,12 +82,26 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 3, name: 'Mahjong Variants Online Game', item: 'https://puzzlefeels.com/mahjong-variants-online-game/' }
   ]
 };
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
 ---
 
 <Base {title} {description} path="/mahjong-variants-online-game/">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   </Fragment>
 
   <Header />
@@ -544,60 +559,8 @@ const breadcrumbSchema = {
       <FaqList items={faqs} />
     </article>
 
-    <!-- Related Games Section (Explore More Puzzle Games) -->
-    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
-      <div class="related-games-head">
-        <span class="eyebrow">Keep the fun going</span>
-        <h2>Explore More Puzzle Games</h2>
-        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
-      </div>
-
-      <div class="related-games-grid">
-        <a class="related-card card" href="/memory-matching-game-online/">
-          <div class="related-visual memory-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon memory-icon">
-              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.25"></polygon></svg></span>
-              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg></span>
-              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-              <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"></circle><line x1="12" y1="8" x2="12" y2="21"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path></svg></span>
-            </div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">MEMORY GAME</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Memory Matching Game Online</h3>
-            <p class="muted">Flip cards, match pairs across icon, number, color, and shape sets, and train your short-term visual memory.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/picross-game-online/">
-          <div class="related-visual picross-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
-            <h3>Picross Game Online</h3>
-            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram puzzle.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/sliding-number-puzzle-game/">
-          <div class="related-visual slide-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon slide-icon"><span>1</span><span>2</span><span>3</span><span class="slide-empty"></span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">SLIDING PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Sliding Number Puzzle Game</h3>
-            <p class="muted">Slide numbered tiles into ascending order in classic 8, 15, and 24-tile sliding challenges.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-      </div>
-    </section>
+    <!-- Explore More Puzzle Games Section -->
+    <ExploreMore currentGameId="mahjong-variants" />
   </main>
 
   <Footer />
@@ -2419,81 +2382,7 @@ const breadcrumbSchema = {
     text-underline-offset: 3px;
   }
 
-  /* Related Games Section */
-  .related-games-section {
-    padding: 56px 0 36px;
-    border-top: 1px solid var(--line);
-    margin-top: 48px;
-  }
-  .related-games-head {
-    max-width: 620px;
-    margin: 0 auto 36px;
-    text-align: center;
-  }
-  .related-games-head h2 {
-    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
-    margin: 10px 0 12px;
-    letter-spacing: -.03em;
-  }
-  .related-games-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
-    align-items: stretch;
-  }
-  .related-card {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 20px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--ink);
-    text-decoration: none;
-    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-  }
-  .related-card:hover {
-    transform: translateY(-3px);
-    border-color: #cfd8ef;
-    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.08);
-  }
-  .related-visual {
-    height: 160px;
-    flex: none;
-    position: relative;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
-  }
-  .related-orbit {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border: 1px dashed #cad5fa;
-    border-radius: 50%;
-  }
-  .related-icon {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 48px);
-    gap: 8px;
-    transform: rotate(-7deg);
-  }
-  .related-icon span {
-    width: 48px;
-    height: 48px;
-    display: grid;
-    place-items: center;
-    border-radius: 13px;
-    background: #fff;
-    color: #315ee8;
-    font-size: 17px;
-    font-weight: 800;
-    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
-  }
+  
   .memory-icon span:nth-child(1) { background: #ede9fe; color: #7c3aed; }
   .memory-icon span:nth-child(2) { background: #315ee8; color: #fff; }
   .memory-icon span:nth-child(3) { background: #fef08a; color: #a16207; }
@@ -2504,38 +2393,11 @@ const breadcrumbSchema = {
   .slide-icon span:nth-child(2) { background: #edf2ff; color: #315ee8; }
   .slide-icon span:nth-child(3) { background: #eaf7f2; color: #16825d; }
   .slide-icon .slide-empty { background: transparent; border: 2px dashed #b9c8f5; box-shadow: none; }
-  .related-card-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 18px 20px 20px;
-  }
-  .related-labels {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 2px;
-  }
-  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
   .difficulty-label { font-size: 10px; color: var(--muted); }
-  .related-card h3 { font-size: 18px; line-height: 1.25; margin: 12px 0 6px; letter-spacing: -.025em; }
-  .related-card p { font-size: 12px; line-height: 1.6; margin: 0 0 14px; color: var(--muted); }
-  .related-play {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: auto;
-    color: var(--blue);
-    font-size: 12px;
-    font-weight: 800;
-  }
 
   /* Responsive Adjustments */
   @media (max-width: 960px) {
     .mahjong-shell { padding: 20px 16px 24px; }
-    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
   }
 
   @media (max-width: 768px) {
@@ -2724,38 +2586,7 @@ const breadcrumbSchema = {
       border-radius: 6px;
     }
 
-    /* Related games mobile list */
-    .related-games-grid {
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-    .related-card {
-      display: grid;
-      grid-template-columns: 110px minmax(0, 1fr);
-      min-height: 150px;
-      border-radius: 16px;
-    }
-    .related-visual {
-      height: auto;
-      min-height: 150px;
-    }
-    .related-orbit {
-      width: 90px;
-      height: 90px;
-    }
-    .related-icon {
-      grid-template-columns: repeat(2, 34px);
-      gap: 5px;
-    }
-    .related-icon span {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
-      font-size: 13px;
-    }
-    .related-card-body {
-      padding: 14px 12px;
-    }
+    
 
     /* Educational article typography on mobile matching Sliding Number Puzzle */
     .wrap.game-article-content.mahjong-article {
@@ -2932,22 +2763,6 @@ const breadcrumbSchema = {
   }
   :global(html[data-theme="dark"]) .victory-stats-grid strong {
     color: var(--dark-text, #f1f5ff);
-  }
-  :global(html[data-theme="dark"]) .related-card {
-    background: var(--dark-card, #151f3d);
-    border-color: var(--dark-border, #293858);
-    color: var(--dark-text, #f1f5ff);
-  }
-  :global(html[data-theme="dark"]) .related-visual {
-    background: linear-gradient(145deg, #1b294b, #222345);
-  }
-  :global(html[data-theme="dark"]) .related-orbit {
-    border-color: #35466c;
-  }
-  :global(html[data-theme="dark"]) .related-icon span {
-    background: #263553;
-    color: #c2d0ff;
-    box-shadow: 0 8px 20px #03081755;
   }
   :global(html[data-theme="dark"]) .mahjong-footer-meta {
     border-color: var(--dark-border, #293858);

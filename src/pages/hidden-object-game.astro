@@ -3,11 +3,12 @@ import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FaqList from '../components/FaqList.astro';
+import ExploreMore from '../components/ExploreMore.astro';
 import ZoomControl from '../components/ZoomControl.astro';
 import { HIDDEN_OBJECT_LEVELS } from '../data/hiddenObjectData';
 
 const title = 'Free Hidden Object Online Game – Find Hidden Objects in Pictures | PuzzleFeels';
-const description = 'Play our Free Hidden Object Online Game! Choose Easy, Medium, or Hard difficulty, inspect 10 beautifully illustrated scenes, find hidden objects, use hints, and unlock every challenge. Free in your browser!';
+const description = 'Play our Free Hidden Object Online Game! Choose difficulty levels, inspect 10 illustrated scenes, search for hidden items, and unlock every puzzle challenge.';
 
 const faqs = [
   {
@@ -422,65 +423,8 @@ const faqSchema = {
       <FaqList items={faqs} />
     </article>
 
-    <!-- Related Games Section -->
-    <section class="wrap related-games-section" aria-label="Explore more puzzle games">
-      <div class="related-games-head">
-        <span class="eyebrow">Keep the fun going</span>
-        <h2>Explore More Puzzle Games</h2>
-        <p class="muted">Enjoyed this puzzle? Keep the fun going with more free online games on PuzzleFeels. Choose another challenge and start playing instantly!</p>
-      </div>
-
-      <div class="related-games-grid">
-        <a class="related-card card" href="/spot-the-difference-game/">
-          <div class="related-visual spot-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon spot-icon">
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg></span>
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-            </div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">VISUAL PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Spot the Difference Free Online Game</h3>
-            <p class="muted">Compare two picture pairs side by side, discover hidden differences, and sharpen your visual focus.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/memory-matching-game-online/">
-          <div class="related-visual memory-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon memory-icon">
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.25"></polygon></svg></span>
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg></span>
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span>
-              <span><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"></circle><line x1="12" y1="8" x2="12" y2="21"></line><path d="M5 12H2a10 10 0 0 0 20 0h-3"></path></svg></span>
-            </div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">MEMORY PUZZLE</span><span class="difficulty-label">Easy · Medium · Hard</span></div>
-            <h3>Memory Matching Game Online</h3>
-            <p class="muted">Flip cards, match pairs across icon, number, color, and shape sets, and train your short-term visual memory.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-
-        <a class="related-card card" href="/picross-game-online/">
-          <div class="related-visual picross-visual" aria-hidden="true">
-            <div class="related-orbit"></div>
-            <div class="related-icon picross-icon"><span>■</span><span>□</span><span>□</span><span>■</span></div>
-          </div>
-          <div class="related-card-body">
-            <div class="related-labels"><span class="pill">LOGIC PUZZLE</span><span class="difficulty-label">Beginner · Medium · Hard</span></div>
-            <h3>Picross Game Online</h3>
-            <p class="muted">Use row and column clues to reveal hidden pixel-art pictures in a classic Nonogram picture logic challenge.</p>
-            <span class="related-play">Play Now <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-      </div>
-    </section>
+    <!-- Explore More Puzzle Games Section -->
+    <ExploreMore currentGameId="hidden-object" />
   </main>
 
   <Footer />
@@ -1492,85 +1436,6 @@ const faqSchema = {
   }
 
   /* Explore More Games Section */
-  .related-games-section {
-    padding: 56px 0 36px;
-    border-top: 1px solid var(--line);
-    margin-top: 48px;
-  }
-  .related-games-head {
-    max-width: 620px;
-    margin: 0 auto 36px;
-    text-align: center;
-  }
-  .related-games-head h2 {
-    font-size: clamp(1.8rem, 3.2vw, 2.4rem);
-    margin: 10px 0 12px;
-    letter-spacing: -.03em;
-  }
-  .related-games-head p {
-    font-size: 15px;
-    line-height: 1.65;
-    margin: 0 auto;
-  }
-  .related-games-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
-    align-items: stretch;
-  }
-  .related-card {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 20px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--ink);
-    text-decoration: none;
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-  }
-  .related-card:hover {
-    transform: translateY(-3px);
-    border-color: #cfd8ef;
-    box-shadow: 0 16px 38px rgba(23, 35, 59, 0.08);
-  }
-  .related-visual {
-    height: 160px;
-    flex: none;
-    position: relative;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    background: linear-gradient(145deg, #eaf0ff, #f6f3ff);
-  }
-  .related-orbit {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border: 1px dashed #cad5fa;
-    border-radius: 50%;
-  }
-  .related-icon {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 48px);
-    gap: 8px;
-    transform: rotate(-7deg);
-  }
-  .related-icon span {
-    width: 48px;
-    height: 48px;
-    display: grid;
-    place-items: center;
-    border-radius: 13px;
-    background: #fff;
-    color: #315ee8;
-    font-size: 17px;
-    font-weight: 800;
-    box-shadow: 0 8px 20px rgba(41, 62, 139, 0.1);
-  }
   .spot-icon span:nth-child(1) { background: #fef3c7; color: #d97706; }
   .spot-icon span:nth-child(2) { background: #315ee8; color: #fff; }
   .spot-icon span:nth-child(3) { background: #dcfce7; color: #16a34a; }
@@ -1586,43 +1451,7 @@ const faqSchema = {
   .hidden-object-icon span:nth-child(3) { background: #dcfce7; color: #16a34a; }
   .hidden-object-icon span:nth-child(4) { background: #ede9fe; color: #7c3aed; }
 
-  .related-card-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 18px 20px 20px;
-  }
-  .related-labels {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 2px;
-  }
-  .related-labels .pill { font-size: 9px; letter-spacing: .04em; }
   .difficulty-label { font-size: 10px; color: var(--muted); }
-  .related-card h3 {
-    font-size: 18px;
-    line-height: 1.25;
-    margin: 12px 0 6px;
-    letter-spacing: -.025em;
-  }
-  .related-card p {
-    font-size: 12px;
-    line-height: 1.6;
-    margin: 0 0 14px;
-    color: var(--muted);
-  }
-  .related-play {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: auto;
-    color: var(--blue);
-    font-size: 12px;
-    font-weight: 800;
-  }
 
   /* Dark Theme Support */
   :global(html[data-theme="dark"]) .ho-shell,
@@ -1755,12 +1584,6 @@ const faqSchema = {
     color: #ffffff;
   }
 
-  :global(html[data-theme="dark"]) .related-games-section { border-color: var(--dark-border, #293858); }
-  :global(html[data-theme="dark"]) .related-card { background: var(--dark-card, #151f3d); border-color: var(--dark-border, #293858); }
-  :global(html[data-theme="dark"]) .related-card:hover { border-color: #52678f; box-shadow: 0 16px 38px rgba(3, 8, 23, 0.45); }
-  :global(html[data-theme="dark"]) .related-visual { background: linear-gradient(145deg, #1b294b, #222345); }
-  :global(html[data-theme="dark"]) .related-orbit { border-color: #35466c; }
-  :global(html[data-theme="dark"]) .related-icon span { background: #263553; color: #c2d0ff; box-shadow: 0 8px 20px rgba(3, 8, 23, 0.45); }
   :global(html[data-theme="dark"]) .spot-icon span:nth-child(1) { background: #713f12; color: #fef08a; }
   :global(html[data-theme="dark"]) .spot-icon span:nth-child(2) { background: #8ea8ff; color: #0b132b; }
   :global(html[data-theme="dark"]) .spot-icon span:nth-child(3) { background: #14532d; color: #86efac; }
@@ -1777,14 +1600,9 @@ const faqSchema = {
   :global(html[data-theme="dark"]) .hidden-object-icon span:nth-child(2) { background: #8ea8ff; color: #0b132b; }
   :global(html[data-theme="dark"]) .hidden-object-icon span:nth-child(3) { background: #14532d; color: #86efac; }
   :global(html[data-theme="dark"]) .hidden-object-icon span:nth-child(4) { background: #3b1e75; color: #c4b5fd; }
-  :global(html[data-theme="dark"]) .related-labels .pill { background: #1e2d54; color: #c7d2fe; }
-  :global(html[data-theme="dark"]) .related-card h3 { color: var(--dark-text, #f1f5ff); }
-  :global(html[data-theme="dark"]) .related-card p { color: var(--dark-secondary, #b8c4dd); }
-  :global(html[data-theme="dark"]) .related-play { color: var(--dark-accent, #8ea8ff); }
 
   /* Responsive Rules */
   @media (max-width: 960px) {
-    .related-games-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
   }
 
   /* Tablet layout: 3 columns */
@@ -1913,28 +1731,9 @@ const faqSchema = {
       font-size: 10px;
     }
 
-    .related-games-section { padding: 40px 0 24px; margin-top: 36px; }
-    .related-games-head { margin-bottom: 24px; }
-    .related-games-grid { grid-template-columns: 1fr; gap: 14px; }
-    .related-card { display: grid; grid-template-columns: 110px minmax(0, 1fr); min-height: 150px; border-radius: 16px; }
-    .related-visual { height: auto; min-height: 150px; }
-    .related-orbit { width: 90px; height: 90px; }
-    .related-icon { grid-template-columns: repeat(2, 34px); gap: 5px; }
-    .related-icon span { width: 34px; height: 34px; border-radius: 9px; font-size: 13px; }
-    .related-card-body { padding: 14px 12px; }
-    .related-card h3 { font-size: 16px; margin: 8px 0 4px; }
-    .related-card p { font-size: 12px; margin-bottom: 10px; }
-    .related-play { font-size: 12px; }
   }
 
   @media (max-width: 360px) {
-    .related-card { grid-template-columns: 92px minmax(0, 1fr); }
-    .related-orbit { width: 76px; height: 76px; }
-    .related-icon { grid-template-columns: repeat(2, 28px); gap: 4px; }
-    .related-icon span { width: 28px; height: 28px; font-size: 11px; border-radius: 7px; }
-    .related-card-body { padding: 10px 8px; }
-    .related-card h3 { font-size: 15px; margin: 6px 0 3px; }
-    .related-card p { font-size: 11px; line-height: 1.5; margin-bottom: 8px; }
   }
 </style>
 

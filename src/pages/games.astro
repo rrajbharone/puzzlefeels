@@ -51,7 +51,12 @@ const description = 'Explore all free online puzzle games on PuzzleFeels. Discov
                   <><span>W</span><span>O</span><span>R</span><span>D</span></>
                 )}
                 {game.id === 'reaction-time' && (
-                  <><span>⚡</span><span>⏱️</span><span>🎯</span><span>🚀</span></>
+                  <>
+                    <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" fill-opacity="0.25"></polygon></svg></span>
+                    <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4l2.5 2.5"></path><path d="M10 2h4"></path><path d="M12 2v3"></path></svg></span>
+                    <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6" fill="currentColor" fill-opacity="0.25"></circle><circle cx="12" cy="12" r="2" fill="currentColor"></circle></svg></span>
+                    <span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.34 19a10 10 0 1 1 17.32 0"></path><path d="m12 14 4-4"></path><circle cx="12" cy="14" r="2" fill="currentColor"></circle></svg></span>
+                  </>
                 )}
                 {game.id === 'memory-matching' && (
                   <>
@@ -218,6 +223,10 @@ const description = 'Explore all free online puzzle games on PuzzleFeels. Discov
   :global(html[data-theme="dark"]) .directory-visual{background:linear-gradient(145deg,#1b294b,#222345)}
   :global(html[data-theme="dark"]) .directory-orbit{border-color:#35466c}
   :global(html[data-theme="dark"]) .directory-icon span{background:#263553;color:#c2d0ff;box-shadow:0 8px 20px #03081755}
+  :global(html[data-theme="dark"]) .flood-icon span:nth-child(1){background:#ef6b67;color:#fff}
+  :global(html[data-theme="dark"]) .flood-icon span:nth-child(2){background:#efa347;color:#fff}
+  :global(html[data-theme="dark"]) .flood-icon span:nth-child(3){background:#48ad83;color:#fff}
+  :global(html[data-theme="dark"]) .flood-icon span:nth-child(4){background:#5187dc;color:#fff}
   :global(html[data-theme="dark"]) .sequence-icon span:nth-child(2),:global(html[data-theme="dark"]) .picross-icon span:nth-child(1),:global(html[data-theme="dark"]) .picross-icon span:nth-child(4){background:#8ea8ff;color:#0b132b}
   :global(html[data-theme="dark"]) .sequence-icon span:nth-child(3){background:#173c43;color:#7be0ba}
   :global(html[data-theme="dark"]) .sequence-icon span:nth-child(4){background:#493922;color:#ffd27d}
