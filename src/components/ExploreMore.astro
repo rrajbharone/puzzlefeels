@@ -31,6 +31,7 @@ const DEFAULT_RECOMMENDATIONS: Record<string, string[]> = {
   'murdoku': ['sliding-puzzle', 'reaction-time', 'memory-matching'],
   'spot-the-difference': ['memory-matching', 'picross', 'reaction-time'],
   'hidden-object': ['spot-the-difference', 'memory-matching', 'picross'],
+  'shakashaka': ['norinori', 'picross', 'sliding-puzzle'],
 };
 
 const targetIds = (recommendations && recommendations.length === 3)
@@ -127,6 +128,14 @@ const recommendedGames: GameCatalogItem[] = targetIds
                 <span><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="12" r="7" fill="#dc2626"/><circle cx="12" cy="12" r="4.5" fill="#2563eb"/><circle cx="12" cy="12" r="2" fill="#fef08a"/></svg></span>
                 <span><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><rect x="10" y="4" width="4" height="16" rx="2" fill="#16a34a"/><circle cx="12" cy="12" r="3" fill="#15803d"/></svg></span>
                 <span><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="12" r="6" fill="#ea580c"/><circle cx="12" cy="12" r="3" fill="#fef08a"/></svg></span>
+              </>
+            )}
+            {game.id === 'shakashaka' && (
+              <>
+                <span><svg viewBox="0 0 24 24" width="16" height="16"><polygon points="3,3 21,3 3,21" fill="currentColor"></polygon></svg></span>
+                <span><svg viewBox="0 0 24 24" width="16" height="16"><polygon points="3,3 21,3 21,21" fill="currentColor"></polygon></svg></span>
+                <span><svg viewBox="0 0 24 24" width="16" height="16"><polygon points="3,3 3,21 21,21" fill="currentColor"></polygon></svg></span>
+                <span><svg viewBox="0 0 24 24" width="16" height="16"><polygon points="21,3 21,21 3,21" fill="currentColor"></polygon></svg></span>
               </>
             )}
           </div>
@@ -301,6 +310,11 @@ const recommendedGames: GameCatalogItem[] = targetIds
   .mahjong-icon span:nth-child(3) { background: #dcfce7; color: #16a34a; }
   .mahjong-icon span:nth-child(4) { background: #f0fdf4; color: #15803d; }
 
+  .shakashaka-icon span:nth-child(1) { background: #eff6ff; color: #2563eb; }
+  .shakashaka-icon span:nth-child(2) { background: #ede9fe; color: #7c3aed; }
+  .shakashaka-icon span:nth-child(3) { background: #dcfce7; color: #16a34a; }
+  .shakashaka-icon span:nth-child(4) { background: #fff1d9; color: #c28b2f; }
+
   .related-card-body {
     padding: 20px;
     display: flex;
@@ -470,6 +484,11 @@ const recommendedGames: GameCatalogItem[] = targetIds
   :global(html[data-theme="dark"]) .mahjong-icon span:nth-child(2) { background: #1e3a8a; color: #bfdbfe; }
   :global(html[data-theme="dark"]) .mahjong-icon span:nth-child(3) { background: #14532d; color: #86efac; }
   :global(html[data-theme="dark"]) .mahjong-icon span:nth-child(4) { background: #14532d; color: #86efac; }
+
+  :global(html[data-theme="dark"]) .shakashaka-icon span:nth-child(1) { background: #1e3a8a; color: #bfdbfe; }
+  :global(html[data-theme="dark"]) .shakashaka-icon span:nth-child(2) { background: #3b1e75; color: #c4b5fd; }
+  :global(html[data-theme="dark"]) .shakashaka-icon span:nth-child(3) { background: #14532d; color: #86efac; }
+  :global(html[data-theme="dark"]) .shakashaka-icon span:nth-child(4) { background: #493922; color: #ffd27d; }
 
   :global(html[data-theme="dark"]) .related-labels .pill { background: #1e2d54; color: #c7d2fe; }
   :global(html[data-theme="dark"]) .difficulty-label { color: #8ea8ff; }

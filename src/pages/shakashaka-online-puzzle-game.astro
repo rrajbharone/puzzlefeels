@@ -1,0 +1,2073 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+import { SHAKASHAKA_PUZZLES, getDailyShakashakaPuzzle } from '../data/shakashakaPuzzles';
+
+const title = 'Shakashaka – Online Puzzle Game | Free Proof of Quilt | PuzzleFeels';
+const description = 'Play Shakashaka online puzzle game for free. Place right-angled triangles in white cells so all remaining white areas form rectangles. Enjoy daily puzzles.';
+
+const faqs = [
+  {
+    question: 'What is Shakashaka (Proof of Quilt)?',
+    answer: 'Shakashaka, also known internationally as Proof of Quilt, is a spatial logic puzzle invented in 2008 by the acclaimed Japanese puzzle magazine Nikoli. Played on a rectangular grid featuring white playable cells and black clue blocks, the objective is to place black right-angled triangles inside white cells so that every remaining white space forms a perfect rectangle or square.'
+  },
+  {
+    question: 'What are the core rules of Shakashaka?',
+    answer: 'Shakashaka has two primary rules: 1) Numbered black squares indicate exactly how many of their four orthogonally adjacent white cells contain a black triangle whose flat edge touches the numbered square. 2) Every remaining white area across the entire grid must form an unpartitioned rectangle or square. White rectangles can be aligned orthogonally with the grid or tilted at a 45-degree angle.'
+  },
+  {
+    question: 'What are the four triangle orientations?',
+    answer: 'Each placed right-angled isosceles triangle occupies exactly half of a square cell and can face one of four directions: Top-Left (◤, right angle at top-left), Top-Right (◥, right angle at top-right), Bottom-Right (◢, right angle at bottom-right), and Bottom-Left (◣, right angle at bottom-left). The hypotenuse forms a diagonal boundary with the remaining white half of the cell.'
+  },
+  {
+    question: 'How do numbered black squares count adjacent triangles?',
+    answer: 'A numbered clue (0, 1, 2, 3, or 4) only counts an adjacent triangle if the triangle\'s flat, right-angled black leg rests directly against that clue cell\'s border. If an adjacent triangle has its hypotenuse or white half facing the clue cell, it does not count toward that clue\'s number. An unnumbered black cell acts as a solid barrier with no quota requirement.'
+  },
+  {
+    question: 'Can white rectangles be tilted at an angle?',
+    answer: 'Yes! In Shakashaka, white rectangles can either be upright (parallel to the grid borders, bounded by black squares or grid edges) or tilted at exactly 45 degrees. A 45-degree tilted rectangle or diamond is bounded by the diagonal hypotenuses of surrounding triangles. Irregular polygons, L-shapes, crosses, and stepped areas are strictly prohibited.'
+  },
+  {
+    question: 'Can a white rectangle be a 1×1 square?',
+    answer: 'Yes. Any completely empty white cell surrounded on all four sides by black squares, board boundaries, or flat triangle edges forms a valid 1×1 white square. A square is geometrically a rectangle with equal sides.'
+  },
+  {
+    question: 'Do two adjacent white rectangles ever merge?',
+    answer: 'If two white spaces meet along an open orthogonal edge without a black wall or triangle hypotenuse separating them, they merge into a single larger region. If that combined region is not a single convex rectangle, it violates the rules. White rectangles may, however, touch diagonally at their corner points.'
+  },
+  {
+    question: 'Does every white cell need a triangle?',
+    answer: 'No. Many white cells must be left completely empty to form the bodies of white rectangles. Placing unnecessary triangles is one of the most common mistakes in Shakashaka. Triangles should only be placed where required to satisfy a numbered clue or to turn a white boundary into a 90-degree corner.'
+  },
+  {
+    question: 'What are the best strategies for beginners?',
+    answer: 'Start by examining clue 0 (all four neighbors must not have flat legs touching the clue) and clue 4 (all four neighbors must contain touching triangles). Next, check the 2×2 grid corners: a white cell trapped in an outer grid corner cannot have acute angles pointing into the wall, which often forces immediate triangle placement. Finally, extend diagonal hypotenuses until they form closed 4-corner rectangles.'
+  },
+  {
+    question: 'How does the Daily Challenge work?',
+    answer: 'The Daily Challenge delivers a synchronized Shakashaka puzzle uniquely selected for the current UTC date. Every player worldwide receives the exact same challenge board on that day. Completing the daily challenge saves your score, time, and streak in your local browser history.'
+  },
+  {
+    question: 'How does the Hint system work?',
+    answer: 'If you ever get stuck, clicking the Hint button compares your current grid against the unique mathematical solution. If you have placed an incorrect triangle orientation, it gently alerts you to the error. Otherwise, it automatically places the next logical triangle on the board to guide your deduction forward.'
+  },
+  {
+    question: 'Is this Shakashaka game completely free?',
+    answer: 'Yes, 100% free with no ads, paywalls, downloads, or user registration required. The game is fully responsive for smartphones, tablets, and desktop computers, and includes automatic progress saving via LocalStorage.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Shakashaka – Online Puzzle Game',
+  url: 'https://puzzlefeels.com/shakashaka-online-puzzle-game/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Game',
+  genre: ['Logic Puzzle', 'Nikoli Puzzle', 'Geometry Puzzle', 'Brain Game'],
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Shakashaka – Online Puzzle Game', item: 'https://puzzlefeels.com/shakashaka-online-puzzle-game/' }
+  ]
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+---
+
+<Base {title} {description} path="/shakashaka-online-puzzle-game/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="shaka-page">
+    <!-- Breadcrumb Navigation -->
+    <nav class="wrap shaka-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Shakashaka – Online Puzzle Game</span>
+    </nav>
+
+    <!-- Centered Game Introduction -->
+    <section class="wrap shaka-intro">
+      <span class="eyebrow">Nikoli Japanese Logic Puzzle</span>
+      <h1>Shakashaka – Online Puzzle Game</h1>
+      <p class="muted">Place black right-angled triangles in white cells so that every remaining white space forms a perfect rectangle or square. Satisfy all numbered clues to solve the quilt.</p>
+    </section>
+
+    <!-- Main Game Shell Card -->
+    <section class="wrap shaka-shell card" data-shakashaka-game aria-label="Shakashaka Logic Puzzle Game">
+      
+      <!-- Top Bar: Difficulty Selector & Utility Buttons -->
+      <div class="shaka-header-bar">
+        <div class="shaka-diff-group" role="tablist" aria-label="Difficulty levels">
+          <button type="button" class="shaka-diff-btn is-active" data-difficulty="easy" role="tab" aria-selected="true">
+            <strong>Easy</strong>
+            <span>5×5–6×6 · Beginner</span>
+          </button>
+          <button type="button" class="shaka-diff-btn" data-difficulty="medium" role="tab" aria-selected="false">
+            <strong>Medium</strong>
+            <span>7×7–8×8 · Intermediate</span>
+          </button>
+          <button type="button" class="shaka-diff-btn" data-difficulty="hard" role="tab" aria-selected="false">
+            <strong>Hard</strong>
+            <span>9×9–10×10 · Master</span>
+          </button>
+          <button type="button" class="shaka-diff-btn daily-tab" data-difficulty="daily" role="tab" aria-selected="false">
+            <strong>Daily</strong>
+            <span id="shaka-daily-label">Challenge</span>
+          </button>
+        </div>
+
+        <div class="shaka-header-actions">
+          <button type="button" class="btn secondary shaka-sound-btn" id="shaka-sound-toggle" aria-label="Toggle Sound Effects" title="Sound Effects">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <span class="sound-status-label">Sound On</span>
+          </button>
+          <ZoomControl targetSelector="#shaka-board-zoom-target" label="Board Zoom" />
+        </div>
+      </div>
+
+      <!-- Stats Bar: Moves, Time, Clues, Best -->
+      <div class="shaka-stats-bar" role="status" aria-label="Puzzle statistics">
+        <div class="shaka-stat-item">
+          <small>Time</small>
+          <strong id="shaka-timer">00:00</strong>
+        </div>
+        <div class="shaka-stat-item">
+          <small>Moves</small>
+          <strong id="shaka-moves">0</strong>
+        </div>
+        <div class="shaka-stat-item">
+          <small>Clues</small>
+          <strong id="shaka-clues-status">0 / 0</strong>
+        </div>
+        <div class="shaka-stat-item">
+          <small>Best Time</small>
+          <strong id="shaka-best-time">—</strong>
+        </div>
+      </div>
+
+      <!-- Live Feedback Toast Notification -->
+      <div id="shaka-toast" class="shaka-toast" role="alert" aria-live="polite" hidden>
+        <span id="shaka-toast-text"></span>
+      </div>
+
+      <!-- Board Area Wrapper with Zoom and Smooth Scroll -->
+      <div class="shaka-board-wrapper" id="shaka-board-container">
+        <div class="shaka-board-zoom-target" id="shaka-board-zoom-target">
+          <div class="shaka-grid" id="shaka-grid" role="grid" aria-label="Shakashaka grid">
+            <!-- Dynamically populated via client script -->
+          </div>
+        </div>
+
+        <!-- Paused Overlay -->
+        <div id="shaka-paused" class="shaka-overlay" hidden>
+          <div class="shaka-overlay-box">
+            <span class="eyebrow">Puzzle Paused</span>
+            <h2>Take a Breather</h2>
+            <p class="muted">The timer is stopped and your progress is safely saved. Resume whenever you are ready to continue sewing your quilt.</p>
+            <button type="button" class="btn" id="shaka-resume">Resume Game <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Victory / Solved Modal -->
+        <div id="shaka-victory" class="shaka-overlay" hidden>
+          <div class="shaka-overlay-box victory-box">
+            <span class="pill victory-pill">✦ PUZZLE SOLVED!</span>
+            <h2>Proof of Quilt Complete!</h2>
+            <p class="muted">Every remaining white space forms a perfect rectangle and all clue constraints are satisfied.</p>
+            
+            <div id="shaka-pb-badge" class="shaka-pb-badge" hidden>
+              <span>★ New Personal Best!</span>
+            </div>
+
+            <div class="victory-stats-grid">
+              <div>
+                <small>Difficulty</small>
+                <strong id="victory-diff-label">Easy</strong>
+              </div>
+              <div>
+                <small>Time</small>
+                <strong id="victory-time">00:00</strong>
+              </div>
+              <div>
+                <small>Moves</small>
+                <strong id="victory-moves">0</strong>
+              </div>
+              <div>
+                <small>Hints Used</small>
+                <strong id="victory-hints">0</strong>
+              </div>
+            </div>
+
+            <div class="victory-actions">
+              <button type="button" class="btn" id="shaka-next-puzzle">Next Puzzle <span>→</span></button>
+              <button type="button" class="btn secondary" id="shaka-share">Share Result</button>
+            </div>
+            <p id="shaka-share-status" class="shaka-share-status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Triangle Cycle Palette Legend -->
+      <div class="shaka-legend" aria-label="Triangle orientations">
+        <span class="legend-title">Click white cells to cycle:</span>
+        <div class="legend-items">
+          <div class="legend-chip"><span class="chip-dot"></span><span>Empty</span></div>
+          <div class="legend-chip"><span class="chip-shape tl">◤</span><span>Top-Left (1)</span></div>
+          <div class="legend-chip"><span class="chip-shape tr">◥</span><span>Top-Right (2)</span></div>
+          <div class="legend-chip"><span class="chip-shape br">◢</span><span>Bottom-Right (3)</span></div>
+          <div class="legend-chip"><span class="chip-shape bl">◣</span><span>Bottom-Left (4)</span></div>
+        </div>
+      </div>
+
+      <!-- Controls Toolbar -->
+      <div class="shaka-controls" role="group" aria-label="Game controls">
+        <button type="button" class="btn secondary" id="shaka-new-btn">New Game</button>
+        <button type="button" class="btn secondary" id="shaka-restart-btn">Restart</button>
+        <button type="button" class="btn secondary" id="shaka-undo-btn" disabled>Undo</button>
+        <button type="button" class="btn secondary" id="shaka-redo-btn" disabled>Redo</button>
+        <button type="button" class="btn secondary" id="shaka-hint-btn">Hint</button>
+        <button type="button" class="btn secondary" id="shaka-check-btn">Check</button>
+        <button type="button" class="btn secondary" id="shaka-clear-btn">Clear</button>
+        <button type="button" class="btn secondary" id="shaka-pause-btn">Pause</button>
+      </div>
+
+      <!-- Footer Metadata / Instructions -->
+      <div class="shaka-footer-meta">
+        <p class="shaka-help-text"><strong>How to play:</strong> Click or tap a white cell to cycle through the four black right-angled triangle orientations. Right-click or long-press to cycle backward. Use Arrow keys to navigate and 1–4 to set triangles directly. All white spaces must form complete rectangles or squares!</p>
+        <p class="shaka-save-note">Puzzle progress, best times, and sound settings save automatically on your device.</p>
+      </div>
+
+      <p id="shaka-live" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <!-- Comprehensive In-Depth Educational SEO Content Section -->
+    <article class="wrap game-article-content shaka-article">
+      <h2>What Is Shakashaka (Proof of Quilt)?</h2>
+      <p>Shakashaka is an elegant, highly rewarding pencil-and-paper logic puzzle invented in 2008 by the renowned Japanese puzzle publisher Nikoli. In Japan and international puzzle circles, the game is affectionately known as <em>Proof of Quilt</em> because the finished board resembles an intricate, patchwork quilt made of interwoven geometric cloth swatches. Unlike pure number-placement games such as Sudoku or path-tracing challenges like Slitherlink, Shakashaka combines numerical deduction with spatial and geometric visualization.</p>
+      <p>The puzzle is played on a square or rectangular grid containing white cells and solid black blocks. Certain black blocks are inscribed with an integer from 0 to 4. Your mission as the quilt artisan is to sew right-angled isosceles triangle patches into selected white cells so that every remaining unshaded white area forms a perfect rectangle or square, while strictly respecting all numbered clue constraints.</p>
+
+      <h2>How to Play Shakashaka Online</h2>
+      <p>Playing Shakashaka online on PuzzleFeels is designed to be intuitive, responsive, and tactile on any screen:</p>
+      <ol>
+        <li><strong>Select your difficulty:</strong> Choose from Easy (5×5 and 6×6 grids), Medium (7×7 and 8×8 grids), Hard (9×9 and 10×10 grids), or take on the daily UTC puzzle.</li>
+        <li><strong>Click or tap white cells:</strong> Tapping any white cell cycles through the available options: Empty → Top-Left (◤) → Top-Right (◥) → Bottom-Right (◢) → Bottom-Left (◣) → Empty.</li>
+        <li><strong>Right-click or secondary tap:</strong> Right-clicking a cell reverses the cycle, allowing you to quickly clear or place specific orientations without repeated clicks.</li>
+        <li><strong>Satisfy numbered clues:</strong> Ensure that every numbered black square touches the exact number of flat triangle legs indicated by its clue number.</li>
+        <li><strong>Form complete white rectangles:</strong> Verify that all remaining white spaces across the entire grid form standalone rectangles or squares without irregular notches, L-shaped bends, or stepped borders.</li>
+        <li><strong>Validate your solution:</strong> When all constraints are met, the game automatically celebrates your victory and records your personal best time and move count!</li>
+      </ol>
+
+      <h2>Understanding the Four Triangle Orientations</h2>
+      <p>Every placed triangle is an isosceles right-angled triangle that takes up exactly one half of a grid cell. Its hypotenuse (the diagonal edge) splits the cell from corner to corner at a 45-degree angle. Because a square has four corners, there are exactly four legal orientations:</p>
+      <ul>
+        <li><strong>Top-Left ◤ (Orientation 1):</strong> The right-angled black corner sits at the top-left of the cell. Its flat black legs touch the cell's top edge and left edge. Its diagonal hypotenuse slopes from the top-right corner to the bottom-left corner. The white half of the cell lies at the bottom-right.</li>
+        <li><strong>Top-Right ◥ (Orientation 2):</strong> The right-angled black corner sits at the top-right of the cell. Its flat black legs touch the top edge and right edge. Its diagonal hypotenuse slopes from the top-left corner to the bottom-right corner. The white half of the cell lies at the bottom-left.</li>
+        <li><strong>Bottom-Right ◢ (Orientation 3):</strong> The right-angled black corner sits at the bottom-right of the cell. Its flat black legs touch the bottom edge and right edge. Its diagonal hypotenuse slopes from the top-right corner to the bottom-left corner. The white half of the cell lies at the top-left.</li>
+        <li><strong>Bottom-Left ◣ (Orientation 4):</strong> The right-angled black corner sits at the bottom-left of the cell. Its flat black legs touch the bottom edge and left edge. Its diagonal hypotenuse slopes from the top-left corner to the bottom-right corner. The white half of the cell lies at the top-right.</li>
+      </ul>
+
+      <h2>What Do the Numbers in Shakashaka Mean?</h2>
+      <p>Numbered black blocks are the anchor clues that kickstart your deductive reasoning. The number indicates how many of the four orthogonally adjacent cells (top, bottom, left, right) contain a black triangle whose flat, right-angled leg rests directly against that clue block:</p>
+      <ul>
+        <li><strong>Clue 0:</strong> None of the four orthogonally adjacent cells may contain a triangle whose flat leg touches this block. Any adjacent white cells must either be left completely empty or contain a triangle whose hypotenuse or white half faces this clue.</li>
+        <li><strong>Clue 1:</strong> Exactly one orthogonally adjacent triangle touches this block with its flat black edge.</li>
+        <li><strong>Clue 2:</strong> Exactly two orthogonally adjacent triangles touch this block with their flat black edges.</li>
+        <li><strong>Clue 3:</strong> Exactly three orthogonally adjacent triangles touch this block with their flat black edges.</li>
+        <li><strong>Clue 4:</strong> All four orthogonally adjacent white cells must contain triangles with their flat black legs touching this block! This immediately determines all four neighbors.</li>
+        <li><strong>Unnumbered Black Squares:</strong> Solid black barriers that provide no clue quota. Any number of adjacent triangles (from 0 to 4) may touch an unnumbered block, as dictated by the surrounding white rectangles.</li>
+      </ul>
+
+      <h2>The White Rectangle Rule: Orthogonal vs. 45-Degree Tilted Rectangles</h2>
+      <p>The single rule that gives Shakashaka its distinctive charm is the <strong>White Rectangle Rule</strong>. Every continuous region of white space remaining on the board must form a perfect geometric rectangle or square. Crucially, these rectangles can manifest in two distinct forms:</p>
+      <ul>
+        <li><strong>Orthogonally Aligned Rectangles:</strong> These rectangles run parallel to the outer board borders. Their sides are formed by the straight edges of black clue blocks, board perimeters, or the flat non-hypotenuse edges of triangles. For instance, a single 1×1 white cell completely boxed in by black blocks is a valid 1×1 square. Similarly, a 2×3 empty white hallway bounded by black walls forms a valid orthogonal rectangle.</li>
+        <li><strong>45-Degree Tilted Rectangles (Diamonds):</strong> When triangles are placed with their diagonal hypotenuses facing inward toward each other, they carve out diamonds and tilted rectangles rotated at exactly 45 degrees. A 45-degree rectangle has four corners, each of which is an exact 90-degree right angle formed by the diagonal slopes. These rotated rectangles must have clean, straight diagonal sides with no missing corners or irregular protrusions.</li>
+      </ul>
+      <p>Any white region that forms an L-shape, a T-shape, a cross, a stepped staircase, or a polygon with more than four vertices is strictly illegal.</p>
+
+      <h2>Step-by-Step Solving Strategies & Deduction Techniques</h2>
+      <p>Mastering Shakashaka requires combining local clue deductions with global geometric constraints. Here are several proven techniques used by tournament solvers:</p>
+      
+      <h3>1. The Clue 4 and Clue 0 Quick Starts</h3>
+      <p>Always scan the grid first for extreme clues. A clue <strong>4</strong> requires all four neighbors to place triangles touching the clue. A clue <strong>0</strong> forbids any flat leg contact. If a cell adjacent to a 0 needs to participate in a 45-degree diamond, its orientation must point away from the clue.</p>
+
+      <h3>2. Corner of the Board Traps</h3>
+      <p>Inspect the four outer corners of the puzzle grid. If an outer corner cell (such as row 1, column 1) is white, consider what happens if a triangle hypotenuse cuts diagonally through it. If a diagonal slice creates an acute 45-degree corner trapped against the outer wall, that white space can never form a 90-degree rectangle. Therefore, outer grid corners often force the surrounding white rectangle to be upright, or strictly dictate which triangle orientation is permissible.</p>
+
+      <h3>3. Preventing Acute Angle Dead-Ends</h3>
+      <p>Every corner of a valid white rectangle must measure exactly 90 degrees. If you place a triangle such that its hypotenuse meets a flat grid wall or another flat triangle leg at a 45-degree angle, you must immediately ask: <em>can this 45-degree corner be expanded into a legal rectangle?</em> If the answer is no, that placement is invalid and must be eliminated.</p>
+
+      <h3>4. Ray Tracing and Hypotenuse Propagation</h3>
+      <p>Once a diagonal hypotenuse is placed, the white space along that diagonal must continue straight until it reaches a matching 90-degree turn. You can mentally "trace the ray" along the 45-degree line. The opposite side of the tilted rectangle must run parallel at equal distance. This often forces adjacent cells in the same diagonal corridor to adopt matching orientations.</p>
+
+      <h2>Common Shakashaka Mistakes and How to Avoid Them</h2>
+      <ul>
+        <li><strong>Confusing flat legs with hypotenuses:</strong> Remember that a numbered black square only counts triangles whose <em>flat black leg</em> is flush against the clue. Triangles touching via a corner point or having their hypotenuse facing the clue do not count toward the number.</li>
+        <li><strong>Accidental L-shaped white spaces:</strong> Forgetting that two adjacent empty cells will automatically merge into a single region unless separated by a black wall or triangle boundary. If two white rectangles touch along a shared edge, they merge into a polyomino that might not be a rectangle.</li>
+        <li><strong>Over-populating the grid with triangles:</strong> Shakashaka is not a puzzle where every cell must be shaded. In many puzzles, more than half of the white cells remain completely empty to form expansive white rooms. Only place a triangle when logically compelled.</li>
+      </ul>
+
+      <h2>Difficulty Levels: Easy, Medium, and Hard</h2>
+      <p>PuzzleFeels provides handcrafted Shakashaka puzzles tailored for all skill levels:</p>
+      <ul>
+        <li><strong>Easy (5×5 and 6×6):</strong> Compact grids featuring generous clue densities and straightforward deductions. Perfect for learning the four triangle orientations, practicing clue contact rules, and completing quick 2-to-5 minute daily logic breaks.</li>
+        <li><strong>Medium (7×7 and 8×8):</strong> Balanced boards with larger white spaces and intricate 45-degree tilted diamonds. Solvers must chain hypotenuse deductions and evaluate board-edge interactions.</li>
+        <li><strong>Hard (9×9 and 10×10):</strong> Expansive master quilts featuring sparse clues, multi-step geometric lookaheads, and interlocking rotated rectangles. A true test of deductive discipline and spatial visualization.</li>
+        <li><strong>Daily Challenge:</strong> A fresh challenge board synchronized worldwide at midnight UTC. Compete against yourself, build your daily streak, and track personal best times!</li>
+      </ul>
+
+      <h2>Cognitive & Logic Benefits of Shakashaka</h2>
+      <p>Regularly engaging in spatial logic puzzles like Shakashaka offers remarkable cognitive advantages. Mental rotation exercises stimulate the parietal lobes of the brain, enhancing spatial working memory, pattern recognition, and geometric intuition. Furthermore, working through strict deductive logic without guessing fosters patience, structured problem-solving, and mindfulness, providing a deeply satisfying mental workout.</p>
+
+      <!-- Standard FAQ Section -->
+      <section class="shaka-faq-section" aria-label="Frequently Asked Questions">
+        <h2>Frequently Asked Questions</h2>
+        <FaqList items={faqs} />
+      </section>
+    </article>
+
+    <!-- Explore More Puzzle Games Section (Spot the Difference Standard) -->
+    <ExploreMore currentGameId="shakashaka" />
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* Base page layout & typography */
+  .shaka-page {
+    padding-bottom: 70px;
+  }
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .shaka-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding-top: 16px;
+    padding-bottom: 8px;
+  }
+  .shaka-breadcrumbs a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .15s ease;
+  }
+  .shaka-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+  .shaka-breadcrumbs span[aria-current="page"] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Centered Intro Section */
+  .shaka-intro {
+    text-align: center;
+    padding: 24px 0 28px;
+  }
+  .shaka-intro .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .shaka-intro h1 {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1.18;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  .shaka-intro p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 660px;
+    margin: 0 auto;
+  }
+
+  /* Game Shell Card */
+  .shaka-shell {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Header Bar with Difficulty and Utilities */
+  .shaka-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .shaka-diff-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .shaka-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    transition: all .16s ease;
+  }
+  .shaka-diff-btn strong { font-size: 13px; font-weight: 700; }
+  .shaka-diff-btn span { font-size: 10px; color: var(--muted); }
+  .shaka-diff-btn:hover { border-color: var(--blue); }
+  .shaka-diff-btn.is-active {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .shaka-diff-btn.is-active span { color: var(--blue); opacity: .85; }
+
+  .shaka-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .shaka-sound-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 12px;
+    gap: 7px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .shaka-sound-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Stats Bar */
+  .shaka-stats-bar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 18px;
+    text-align: center;
+  }
+  .shaka-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .shaka-stat-item small {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+  }
+  .shaka-stat-item strong {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Toast notification */
+  .shaka-toast {
+    background: #edf2ff;
+    border: 1px solid #c7d7fe;
+    color: var(--blue);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    transition: all .2s ease;
+  }
+  .shaka-toast.is-error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+  }
+  .shaka-toast.is-success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #16a34a;
+  }
+
+  /* Board Area */
+  .shaka-board-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shaka-board-zoom-target {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(var(--zoom-scale, 1));
+    transform-origin: center top;
+    transition: transform .2s ease;
+  }
+
+  /* Shakashaka Grid */
+  .shaka-grid {
+    --grid-cols: 5;
+    --cell-size: min(52px, calc((100vw - 64px) / var(--grid-cols)));
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), var(--cell-size));
+    grid-template-rows: repeat(var(--grid-rows, var(--grid-cols)), var(--cell-size));
+    gap: 3px;
+    background: #cbd5e1;
+    border: 4px solid #334155;
+    border-radius: 10px;
+    padding: 4px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  /* Cells */
+  .shaka-cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    position: relative;
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color .12s ease, box-shadow .12s ease;
+    overflow: hidden;
+  }
+  .shaka-cell:hover:not(.is-black) {
+    background: #f1f5f9;
+  }
+  .shaka-cell:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--blue);
+    z-index: 2;
+  }
+
+  /* Black Cells */
+  .shaka-cell.is-black {
+    background: #0f172a;
+    color: #ffffff;
+    cursor: default;
+  }
+  .shaka-cell.is-black .clue-number {
+    font-size: calc(var(--cell-size) * 0.44);
+    font-weight: 800;
+    line-height: 1;
+    color: #ffffff;
+    pointer-events: none;
+  }
+  .shaka-cell.is-black.is-satisfied {
+    box-shadow: inset 0 0 0 2px #22c55e;
+  }
+  .shaka-cell.is-black.is-satisfied .clue-number {
+    color: #4ade80;
+  }
+  .shaka-cell.is-black.is-violated {
+    box-shadow: inset 0 0 0 2px #ef4444;
+  }
+  .shaka-cell.is-black.is-violated .clue-number {
+    color: #f87171;
+  }
+
+  /* Triangles SVG inside cells */
+  .shaka-tri-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  .shaka-tri-svg polygon {
+    fill: #1e293b;
+    transition: fill .14s ease;
+  }
+
+  /* Error & Hint highlights */
+  .shaka-cell.is-error-highlight {
+    animation: shakeError 0.4s ease-in-out;
+    box-shadow: inset 0 0 0 2px #ef4444 !important;
+  }
+  .shaka-cell.is-hint-highlight {
+    animation: pulseHint 1s infinite alternate ease-in-out;
+    box-shadow: inset 0 0 0 2px var(--blue) !important;
+  }
+
+  @keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-3px); }
+    40%, 80% { transform: translateX(3px); }
+  }
+  @keyframes pulseHint {
+    0% { transform: scale(0.97); }
+    100% { transform: scale(1.03); }
+  }
+
+  /* Legend Bar */
+  .shaka-legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 12px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .legend-title {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .legend-items {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .chip-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: #ffffff;
+  }
+  .chip-shape {
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--blue);
+  }
+
+  /* Controls Toolbar */
+  .shaka-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .shaka-controls .btn {
+    min-height: 42px;
+    padding: 0 16px;
+    font-size: 13px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  /* Footer meta */
+  .shaka-footer-meta {
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .shaka-help-text, .shaka-save-note {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* Overlays (Paused & Victory) */
+  .shaka-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10;
+    border-radius: 16px;
+  }
+  .shaka-overlay[hidden] {
+    display: none;
+  }
+  .shaka-overlay-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px 24px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .shaka-overlay-box h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--ink);
+  }
+  .shaka-overlay-box p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--muted);
+  }
+  .victory-pill {
+    background: #edf2ff;
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+  .shaka-pb-badge {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #fde68a;
+  }
+  .victory-stats-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .victory-stats-grid small {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .victory-stats-grid strong {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .victory-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+  .victory-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .shaka-share-status {
+    font-size: 12px;
+    color: #16a34a;
+    margin: 0;
+    min-height: 16px;
+  }
+
+  /* Educational SEO Content */
+  .shaka-article {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    line-height: 1.68;
+    color: var(--ink);
+  }
+  .shaka-article h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin: 36px 0 14px;
+    color: var(--ink);
+  }
+  .shaka-article h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 22px 0 10px;
+    color: var(--ink);
+  }
+  .shaka-article p {
+    font-size: 15px;
+    margin: 0 0 16px;
+    color: var(--muted);
+  }
+  .shaka-article ul, .shaka-article ol {
+    margin: 0 0 18px 24px;
+    padding: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .shaka-article li {
+    margin-bottom: 8px;
+  }
+  .shaka-article strong {
+    color: var(--ink);
+  }
+  .shaka-faq-section {
+    padding-top: 14px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Dark Theme Styling */
+  :global(html[data-theme="dark"]) .shaka-shell {
+    background: #141f3d;
+    border-color: #27375a;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+  }
+  :global(html[data-theme="dark"]) .shaka-diff-btn {
+    background: #151f3d;
+    border-color: #293858;
+    color: #f1f5ff;
+  }
+  :global(html[data-theme="dark"]) .shaka-diff-btn:hover {
+    border-color: #8ea8ff;
+  }
+  :global(html[data-theme="dark"]) .shaka-diff-btn.is-active {
+    background: #263960;
+    border-color: #8ea8ff;
+    color: #d5dfff;
+  }
+  :global(html[data-theme="dark"]) .shaka-diff-btn.is-active span {
+    color: #a9bcff;
+  }
+  :global(html[data-theme="dark"]) .shaka-stats-bar,
+  :global(html[data-theme="dark"]) .shaka-legend {
+    background: #111b36;
+    border-color: #293858;
+  }
+  :global(html[data-theme="dark"]) .shaka-stat-item strong,
+  :global(html[data-theme="dark"]) .legend-title {
+    color: #f1f5ff;
+  }
+  :global(html[data-theme="dark"]) .shaka-board-wrapper {
+    background: #0b132b;
+    border-color: #27375a;
+  }
+  :global(html[data-theme="dark"]) .shaka-grid {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  :global(html[data-theme="dark"]) .shaka-cell {
+    background: #1e2942;
+  }
+  :global(html[data-theme="dark"]) .shaka-cell:hover:not(.is-black) {
+    background: #27385e;
+  }
+  :global(html[data-theme="dark"]) .shaka-cell.is-black {
+    background: #090e1a;
+  }
+  :global(html[data-theme="dark"]) .shaka-tri-svg polygon {
+    fill: #8ea8ff;
+  }
+  :global(html[data-theme="dark"]) .chip-dot {
+    background: #1e2942;
+    border-color: #293858;
+  }
+  :global(html[data-theme="dark"]) .shaka-toast {
+    background: #1e294b;
+    border-color: #315ee8;
+    color: #93c5fd;
+  }
+  :global(html[data-theme="dark"]) .shaka-overlay-box {
+    background: #141f3d;
+    border-color: #27375a;
+  }
+  :global(html[data-theme="dark"]) .shaka-overlay-box h2,
+  :global(html[data-theme="dark"]) .victory-stats-grid strong {
+    color: #f1f5ff;
+  }
+  :global(html[data-theme="dark"]) .victory-stats-grid {
+    background: #111b36;
+    border-color: #293858;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .shaka-header-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .shaka-diff-group {
+      width: 100%;
+    }
+    .shaka-diff-btn {
+      flex: 1;
+      min-width: 70px;
+      padding: 8px 6px;
+      align-items: center;
+      text-align: center;
+    }
+    .shaka-diff-btn strong { font-size: 12px; }
+    .shaka-diff-btn span { font-size: 9px; }
+    .shaka-header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .shaka-sound-btn {
+      flex: 1;
+      justify-content: center;
+    }
+    .shaka-stats-bar {
+      padding: 10px 8px;
+      gap: 6px;
+    }
+    .shaka-stat-item strong {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .shaka-shell {
+      padding: 16px 12px;
+      gap: 16px;
+    }
+    .shaka-board-wrapper {
+      padding: 16px 8px;
+      min-height: 280px;
+    }
+    .shaka-controls .btn {
+      flex: 1 1 calc(25% - 8px);
+      min-height: 38px;
+      padding: 0 8px;
+      font-size: 12px;
+    }
+    .shaka-legend {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+</style>
+
+<script define:vars={{ rawPuzzles: SHAKASHAKA_PUZZLES }}>
+  // Web Audio Synthesizer
+  class SoundManager {
+    constructor() {
+      this.ctx = null;
+      this.enabled = true;
+    }
+    init() {
+      if (!this.ctx && typeof window !== 'undefined') {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) this.ctx = new AudioClass();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+    playTone(freq, type = 'sine', duration = 0.08, gainVal = 0.1) {
+      if (!this.enabled) return;
+      try {
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      } catch (e) {}
+    }
+    playClick() { this.playTone(180, 'triangle', 0.04, 0.06); }
+    playPlace(step) {
+      const freqs = [330, 392, 494, 587, 260];
+      this.playTone(freqs[step % freqs.length], 'sine', 0.07, 0.08);
+    }
+    playClear() { this.playTone(220, 'sine', 0.06, 0.05); }
+    playError() {
+      this.playTone(180, 'sawtooth', 0.12, 0.1);
+      setTimeout(() => this.playTone(140, 'sawtooth', 0.14, 0.1), 100);
+    }
+    playHint() {
+      this.playTone(523.25, 'sine', 0.09, 0.1);
+      setTimeout(() => this.playTone(659.25, 'sine', 0.12, 0.12), 80);
+    }
+    playWin() {
+      if (!this.enabled) return;
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((f, i) => {
+        setTimeout(() => this.playTone(f, 'triangle', 0.25, 0.12), i * 110);
+      });
+    }
+  }
+
+  const sound = new SoundManager();
+
+  // Geometric Validation Engine
+  // Clues checking
+  function checkClueStatus(grid, rows, cols) {
+    let allSatisfied = true;
+    let anyViolated = false;
+    let totalClues = 0;
+    let satisfiedClues = 0;
+    const clueCells = [];
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const val = grid[r][c];
+        if (val <= -2) {
+          totalClues++;
+          const target = -val - 2;
+          let count = 0;
+
+          // Top neighbor: touches flat leg if BL(4) or BR(3)
+          if (r > 0 && (grid[r - 1][c] === 4 || grid[r - 1][c] === 3)) count++;
+          // Bottom neighbor: touches flat leg if TL(1) or TR(2)
+          if (r < rows - 1 && (grid[r + 1][c] === 1 || grid[r + 1][c] === 2)) count++;
+          // Left neighbor: touches flat leg if TR(2) or BR(3)
+          if (c > 0 && (grid[r][c - 1] === 2 || grid[r][c - 1] === 3)) count++;
+          // Right neighbor: touches flat leg if TL(1) or BL(4)
+          if (c < cols - 1 && (grid[r][c + 1] === 1 || grid[r][c + 1] === 4)) count++;
+
+          const satisfied = (count === target);
+          const violated = (count > target);
+          if (satisfied) satisfiedClues++;
+          if (!satisfied) allSatisfied = false;
+          if (violated) anyViolated = true;
+
+          clueCells.push({ r, c, count, target, satisfied, violated });
+        }
+      }
+    }
+    return { allSatisfied, anyViolated, totalClues, satisfiedClues, clueCells };
+  }
+
+  // White regions validation (Strict 4-vertex rectangle check)
+  function validateBoardGeometry(grid, rows, cols) {
+    const clueRes = checkClueStatus(grid, rows, cols);
+    if (!clueRes.allSatisfied) {
+      return { valid: false, reason: 'clues_incomplete', clueRes };
+    }
+
+    // Deconstruct white space into half-units
+    const pieces = [];
+    let pieceId = 0;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const v = grid[r][c];
+        if (v < 0) continue; // black cell
+        const x = c * 2;
+        const y = r * 2;
+
+        if (v === 0) { // Full white cell
+          pieces.push({
+            id: pieceId++,
+            vertices: [[x, y], [x + 2, y], [x + 2, y + 2], [x, y + 2]],
+            edges: [
+              [`${x},${y}->${x + 2},${y}`, [x, y], [x + 2, y]],
+              [`${x + 2},${y}->${x + 2},${y + 2}`, [x + 2, y], [x + 2, y + 2]],
+              [`${x + 2},${y + 2}->${x},${y + 2}`, [x + 2, y + 2], [x, y + 2]],
+              [`${x},${y + 2}->${x},${y}`, [x, y + 2], [x, y]]
+            ]
+          });
+        } else if (v === 1) { // TL black triangle, white half at bottom-right
+          pieces.push({
+            id: pieceId++,
+            vertices: [[x + 2, y], [x + 2, y + 2], [x, y + 2]],
+            edges: [
+              [`${x + 2},${y}->${x + 2},${y + 2}`, [x + 2, y], [x + 2, y + 2]],
+              [`${x + 2},${y + 2}->${x},${y + 2}`, [x + 2, y + 2], [x, y + 2]],
+              [`${x},${y + 2}->${x + 2},${y}`, [x, y + 2], [x + 2, y]]
+            ]
+          });
+        } else if (v === 2) { // TR black triangle, white half at bottom-left
+          pieces.push({
+            id: pieceId++,
+            vertices: [[x, y], [x + 2, y + 2], [x, y + 2]],
+            edges: [
+              [`${x},${y}->${x + 2},${y + 2}`, [x, y], [x + 2, y + 2]],
+              [`${x + 2},${y + 2}->${x},${y + 2}`, [x + 2, y + 2], [x, y + 2]],
+              [`${x},${y + 2}->${x},${y}`, [x, y + 2], [x, y]]
+            ]
+          });
+        } else if (v === 3) { // BR black triangle, white half at top-left
+          pieces.push({
+            id: pieceId++,
+            vertices: [[x, y], [x + 2, y], [x, y + 2]],
+            edges: [
+              [`${x},${y}->${x + 2},${y}`, [x, y], [x + 2, y]],
+              [`${x + 2},${y}->${x},${y + 2}`, [x + 2, y], [x, y + 2]],
+              [`${x},${y + 2}->${x},${y}`, [x, y + 2], [x, y]]
+            ]
+          });
+        } else if (v === 4) { // BL black triangle, white half at top-right
+          pieces.push({
+            id: pieceId++,
+            vertices: [[x, y], [x + 2, y], [x + 2, y + 2]],
+            edges: [
+              [`${x},${y}->${x + 2},${y}`, [x, y], [x + 2, y]],
+              [`${x + 2},${y}->${x + 2},${y + 2}`, [x + 2, y], [x + 2, y + 2]],
+              [`${x + 2},${y + 2}->${x},${y}`, [x + 2, y + 2], [x, y]]
+            ]
+          });
+        }
+      }
+    }
+
+    if (pieces.length === 0) {
+      return { valid: false, reason: 'empty_board', clueRes };
+    }
+
+    // Disjoint set union to find connected white components
+    const parent = Array.from({ length: pieces.length }, (_, i) => i);
+    function find(i) {
+      if (parent[i] === i) return i;
+      return parent[i] = find(parent[i]);
+    }
+    function union(i, j) {
+      const rootI = find(i);
+      const rootJ = find(j);
+      if (rootI !== rootJ) parent[rootI] = rootJ;
+    }
+
+    // Map edges to detect interior shared edges
+    const edgeToPieces = new Map();
+    for (const p of pieces) {
+      for (const [key, p1, p2] of p.edges) {
+        const u = `${p1[0]},${p1[1]}`;
+        const v = `${p2[0]},${p2[1]}`;
+        const undirected = u < v ? `${u}<=>${v}` : `${v}<=>${u}`;
+        if (!edgeToPieces.has(undirected)) edgeToPieces.set(undirected, []);
+        edgeToPieces.get(undirected).push({ pId: p.id, directedKey: key, p1, p2 });
+      }
+    }
+
+    for (const [undirected, list] of edgeToPieces.entries()) {
+      if (list.length === 2) {
+        union(list[0].pId, list[1].pId);
+      }
+    }
+
+    // Group into components
+    const components = new Map();
+    for (const p of pieces) {
+      const root = find(p.id);
+      if (!components.has(root)) components.set(root, []);
+      components.get(root).push(p);
+    }
+
+    // Validate each connected component is a simple 4-vertex rectangle
+    for (const [root, compPieces] of components.entries()) {
+      const boundaryDirectedEdges = [];
+      for (const p of compPieces) {
+        for (const [key, p1, p2] of p.edges) {
+          const u = `${p1[0]},${p1[1]}`;
+          const v = `${p2[0]},${p2[1]}`;
+          const undirected = u < v ? `${u}<=>${v}` : `${v}<=>${u}`;
+          if (edgeToPieces.get(undirected).length === 1) {
+            boundaryDirectedEdges.push({ from: p1, to: p2 });
+          }
+        }
+      }
+
+      // Chain edges into loop
+      const nextMap = new Map();
+      for (const e of boundaryDirectedEdges) {
+        const k = `${e.from[0]},${e.from[1]}`;
+        if (nextMap.has(k)) {
+          return { valid: false, reason: 'self_touching_regions', clueRes };
+        }
+        nextMap.set(k, e.to);
+      }
+
+      const startK = `${boundaryDirectedEdges[0].from[0]},${boundaryDirectedEdges[0].from[1]}`;
+      const loop = [boundaryDirectedEdges[0].from];
+      let curr = boundaryDirectedEdges[0].to;
+      let steps = 0;
+
+      while (`${curr[0]},${curr[1]}` !== startK && steps < boundaryDirectedEdges.length + 5) {
+        loop.push(curr);
+        const next = nextMap.get(`${curr[0]},${curr[1]}`);
+        if (!next) break;
+        curr = next;
+        steps++;
+      }
+
+      if (loop.length !== boundaryDirectedEdges.length) {
+        return { valid: false, reason: 'multiple_boundary_loops', clueRes };
+      }
+
+      // Simplify collinear points
+      const simplified = [];
+      const n = loop.length;
+      for (let i = 0; i < n; i++) {
+        const prev = loop[(i - 1 + n) % n];
+        const pt = loop[i];
+        const nxt = loop[(i + 1) % n];
+        const dx1 = pt[0] - prev[0];
+        const dy1 = pt[1] - prev[1];
+        const dx2 = nxt[0] - pt[0];
+        const dy2 = nxt[1] - pt[1];
+        const cross = dx1 * dy2 - dy1 * dx2;
+        const dot = dx1 * dx2 + dy1 * dy2;
+        if (cross === 0 && dot > 0) continue; // collinear
+        simplified.push(pt);
+      }
+
+      // Must have exactly 4 vertices
+      if (simplified.length !== 4) {
+        return { valid: false, reason: 'non_rectangle_vertices', vertexCount: simplified.length, clueRes };
+      }
+
+      // Check all 4 interior angles are 90 degrees
+      for (let i = 0; i < 4; i++) {
+        const p1 = simplified[(i + 3) % 4];
+        const p2 = simplified[i];
+        const p3 = simplified[(i + 1) % 4];
+        const v1x = p1[0] - p2[0];
+        const v1y = p1[1] - p2[1];
+        const v2x = p3[0] - p2[0];
+        const v2y = p3[1] - p2[1];
+        const dot = v1x * v2x + v1y * v2y;
+        const cross = v1x * v2y - v1y * v2x;
+        if (dot !== 0 || cross >= 0) {
+          return { valid: false, reason: 'non_90_degree_corner', clueRes };
+        }
+      }
+
+      // Check opposite sides equal
+      function distSq(a, b) {
+        const dx = a[0] - b[0];
+        const dy = a[1] - b[1];
+        return dx * dx + dy * dy;
+      }
+      const s0 = distSq(simplified[0], simplified[1]);
+      const s1 = distSq(simplified[1], simplified[2]);
+      const s2 = distSq(simplified[2], simplified[3]);
+      const s3 = distSq(simplified[3], simplified[0]);
+
+      if (s0 !== s2 || s1 !== s3) {
+        return { valid: false, reason: 'opposite_sides_not_equal', clueRes };
+      }
+    }
+
+    return { valid: true, clueRes };
+  }
+
+  // Shakashaka Game Controller
+  class ShakashakaGame {
+    constructor(puzzles) {
+      this.puzzles = puzzles;
+      this.currentDiff = 'easy';
+      this.puzzleIndex = 0;
+      this.puzzle = null;
+      this.grid = [];
+      this.history = [];
+      this.redoStack = [];
+      this.moves = 0;
+      this.hintsUsed = 0;
+      this.timerSeconds = 0;
+      this.timerInterval = null;
+      this.isTimerRunning = false;
+      this.isPaused = false;
+      this.isWon = false;
+      this.storageKey = 'pf-shakashaka-v1';
+
+      this.initElements();
+      this.bindEvents();
+      this.loadSettings();
+      this.startFromURLOrSaved();
+    }
+
+    initElements() {
+      this.gridEl = document.querySelector('#shaka-grid');
+      this.timerEl = document.querySelector('#shaka-timer');
+      this.movesEl = document.querySelector('#shaka-moves');
+      this.cluesEl = document.querySelector('#shaka-clues-status');
+      this.bestTimeEl = document.querySelector('#shaka-best-time');
+      this.toastEl = document.querySelector('#shaka-toast');
+      this.toastTextEl = document.querySelector('#shaka-toast-text');
+      this.pausedEl = document.querySelector('#shaka-paused');
+      this.victoryEl = document.querySelector('#shaka-victory');
+      this.liveEl = document.querySelector('#shaka-live');
+      this.diffButtons = Array.from(document.querySelectorAll('.shaka-diff-btn'));
+      this.soundBtn = document.querySelector('#shaka-sound-toggle');
+      this.soundLabel = document.querySelector('.sound-status-label');
+
+      this.undoBtn = document.querySelector('#shaka-undo-btn');
+      this.redoBtn = document.querySelector('#shaka-redo-btn');
+      this.newBtn = document.querySelector('#shaka-new-btn');
+      this.restartBtn = document.querySelector('#shaka-restart-btn');
+      this.hintBtn = document.querySelector('#shaka-hint-btn');
+      this.checkBtn = document.querySelector('#shaka-check-btn');
+      this.clearBtn = document.querySelector('#shaka-clear-btn');
+      this.pauseBtn = document.querySelector('#shaka-pause-btn');
+      this.resumeBtn = document.querySelector('#shaka-resume');
+      this.nextPuzzleBtn = document.querySelector('#shaka-next-puzzle');
+      this.shareBtn = document.querySelector('#shaka-share');
+      this.shareStatusEl = document.querySelector('#shaka-share-status');
+      this.dailyLabelEl = document.querySelector('#shaka-daily-label');
+    }
+
+    bindEvents() {
+      // Difficulty tab clicks
+      this.diffButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const diff = btn.dataset.difficulty;
+          if (diff) this.setDifficulty(diff);
+        });
+      });
+
+      // Controls
+      this.newBtn?.addEventListener('click', () => this.nextPuzzle());
+      this.restartBtn?.addEventListener('click', () => this.restartGame());
+      this.undoBtn?.addEventListener('click', () => this.undo());
+      this.redoBtn?.addEventListener('click', () => this.redo());
+      this.hintBtn?.addEventListener('click', () => this.giveHint());
+      this.checkBtn?.addEventListener('click', () => this.manualCheck());
+      this.clearBtn?.addEventListener('click', () => this.clearUserTriangles());
+      this.pauseBtn?.addEventListener('click', () => this.togglePause());
+      this.resumeBtn?.addEventListener('click', () => this.togglePause());
+      this.nextPuzzleBtn?.addEventListener('click', () => {
+        this.victoryEl.hidden = true;
+        this.nextPuzzle();
+      });
+      this.shareBtn?.addEventListener('click', () => this.shareResult());
+
+      // Sound toggle
+      this.soundBtn?.addEventListener('click', () => {
+        sound.enabled = !sound.enabled;
+        this.updateSoundButton();
+        this.saveState();
+      });
+
+      // Keyboard navigation and placement
+      window.addEventListener('keydown', (e) => this.handleKeyDown(e));
+    }
+
+    updateSoundButton() {
+      if (this.soundLabel) {
+        this.soundLabel.textContent = sound.enabled ? 'Sound On' : 'Sound Off';
+      }
+      if (this.soundBtn) {
+        this.soundBtn.classList.toggle('is-muted', !sound.enabled);
+      }
+    }
+
+    startFromURLOrSaved() {
+      const params = new URLSearchParams(window.location.search);
+      const isDaily = params.get('daily') === '1' || params.get('mode') === 'daily';
+      const urlDiff = params.get('diff');
+
+      if (isDaily) {
+        this.setDifficulty('daily');
+        return;
+      }
+
+      if (urlDiff && ['easy', 'medium', 'hard'].includes(urlDiff)) {
+        this.setDifficulty(urlDiff);
+        return;
+      }
+
+      const saved = this.loadState();
+      if (saved && saved.puzzleId) {
+        const found = this.puzzles.find(p => p.id === saved.puzzleId);
+        if (found) {
+          this.currentDiff = found.difficulty;
+          this.puzzle = found;
+          this.puzzleIndex = this.getDiffPuzzles(found.difficulty).findIndex(p => p.id === found.id);
+          this.initBoard(saved.grid, saved.moves, saved.timerSeconds);
+          this.updateDiffButtons();
+          this.updateBestDisplay();
+          return;
+        }
+      }
+
+      this.setDifficulty('easy');
+    }
+
+    getDiffPuzzles(diff) {
+      if (diff === 'daily') {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        return [getDailyPuzzleClient(this.puzzles, todayStr)];
+      }
+      return this.puzzles.filter(p => p.difficulty === diff);
+    }
+
+    setDifficulty(diff) {
+      this.currentDiff = diff;
+      this.puzzleIndex = 0;
+      const list = this.getDiffPuzzles(diff);
+      this.puzzle = list[0] || this.puzzles[0];
+      this.updateDiffButtons();
+      this.initBoard();
+      this.updateBestDisplay();
+      this.saveState();
+    }
+
+    updateDiffButtons() {
+      this.diffButtons.forEach(btn => {
+        const active = btn.dataset.difficulty === this.currentDiff;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    }
+
+    initBoard(savedGrid = null, savedMoves = 0, savedTimer = 0) {
+      this.stopTimer();
+      this.isWon = false;
+      this.isPaused = false;
+      this.pausedEl.hidden = true;
+      this.victoryEl.hidden = true;
+      this.history = [];
+      this.redoStack = [];
+      this.hintsUsed = 0;
+      this.moves = savedMoves;
+      this.timerSeconds = savedTimer;
+      this.isTimerRunning = false;
+
+      // Deep copy grid
+      if (savedGrid && savedGrid.length === this.puzzle.rows) {
+        this.grid = savedGrid.map(row => [...row]);
+      } else {
+        this.grid = this.puzzle.initialGrid.map(row => [...row]);
+      }
+
+      this.renderBoard();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.hideToast();
+    }
+
+    renderBoard() {
+      if (!this.gridEl || !this.puzzle) return;
+      this.gridEl.innerHTML = '';
+      this.gridEl.style.setProperty('--grid-cols', this.puzzle.cols);
+      this.gridEl.style.setProperty('--grid-rows', this.puzzle.rows);
+
+      for (let r = 0; r < this.puzzle.rows; r++) {
+        for (let c = 0; c < this.puzzle.cols; c++) {
+          const val = this.grid[r][c];
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.className = 'shaka-cell';
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+          cell.setAttribute('role', 'gridcell');
+
+          if (val < 0) {
+            cell.classList.add('is-black');
+            cell.setAttribute('tabindex', '-1');
+            if (val <= -2) {
+              const num = -val - 2;
+              const span = document.createElement('span');
+              span.className = 'clue-number';
+              span.textContent = num;
+              cell.appendChild(span);
+              cell.setAttribute('aria-label', `Black clue cell with number ${num}`);
+            } else {
+              cell.setAttribute('aria-label', 'Solid black cell');
+            }
+          } else {
+            cell.classList.add('is-white');
+            cell.setAttribute('tabindex', '0');
+            this.updateCellOrientation(cell, val);
+
+            // Click / tap
+            cell.addEventListener('click', (e) => {
+              e.preventDefault();
+              this.cycleCell(r, c, 1);
+            });
+
+            // Secondary tap / Right-click
+            cell.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+              this.cycleCell(r, c, -1);
+            });
+          }
+
+          this.gridEl.appendChild(cell);
+        }
+      }
+
+      this.refreshCluesUI();
+    }
+
+    updateCellOrientation(cellEl, val) {
+      const existingSvg = cellEl.querySelector('.shaka-tri-svg');
+      if (existingSvg) existingSvg.remove();
+
+      cellEl.classList.remove('has-tri', 'tri-1', 'tri-2', 'tri-3', 'tri-4');
+
+      if (val === 0) {
+        cellEl.setAttribute('aria-label', 'Empty white cell');
+      } else {
+        cellEl.classList.add('has-tri', `tri-${val}`);
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 100 100');
+        svg.setAttribute('class', 'shaka-tri-svg');
+        svg.setAttribute('aria-hidden', 'true');
+
+        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        let pts = '';
+        let orientName = '';
+        if (val === 1) { pts = '0,0 100,0 0,100'; orientName = 'Top-Left ◤'; }
+        else if (val === 2) { pts = '0,0 100,0 100,100'; orientName = 'Top-Right ◥'; }
+        else if (val === 3) { pts = '100,0 100,100 0,100'; orientName = 'Bottom-Right ◢'; }
+        else if (val === 4) { pts = '0,0 100,100 0,100'; orientName = 'Bottom-Left ◣'; }
+
+        poly.setAttribute('points', pts);
+        svg.appendChild(poly);
+        cellEl.appendChild(svg);
+        cellEl.setAttribute('aria-label', `White cell with ${orientName} triangle`);
+      }
+    }
+
+    cycleCell(r, c, direction = 1) {
+      if (this.isWon || this.isPaused) return;
+      const current = this.grid[r][c];
+      if (current < 0) return; // cannot modify black cells
+
+      this.startTimer();
+      const next = (current + direction + 5) % 5;
+      this.history.push({ r, c, prev: current, next });
+      this.redoStack = [];
+      this.grid[r][c] = next;
+      this.moves++;
+
+      if (next === 0) sound.playClear();
+      else sound.playPlace(next);
+
+      const cellEl = this.getCellEl(r, c);
+      if (cellEl) this.updateCellOrientation(cellEl, next);
+
+      this.updateStats();
+      this.updateUndoRedo();
+      this.refreshCluesUI();
+      this.saveState();
+
+      // Check win automatically
+      this.checkWinCondition(false);
+    }
+
+    getCellEl(r, c) {
+      return this.gridEl?.querySelector(`button[data-r="${r}"][data-c="${c}"]`);
+    }
+
+    refreshCluesUI() {
+      const status = checkClueStatus(this.grid, this.puzzle.rows, this.puzzle.cols);
+      for (const info of status.clueCells) {
+        const cell = this.getCellEl(info.r, info.c);
+        if (cell) {
+          cell.classList.toggle('is-satisfied', info.satisfied);
+          cell.classList.toggle('is-violated', info.violated);
+        }
+      }
+      if (this.cluesEl) {
+        this.cluesEl.textContent = `${status.satisfiedClues} / ${status.totalClues}`;
+      }
+      return status;
+    }
+
+    checkWinCondition(isManual = false) {
+      if (this.isWon) return;
+
+      // Check clues first
+      const clueRes = checkClueStatus(this.grid, this.puzzle.rows, this.puzzle.cols);
+      if (!clueRes.allSatisfied) {
+        if (isManual) {
+          if (clueRes.anyViolated) {
+            this.showToast('One or more numbered clues have too many touching triangles.', 'error');
+            sound.playError();
+          } else {
+            this.showToast(`Clues progress: ${clueRes.satisfiedClues} of ${clueRes.totalClues} satisfied. Keep going!`, 'normal');
+            sound.playClick();
+          }
+        }
+        return false;
+      }
+
+      // Check white rectangles
+      const geoRes = validateBoardGeometry(this.grid, this.puzzle.rows, this.puzzle.cols);
+      if (geoRes.valid) {
+        this.handleVictory();
+        return true;
+      } else {
+        if (isManual) {
+          if (geoRes.reason === 'non_rectangle_vertices' || geoRes.reason === 'non_90_degree_corner') {
+            this.showToast('All numbered clues are satisfied, but some white areas do not form complete rectangles or squares yet.', 'error');
+            sound.playError();
+          } else {
+            this.showToast('Looking close! Verify that all white corridors form complete 4-sided rectangles.', 'normal');
+            sound.playClick();
+          }
+        }
+        return false;
+      }
+    }
+
+    handleVictory() {
+      this.isWon = true;
+      this.stopTimer();
+      sound.playWin();
+
+      // Check PB
+      const bestKey = `pf-shakashaka-best-${this.currentDiff}`;
+      let isNewPB = false;
+      try {
+        const savedBest = JSON.parse(localStorage.getItem(bestKey) || 'null');
+        if (!savedBest || this.timerSeconds < savedBest.time || (this.timerSeconds === savedBest.time && this.moves < savedBest.moves)) {
+          isNewPB = true;
+          localStorage.setItem(bestKey, JSON.stringify({ time: this.timerSeconds, moves: this.moves }));
+        }
+      } catch (e) {}
+
+      // If Daily Challenge, record completion
+      if (this.currentDiff === 'daily') {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        try {
+          localStorage.setItem(`pf-shakashaka-daily-solved-${todayStr}`, 'true');
+        } catch (e) {}
+      }
+
+      // Show Victory Modal
+      const diffLabel = this.currentDiff === 'daily' ? 'Daily Challenge' : this.currentDiff.charAt(0).toUpperCase() + this.currentDiff.slice(1);
+      document.querySelector('#victory-diff-label').textContent = diffLabel;
+      document.querySelector('#victory-time').textContent = this.formatTime(this.timerSeconds);
+      document.querySelector('#victory-moves').textContent = this.moves;
+      document.querySelector('#victory-hints').textContent = this.hintsUsed;
+      document.querySelector('#shaka-pb-badge').hidden = !isNewPB;
+
+      this.victoryEl.hidden = false;
+      this.updateBestDisplay();
+      this.announce(`Puzzle Solved in ${this.formatTime(this.timerSeconds)} and ${this.moves} moves!`);
+    }
+
+    undo() {
+      if (this.history.length === 0 || this.isWon || this.isPaused) return;
+      const last = this.history.pop();
+      this.redoStack.push(last);
+      this.grid[last.r][last.c] = last.prev;
+      this.moves++;
+
+      const cell = this.getCellEl(last.r, last.c);
+      if (cell) this.updateCellOrientation(cell, last.prev);
+
+      sound.playClick();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.refreshCluesUI();
+      this.saveState();
+    }
+
+    redo() {
+      if (this.redoStack.length === 0 || this.isWon || this.isPaused) return;
+      const item = this.redoStack.pop();
+      this.history.push(item);
+      this.grid[item.r][item.c] = item.next;
+      this.moves++;
+
+      const cell = this.getCellEl(item.r, item.c);
+      if (cell) this.updateCellOrientation(cell, item.next);
+
+      sound.playPlace(item.next);
+      this.updateStats();
+      this.updateUndoRedo();
+      this.refreshCluesUI();
+      this.saveState();
+      this.checkWinCondition(false);
+    }
+
+    updateUndoRedo() {
+      if (this.undoBtn) this.undoBtn.disabled = this.history.length === 0 || this.isWon;
+      if (this.redoBtn) this.redoBtn.disabled = this.redoStack.length === 0 || this.isWon;
+    }
+
+    giveHint() {
+      if (this.isWon || this.isPaused) return;
+      this.startTimer();
+
+      const sol = this.puzzle.solution;
+      let incorrectCell = null;
+      let missingCell = null;
+
+      // 1. Check if user placed an incorrect triangle
+      for (let r = 0; r < this.puzzle.rows; r++) {
+        for (let c = 0; c < this.puzzle.cols; c++) {
+          const current = this.grid[r][c];
+          const expected = sol[r][c];
+          if (current > 0 && current !== expected) {
+            incorrectCell = { r, c, current, expected };
+            break;
+          }
+        }
+        if (incorrectCell) break;
+      }
+
+      if (incorrectCell) {
+        const { r, c } = incorrectCell;
+        const cell = this.getCellEl(r, c);
+        if (cell) {
+          cell.classList.add('is-hint-highlight');
+          setTimeout(() => cell.classList.remove('is-hint-highlight'), 1800);
+        }
+        this.showToast(`Hint: The triangle at row ${r + 1}, column ${c + 1} is not in the correct orientation.`, 'error');
+        sound.playError();
+        this.hintsUsed++;
+        return;
+      }
+
+      // 2. Find next missing triangle
+      for (let r = 0; r < this.puzzle.rows; r++) {
+        for (let c = 0; c < this.puzzle.cols; c++) {
+          const current = this.grid[r][c];
+          const expected = sol[r][c];
+          if (expected > 0 && current === 0) {
+            missingCell = { r, c, expected };
+            break;
+          }
+        }
+        if (missingCell) break;
+      }
+
+      if (missingCell) {
+        const { r, c, expected } = missingCell;
+        this.cycleCell(r, c, expected);
+        const cell = this.getCellEl(r, c);
+        if (cell) {
+          cell.classList.add('is-hint-highlight');
+          setTimeout(() => cell.classList.remove('is-hint-highlight'), 1600);
+        }
+        const names = ['', 'Top-Left ◤', 'Top-Right ◥', 'Bottom-Right ◢', 'Bottom-Left ◣'];
+        this.showToast(`Hint placed: ${names[expected]} at row ${r + 1}, column ${c + 1}.`, 'success');
+        sound.playHint();
+        this.hintsUsed++;
+        return;
+      }
+
+      this.showToast('All placed triangles are correct so far! Just form the remaining white rectangles.', 'normal');
+      sound.playClick();
+    }
+
+    manualCheck() {
+      this.checkWinCondition(true);
+    }
+
+    clearUserTriangles() {
+      if (this.isWon || this.isPaused) return;
+      let changed = false;
+      for (let r = 0; r < this.puzzle.rows; r++) {
+        for (let c = 0; c < this.puzzle.cols; c++) {
+          if (this.grid[r][c] > 0) {
+            this.grid[r][c] = 0;
+            changed = true;
+            const cell = this.getCellEl(r, c);
+            if (cell) this.updateCellOrientation(cell, 0);
+          }
+        }
+      }
+      if (changed) {
+        sound.playClear();
+        this.history = [];
+        this.redoStack = [];
+        this.updateUndoRedo();
+        this.refreshCluesUI();
+        this.saveState();
+        this.showToast('Board cleared.', 'normal');
+      }
+    }
+
+    restartGame() {
+      this.initBoard();
+      sound.playClick();
+      this.showToast('Puzzle restarted.', 'normal');
+    }
+
+    nextPuzzle() {
+      const list = this.getDiffPuzzles(this.currentDiff);
+      this.puzzleIndex = (this.puzzleIndex + 1) % list.length;
+      this.puzzle = list[this.puzzleIndex];
+      this.initBoard();
+      sound.playClick();
+      this.showToast(`Loaded ${this.puzzle.title}.`, 'normal');
+    }
+
+    togglePause() {
+      if (this.isWon) return;
+      this.isPaused = !this.isPaused;
+      this.pausedEl.hidden = !this.isPaused;
+      if (this.isPaused) {
+        this.stopTimer();
+      } else {
+        this.startTimer();
+      }
+      sound.playClick();
+    }
+
+    startTimer() {
+      if (this.isTimerRunning || this.isPaused || this.isWon) return;
+      this.isTimerRunning = true;
+      this.timerInterval = setInterval(() => {
+        this.timerSeconds++;
+        this.updateTimerDisplay();
+      }, 1000);
+    }
+
+    stopTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+      this.isTimerRunning = false;
+    }
+
+    updateTimerDisplay() {
+      if (this.timerEl) this.timerEl.textContent = this.formatTime(this.timerSeconds);
+    }
+
+    updateStats() {
+      if (this.movesEl) this.movesEl.textContent = this.moves;
+      this.updateTimerDisplay();
+    }
+
+    formatTime(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    updateBestDisplay() {
+      const bestKey = `pf-shakashaka-best-${this.currentDiff}`;
+      try {
+        const saved = JSON.parse(localStorage.getItem(bestKey) || 'null');
+        if (saved && this.bestTimeEl) {
+          this.bestTimeEl.textContent = this.formatTime(saved.time);
+        } else if (this.bestTimeEl) {
+          this.bestTimeEl.textContent = '—';
+        }
+      } catch (e) {
+        if (this.bestTimeEl) this.bestTimeEl.textContent = '—';
+      }
+    }
+
+    showToast(msg, type = 'normal') {
+      if (!this.toastEl || !this.toastTextEl) return;
+      this.toastTextEl.textContent = msg;
+      this.toastEl.className = `shaka-toast is-${type}`;
+      this.toastEl.hidden = false;
+      clearTimeout(this.toastTimer);
+      this.toastTimer = setTimeout(() => {
+        this.hideToast();
+      }, 3500);
+    }
+
+    hideToast() {
+      if (this.toastEl) this.toastEl.hidden = true;
+    }
+
+    announce(msg) {
+      if (this.liveEl) this.liveEl.textContent = msg;
+    }
+
+    shareResult() {
+      const timeStr = this.formatTime(this.timerSeconds);
+      const diffLabel = this.currentDiff === 'daily' ? 'Daily Challenge' : this.currentDiff.toUpperCase();
+      const text = `I solved Shakashaka (${diffLabel}) on PuzzleFeels in ${timeStr} with ${this.moves} moves! 🧩\nhttps://puzzlefeels.com/shakashaka-online-puzzle-game/`;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          if (this.shareStatusEl) {
+            this.shareStatusEl.textContent = 'Copied to clipboard!';
+            setTimeout(() => { if (this.shareStatusEl) this.shareStatusEl.textContent = ''; }, 2500);
+          }
+        }).catch(() => {});
+      }
+    }
+
+    handleKeyDown(e) {
+      if (this.isWon || this.isPaused) return;
+
+      const active = document.activeElement;
+      if (!active || !active.classList.contains('shaka-cell')) return;
+
+      const r = parseInt(active.dataset.r, 10);
+      const c = parseInt(active.dataset.c, 10);
+      if (isNaN(r) || isNaN(c)) return;
+
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        let nr = r;
+        let nc = c;
+        if (e.key === 'ArrowUp') nr = Math.max(0, r - 1);
+        if (e.key === 'ArrowDown') nr = Math.min(this.puzzle.rows - 1, r + 1);
+        if (e.key === 'ArrowLeft') nc = Math.max(0, c - 1);
+        if (e.key === 'ArrowRight') nc = Math.min(this.puzzle.cols - 1, c + 1);
+        const nextCell = this.getCellEl(nr, nc);
+        if (nextCell) nextCell.focus();
+        return;
+      }
+
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        this.cycleCell(r, c, 1);
+        return;
+      }
+
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        e.preventDefault();
+        const target = parseInt(e.key, 10);
+        if (this.grid[r][c] >= 0) {
+          this.cycleCell(r, c, target - this.grid[r][c]);
+        }
+        return;
+      }
+
+      if (['0', 'Backspace', 'Delete'].includes(e.key)) {
+        e.preventDefault();
+        if (this.grid[r][c] > 0) {
+          this.cycleCell(r, c, -this.grid[r][c]);
+        }
+        return;
+      }
+
+      if (e.key === 'u' || e.key === 'U') {
+        e.preventDefault();
+        this.undo();
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        this.redo();
+      }
+    }
+
+    saveState() {
+      try {
+        const state = {
+          puzzleId: this.puzzle.id,
+          grid: this.grid,
+          moves: this.moves,
+          timerSeconds: this.timerSeconds,
+          soundEnabled: sound.enabled
+        };
+        localStorage.setItem(this.storageKey, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(this.storageKey) || 'null');
+      } catch (e) {
+        return null;
+      }
+    }
+
+    loadSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(this.storageKey) || 'null');
+        if (saved && typeof saved.soundEnabled === 'boolean') {
+          sound.enabled = saved.soundEnabled;
+        }
+      } catch (e) {}
+      this.updateSoundButton();
+    }
+  }
+
+  // Client daily puzzle selector helper
+  function getDailyPuzzleClient(puzzles, dateStr) {
+    let hash = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+      hash = (hash << 5) - hash + dateStr.charCodeAt(i);
+      hash |= 0;
+    }
+    const candidates = puzzles.filter(p => p.difficulty === 'medium');
+    const index = Math.abs(hash) % (candidates.length || puzzles.length);
+    return (candidates[index] || puzzles[0]);
+  }
+
+  // Bootstrap when DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    new ShakashakaGame(rawPuzzles);
+  });
+</script>

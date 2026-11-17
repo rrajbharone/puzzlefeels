@@ -181,6 +181,19 @@ export const ALL_GAMES: GameCatalogItem[] = [
     iconClass: 'mahjong-icon',
     dailyHref: '/mahjong-variants-online-game/?daily=today',
   },
+  {
+    id: 'shakashaka',
+    title: 'Shakashaka – Online Puzzle Game',
+    shortTitle: 'Shakashaka',
+    href: '/shakashaka-online-puzzle-game/',
+    search: 'shakashaka online puzzle game proof of quilt nikoli triangle puzzle logic game rectangle daily challenge',
+    pill: 'LOGIC PUZZLE',
+    difficulty: 'Easy · Medium · Hard',
+    description: 'Place black right-angled triangles in white cells so all remaining white areas form perfect rectangles or squares.',
+    visualClass: 'shakashaka-visual',
+    iconClass: 'shakashaka-icon',
+    dailyHref: '/shakashaka-online-puzzle-game/?daily=today',
+  },
 ];
 
 /**
