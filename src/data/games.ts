@@ -194,6 +194,19 @@ export const ALL_GAMES: GameCatalogItem[] = [
     iconClass: 'shakashaka-icon',
     dailyHref: '/shakashaka-online-puzzle-game/?daily=today',
   },
+  {
+    id: 'square-jam',
+    title: 'Square Jam – Online Logic Puzzle',
+    shortTitle: 'Square Jam',
+    href: '/square-jam-puzzle/',
+    search: 'square jam puzzle online logic game divide grid squares tatami rule number square puzzle',
+    pill: 'LOGIC PUZZLE',
+    difficulty: 'Easy · Medium · Hard',
+    description: 'Divide the grid into perfect squares following number side clues and avoiding 4-way Tatami corners.',
+    visualClass: 'square-jam-visual',
+    iconClass: 'square-jam-icon',
+    dailyHref: '/square-jam-puzzle/?daily=today',
+  },
 ];
 
 /**

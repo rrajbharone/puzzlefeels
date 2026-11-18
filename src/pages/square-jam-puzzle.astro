@@ -1,0 +1,2199 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+import { SQUARE_JAM_PUZZLES, getDailySquareJamPuzzle } from '../data/squareJamPuzzles';
+
+const title = 'Square Jam Puzzle – Play Free Online Logic Game | PuzzleFeels';
+const description = 'Play Square Jam puzzle online for free. Divide the grid into perfect squares, follow number clues and avoid four-way corners in this fun logic game.';
+
+const faqs = [
+  {
+    question: 'What does each number mean in Square Jam?',
+    answer: 'Each number indicates the exact side length of the square-shaped region that contains it. For example, a 1 clue requires a 1×1 square, a 2 clue requires a 2×2 square (covering 4 cells), and a 3 clue requires a 3×3 square (covering 9 cells). Numbers indicate side length, not total cell area.'
+  },
+  {
+    question: 'Does a number represent the area or side length of a square?',
+    answer: 'A number represents the side length of the square. For example, a clue 2 designates a 2×2 square consisting of 4 cells, while a clue 3 designates a 3×3 square consisting of 9 cells. Never draw a 2-cell or 3-cell rectangle; every single region on the board must be an equilateral square.'
+  },
+  {
+    question: 'Can a square contain more than one number?',
+    answer: 'Yes! A square region can contain multiple numbers as long as all numbers inside that square share the exact same value. For instance, a 2×2 square may enclose two separate 2 clues, but it can never enclose both a 2 and a 3.'
+  },
+  {
+    question: 'Can a square have no number at all?',
+    answer: 'Yes. Many squares across the grid will contain no clues whatsoever. You can deduce the positions and dimensions of these unnumbered squares by working backward from surrounding clues, outer grid boundaries, and the Tatami rule.'
+  },
+  {
+    question: 'What is the Tatami Rule in Square Jam?',
+    answer: 'The Tatami Rule states that four different square regions must never meet at the exact same internal grid line intersection. In other words, no four-way cross junctions are permitted. Boundaries between adjacent squares must form T-junctions or pass-through straight lines, mirroring traditional Japanese Tatami mat flooring.'
+  },
+  {
+    question: 'Can two square regions share an edge?',
+    answer: 'Yes. Two squares are fully allowed to share an orthogonal edge or border. The Tatami Rule only forbids four separate squares from meeting at a single corner vertex point.'
+  },
+  {
+    question: 'How do you solve a difficult Square Jam puzzle?',
+    answer: 'Start by anchoring large clues and corner clues where board boundaries heavily restrict placement options. Next, look for narrow 1-cell or 2-cell corridors that can only accommodate smaller squares. Whenever you consider a candidate placement, check whether its corners would force an illegal four-way junction with neighboring squares.'
+  },
+  {
+    question: 'Can I play Square Jam on my phone or tablet?',
+    answer: 'Yes! Square Jam is fully responsive and optimized for mobile devices. You can drag your finger to draw and preview squares, or use our accessible two-tap mode (tap starting corner, then tap ending corner). Our integrated zoom controls allow comfortable play on small smartphone screens.'
+  },
+  {
+    question: 'Is Square Jam free to play online?',
+    answer: 'Yes, 100% free with no downloads, subscriptions, paywalls, or account registration required. Your progress, best times, and daily challenge completions are automatically saved to your web browser via LocalStorage.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Square Jam – Online Logic Puzzle',
+  url: 'https://puzzlefeels.com/square-jam-puzzle/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Game',
+  genre: ['Logic Puzzle', 'Square Puzzle', 'Grid Puzzle', 'Brain Game'],
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Square Jam – Online Logic Puzzle', item: 'https://puzzlefeels.com/square-jam-puzzle/' }
+  ]
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+---
+
+<Base {title} {description} path="/square-jam-puzzle/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="jam-page">
+    <!-- Breadcrumb Navigation -->
+    <nav class="wrap jam-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Square Jam – Online Logic Puzzle</span>
+    </nav>
+
+    <!-- Centered Game Introduction -->
+    <section class="wrap jam-intro">
+      <span class="eyebrow">Grid Partitioning Logic Puzzle</span>
+      <h1>Square Jam – Free Online Logic Puzzle Game</h1>
+      <p class="muted">Divide the grid into perfect squares. Numbers specify each square's side length, and four squares must never meet at a single corner junction.</p>
+    </section>
+
+    <!-- Main Game Shell Card -->
+    <section class="wrap jam-shell card" data-square-jam-game aria-label="Square Jam Logic Puzzle Game">
+      
+      <!-- Top Bar: Difficulty Selector & Utility Buttons -->
+      <div class="jam-header-bar">
+        <div class="jam-diff-group" role="tablist" aria-label="Difficulty levels">
+          <button type="button" class="jam-diff-btn is-active" data-difficulty="easy" role="tab" aria-selected="true">
+            <strong>Easy</strong>
+            <span>5×5–6×6 · Beginner</span>
+          </button>
+          <button type="button" class="jam-diff-btn" data-difficulty="medium" role="tab" aria-selected="false">
+            <strong>Medium</strong>
+            <span>7×7–8×8 · Intermediate</span>
+          </button>
+          <button type="button" class="jam-diff-btn" data-difficulty="hard" role="tab" aria-selected="false">
+            <strong>Hard</strong>
+            <span>9×9–10×10 · Master</span>
+          </button>
+          <button type="button" class="jam-diff-btn daily-tab" data-difficulty="daily" role="tab" aria-selected="false">
+            <strong>Daily</strong>
+            <span id="jam-daily-label">Challenge</span>
+          </button>
+        </div>
+
+        <div class="jam-header-actions">
+          <button type="button" class="btn secondary jam-sound-btn" id="jam-sound-toggle" aria-label="Toggle Sound Effects" title="Sound Effects">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <span class="sound-status-label">Sound On</span>
+          </button>
+          <ZoomControl targetSelector="#jam-board-zoom-target" label="Board Zoom" />
+        </div>
+      </div>
+
+      <!-- Stats Bar: Moves, Time, Coverage, Best -->
+      <div class="jam-stats-bar" role="status" aria-label="Puzzle statistics">
+        <div class="jam-stat-item">
+          <small>Time</small>
+          <strong id="jam-timer">00:00</strong>
+        </div>
+        <div class="jam-stat-item">
+          <small>Moves</small>
+          <strong id="jam-moves">0</strong>
+        </div>
+        <div class="jam-stat-item">
+          <small>Coverage</small>
+          <strong id="jam-coverage">0 / 0</strong>
+        </div>
+        <div class="jam-stat-item">
+          <small>Best Time</small>
+          <strong id="jam-best-time">—</strong>
+        </div>
+      </div>
+
+      <!-- Live Feedback Toast Notification -->
+      <div id="jam-toast" class="jam-toast" role="alert" aria-live="polite" hidden>
+        <span id="jam-toast-text"></span>
+      </div>
+
+      <!-- Board Area Wrapper with Zoom and Smooth Scroll -->
+      <div class="jam-board-wrapper" id="jam-board-container">
+        <div class="jam-board-zoom-target" id="jam-board-zoom-target">
+          <div class="jam-grid-container" id="jam-grid-container">
+            <div class="jam-grid" id="jam-grid" role="grid" aria-label="Square Jam puzzle grid">
+              <!-- Dynamically populated via client script -->
+            </div>
+            <!-- Interactive Drag Preview Box -->
+            <div id="jam-drag-preview" class="jam-drag-preview" hidden aria-hidden="true">
+              <span id="jam-preview-badge" class="jam-preview-badge">1×1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paused Overlay -->
+        <div id="jam-paused" class="jam-overlay" hidden>
+          <div class="jam-overlay-box">
+            <span class="eyebrow">Puzzle Paused</span>
+            <h2>Take a Breather</h2>
+            <p class="muted">The timer is stopped and your placed squares are safe. Resume whenever you are ready to continue partitioning.</p>
+            <button type="button" class="btn" id="jam-resume">Resume Game <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Solution Confirmation Overlay -->
+        <div id="jam-solution-modal" class="jam-overlay" hidden>
+          <div class="jam-overlay-box">
+            <span class="eyebrow">Reveal Solution?</span>
+            <h2>Show Solved Squares?</h2>
+            <p class="muted">Revealing the solution will display all completed square regions. This puzzle run will be marked as assisted and will not be recorded as a personal best.</p>
+            <div class="jam-overlay-actions">
+              <button type="button" class="btn" id="jam-confirm-solution">Reveal Solution</button>
+              <button type="button" class="btn secondary" id="jam-cancel-solution">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Victory / Solved Modal -->
+        <div id="jam-victory" class="jam-overlay" hidden>
+          <div class="jam-overlay-box victory-box">
+            <span class="pill victory-pill">✦ PUZZLE SOLVED!</span>
+            <h2>Board Perfectly Partitioned!</h2>
+            <p class="muted">Every cell belongs to a valid square matching all side clues, and all four-way Tatami junctions have been avoided.</p>
+            
+            <div id="jam-pb-badge" class="jam-pb-badge" hidden>
+              <span>★ New Personal Best!</span>
+            </div>
+
+            <div class="victory-stats-grid">
+              <div>
+                <small>Difficulty</small>
+                <strong id="victory-diff-label">Easy</strong>
+              </div>
+              <div>
+                <small>Time</small>
+                <strong id="victory-time">00:00</strong>
+              </div>
+              <div>
+                <small>Moves</small>
+                <strong id="victory-moves">0</strong>
+              </div>
+              <div>
+                <small>Hints Used</small>
+                <strong id="victory-hints">0</strong>
+              </div>
+            </div>
+
+            <div class="victory-actions">
+              <button type="button" class="btn" id="jam-next-puzzle">Next Puzzle <span>→</span></button>
+              <button type="button" class="btn secondary" id="jam-share">Share Result</button>
+            </div>
+            <p id="jam-share-status" class="jam-share-status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls Toolbar -->
+      <div class="jam-controls" role="group" aria-label="Game controls">
+        <button type="button" class="btn secondary" id="jam-new-btn">New Game</button>
+        <button type="button" class="btn secondary" id="jam-restart-btn">Restart</button>
+        <button type="button" class="btn secondary" id="jam-undo-btn" disabled>Undo</button>
+        <button type="button" class="btn secondary" id="jam-redo-btn" disabled>Redo</button>
+        <button type="button" class="btn secondary" id="jam-erase-btn">Erase</button>
+        <button type="button" class="btn secondary" id="jam-hint-btn">Hint</button>
+        <button type="button" class="btn secondary" id="jam-check-btn">Check</button>
+        <button type="button" class="btn secondary" id="jam-solve-btn">Show Solution</button>
+        <button type="button" class="btn secondary" id="jam-pause-btn">Pause</button>
+      </div>
+
+      <!-- Footer Metadata / Instructions -->
+      <div class="jam-footer-meta">
+        <p class="jam-help-text"><strong>How to play:</strong> Click and drag from one corner to the opposite corner to place a square, or tap a starting cell then an ending cell. Select any placed square and click <em>Erase</em> (or press Delete) to remove it. Numbers represent square side lengths (1=1×1, 2=2×2, 3=3×3). Four squares must never meet at a single four-way corner!</p>
+        <p class="jam-save-note">Puzzle progress, best times, and sound settings save automatically on your device.</p>
+      </div>
+
+      <p id="jam-live" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <!-- Comprehensive In-Depth Educational SEO Content Section -->
+    <article class="wrap game-article-content jam-article">
+      <h2>What Is Square Jam?</h2>
+      <p>Square Jam is a pure grid-partitioning logic puzzle that challenges solvers to tile a rectangular board using equilateral square regions. Unlike sliding block or traffic-jam puzzle games where pieces slide across tracks, Square Jam is a deductive pencil-and-paper challenge. Every cell on the board starts unassigned, and several cells display clue numbers. Your goal is to partition the entire board so that every cell belongs to exactly one square, every numbered clue matches the side length of its containing square, and no four squares meet at any single intersection point.</p>
+      <p>Fans of classic Nikoli Japanese puzzles like <a href="/shakashaka-online-puzzle-game/">Shakashaka</a>, <a href="/norinori-game/">Norinori</a>, and <a href="/picross-game-online/">Picross Game Online</a> will immediately appreciate the clean spatial elegance of Square Jam. The puzzle relies on pure deductive reasoning rather than arithmetic or guesswork, offering a soothing, deeply satisfying mental workout.</p>
+
+      <h2>How to Play Square Jam</h2>
+      <p>Playing Square Jam online on PuzzleFeels is designed to be accessible, fluid, and responsive on all devices:</p>
+      <ol>
+        <li><strong>Select your difficulty:</strong> Choose from Easy (5×5 and 6×6 starter grids), Medium (7×7 and 8×8 intermediate grids), Hard (9×9 and 10×10 master grids), or tackle the daily global challenge.</li>
+        <li><strong>Inspect the number clues:</strong> Each number tells you the side length of the square that must cover that cell. A 1 requires a 1×1 square, a 2 requires a 2×2 square, a 3 requires a 3×3 square, and so forth.</li>
+        <li><strong>Place a square:</strong> Click or tap a starting cell, drag across to the opposite corner, and release to lock in the square. On touch screens, you can also simply tap the start corner and tap the opposite corner.</li>
+        <li><strong>Ensure squares never overlap:</strong> Placed square regions cannot overlap each other or extend beyond the grid borders.</li>
+        <li><strong>Follow the Tatami Rule:</strong> Verify that four different square regions never meet at the exact same internal grid line intersection.</li>
+        <li><strong>Complete the full board:</strong> Once every cell belongs to a valid square and all clues are satisfied, the board is solved and your record is saved!</li>
+      </ol>
+
+      <h2>Understanding Square Jam Rules With Examples</h2>
+      <p>Square Jam is governed by three straightforward but interconnected rules:</p>
+      
+      <h3>Rule 1: Every Region Must Be a Square</h3>
+      <p>Every cell on the board must belong to exactly one square-shaped region. Rectangles with unequal sides—such as a 1×2 domino, a 2×3 block, or an L-tromino—are strictly forbidden. Even if an empty gap spans 1×3 cells, you cannot fill it with a 1×3 rectangle; you must fill it with three individual 1×1 squares.</p>
+
+      <h3>Rule 2: Numbers Indicate Square Side Length</h3>
+      <p>A clue number specifies the side length of the square containing that cell, <em>not</em> its area:</p>
+      <ul>
+        <li><strong>Number 1:</strong> Designates a 1×1 square covering exactly 1 cell.</li>
+        <li><strong>Number 2:</strong> Designates a 2×2 square covering 4 cells.</li>
+        <li><strong>Number 3:</strong> Designates a 3×3 square covering 9 cells.</li>
+        <li><strong>Number 4:</strong> Designates a 4×4 square covering 16 cells.</li>
+      </ul>
+      <p>A single square may enclose multiple clues provided all of those clues share the exact same number. For instance, two 2 clues can both sit inside the same 2×2 square. Furthermore, many squares on the board will contain no clue numbers at all; these unnumbered squares must be deduced through board geometry and elimination.</p>
+
+      <h3>Rule 3: The Tatami Rule</h3>
+      <p>Four separate square regions must never meet at the same internal grid intersection point. In architectural terms, traditional Japanese Tatami mats are arranged so that four corners never meet at a cross (+), which is believed to bring bad luck. In Square Jam, this architectural principle creates beautiful, interlocking stagger patterns where boundaries meet in T-junctions or continuous lines.</p>
+
+      <h2>How to Solve Square Jam Puzzles – Beginner Tips</h2>
+      <p>If you are new to Square Jam or transitioning from games like <a href="/sliding-number-puzzle-game/">Sliding Number Puzzle Game</a> and <a href="/number-sequence-game/">Number Sequence Game</a>, these proven deduction strategies will help you solve boards cleanly without guessing:</p>
+      <ul>
+        <li><strong>Start with corner clues:</strong> A clue located directly in an outer grid corner has only one possible placement direction because the board edges prevent it from extending outward. A clue 2 in the top-left corner must cover rows 1–2 and columns 1–2.</li>
+        <li><strong>Anchor large squares first:</strong> Squares of size 3 and 4 occupy 9 and 16 cells respectively. Because they require substantial continuous clearance, they have very few legal positions. Placing large squares early drastically reduces the remaining search space.</li>
+        <li><strong>Use outer wall constraints:</strong> A clue 2 placed along an outer border only has two possible orientations along that border. If one of those orientations collides with another clue or leaves an impossible 1-cell notch, the remaining orientation is immediately forced.</li>
+        <li><strong>Look for narrow 1-cell corridors:</strong> Whenever placed squares leave an empty strip that is only 1 cell wide, that strip cannot accommodate any square of size 2 or larger. The entire corridor must be partitioned into 1×1 squares.</li>
+        <li><strong>Leverage the Tatami Rule for negative deductions:</strong> If three squares already meet around a grid line vertex, the fourth adjacent cell <em>cannot</em> be its own independent square corner. It must either share an edge with one of the existing squares or extend past that vertex to form a T-junction.</li>
+      </ul>
+
+      <h2>Common Square Jam Mistakes to Avoid</h2>
+      <ul>
+        <li><strong>Confusing side length with area:</strong> Mistaking a clue 2 for an area of 2 cells (a domino) or a clue 3 for an area of 3 cells. Always remember: in Square Jam, numbers represent side lengths. A 2 is 2×2 (4 cells), and a 3 is 3×3 (9 cells).</li>
+        <li><strong>Drawing rectangles instead of squares:</strong> Forgetting that all regions must have equal width and height. Non-square rectangles are never permitted.</li>
+        <li><strong>Creating four-way cross intersections:</strong> Placing four 1×1 squares in a 2×2 cluster creates an illegal four-way junction where all four corners meet at the center. To avoid this, at least one of those corners must be part of a larger square.</li>
+        <li><strong>Assuming every square must contain a clue:</strong> Many squares on intermediate and advanced boards have no clues. Treat empty space as an active part of the puzzle.</li>
+      </ul>
+
+      <h2>Understanding the Tatami Rule</h2>
+      <p>The Tatami Rule is the mathematical backbone of Square Jam that prevents trivial solutions and forces elegant spatial layouts. Consider any internal point where four grid lines intersect. Four cells touch this point: top-left, top-right, bottom-left, and bottom-right. If all four cells belong to different square regions, that intersection is an illegal four-way junction.</p>
+      <p>Conversely, if at least two of those cells belong to the same square (meaning an edge of that square passes straight through the intersection without terminating), only two or three separate squares meet at that point, forming a completely legal T-junction. Sharing edges is fully permitted; only four terminating corners meeting at a single cross point is prohibited.</p>
+
+      <h2>Square Jam Controls and Game Features</h2>
+      <p>PuzzleFeels Square Jam offers a modern, tactile interface tailored for comfortable puzzle solving:</p>
+      <ul>
+        <li><strong>Drag or Two-Tap Placement:</strong> Drag across the board to preview and place a square with live size indicators, or tap the start cell and destination cell.</li>
+        <li><strong>Erase Feature:</strong> Tap any placed square and click <em>Erase</em> (or press Delete) to remove it from the board.</li>
+        <li><strong>Undo and Redo:</strong> Step backward and forward through your placement history effortlessly.</li>
+        <li><strong>Educational Hint Engine:</strong> Unlike games that merely reveal random squares, our hint system analyzes the board, detects rule violations, and reveals the next logically forced square along with an explanation of why it is required.</li>
+        <li><strong>Check Progress:</strong> Instant feedback that checks for overlapping squares, clue mismatches, and Tatami violations without spoiling unfinished sections.</li>
+        <li><strong>Show Solution:</strong> Need to study a completed board? Reveal the solution with confirmation.</li>
+        <li><strong>Sound & Zoom Controls:</strong> Enjoy soft synthesized acoustic feedback, or scale the board up to 150% using our integrated Zoom toolbar.</li>
+        <li><strong>Daily Challenge:</strong> A fresh synchronized puzzle every day based on UTC date, tracking your streaks and completions separately.</li>
+      </ul>
+
+      <h2>Why Play Square Jam on PuzzleFeels?</h2>
+      <p>PuzzleFeels is dedicated to providing high-quality, ad-free, respectful browser puzzle games. Square Jam runs 100% in your browser with no downloads, subscriptions, accounts, or tracking scripts required. Whether you are solving a quick 5×5 grid on your smartphone during a commute or relaxing with a 10×10 master grid on your desktop, your progress and personal best times remain safely saved on your device.</p>
+      <p>If you enjoy spatial and pattern-recognition games, be sure to also explore our <a href="/mahjong-variants-online-game/">Mahjong Variants Online Game</a> and our complete library of free online logic puzzles.</p>
+
+      <!-- Standard FAQ Section -->
+      <section class="jam-faq-section" aria-label="Frequently Asked Questions">
+        <h2>Frequently Asked Questions About Square Jam</h2>
+        <FaqList items={faqs} />
+      </section>
+    </article>
+
+    <!-- Explore More Puzzle Games Section (Spot the Difference Standard) -->
+    <ExploreMore currentGameId="square-jam" />
+  </main>
+
+  <Footer />
+</Base>
+
+<style is:global>
+  /* Base page layout & typography */
+  .jam-page {
+    padding-bottom: 70px;
+  }
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .jam-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding-top: 16px;
+    padding-bottom: 8px;
+  }
+  .jam-breadcrumbs a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .15s ease;
+  }
+  .jam-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+  .jam-breadcrumbs span[aria-current="page"] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Centered Intro Section */
+  .jam-intro {
+    text-align: center;
+    padding: 24px 0 28px;
+  }
+  .jam-intro .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .jam-intro h1 {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1.18;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  .jam-intro p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 660px;
+    margin: 0 auto;
+  }
+
+  /* Game Shell Card */
+  .jam-shell {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Header Bar with Difficulty and Utilities */
+  .jam-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .jam-diff-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .jam-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    transition: all .16s ease;
+  }
+  .jam-diff-btn strong { font-size: 13px; font-weight: 700; }
+  .jam-diff-btn span { font-size: 10px; color: var(--muted); }
+  .jam-diff-btn:hover { border-color: var(--blue); }
+  .jam-diff-btn.is-active {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .jam-diff-btn.is-active span { color: var(--blue); opacity: .85; }
+
+  .jam-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .jam-sound-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 12px;
+    gap: 7px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .jam-sound-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Stats Bar */
+  .jam-stats-bar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 18px;
+    text-align: center;
+  }
+  .jam-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .jam-stat-item small {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+  }
+  .jam-stat-item strong {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Toast notification */
+  .jam-toast {
+    background: #edf2ff;
+    border: 1px solid #c7d7fe;
+    color: var(--blue);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    transition: all .2s ease;
+  }
+  .jam-toast.is-error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+  }
+  .jam-toast.is-success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #16a34a;
+  }
+
+  /* Board Area */
+  .jam-board-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jam-board-zoom-target {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(var(--zoom-scale, 1));
+    transform-origin: center top;
+    transition: transform .2s ease;
+  }
+
+  .jam-grid-container {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+    touch-action: none;
+  }
+
+  /* Square Jam Grid */
+  .jam-grid {
+    --grid-cols: 5;
+    --grid-rows: 5;
+    --cell-size: min(52px, calc((100vw - 64px) / var(--grid-cols)));
+    --jam-grid-border: #334155;
+    --jam-grid-line: #767676;
+    --jam-cell-bg: #efefef;
+    --jam-cell-hover: #e2e8f0;
+    --jam-clue-color: #0f172a;
+    --jam-region-border: #1e40af;
+    --jam-selected-border: #dc2626;
+
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), var(--cell-size));
+    grid-template-rows: repeat(var(--grid-rows), var(--cell-size));
+    gap: 0;
+    background: var(--jam-cell-bg);
+    border: 3px solid var(--jam-grid-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  /* Cells inside the grid */
+  .jam-grid .jam-cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    position: relative;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: pointer;
+    background: var(--jam-cell-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(var(--cell-size) * 0.44);
+    font-weight: 800;
+    color: var(--jam-clue-color);
+    border: 1px solid var(--jam-grid-line);
+    box-sizing: border-box;
+    transition: background-color .12s ease;
+  }
+  .jam-grid .jam-cell:hover:not(.is-occupied) {
+    background: var(--jam-cell-hover);
+  }
+  .jam-grid .jam-cell:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: -2px;
+    z-index: 5;
+  }
+  .jam-grid .jam-cell.is-anchor-start {
+    box-shadow: inset 0 0 0 3px var(--blue);
+    background: #edf2ff;
+  }
+
+  /* Clue numbers */
+  .jam-grid .jam-clue-badge {
+    pointer-events: none;
+    z-index: 3;
+    font-size: calc(var(--cell-size) * 0.46);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--jam-clue-color);
+  }
+
+  /* Region background color classes (theme-aware) */
+  .jam-grid .color-0 { background: #dbeafe !important; }
+  .jam-grid .color-1 { background: #e0e7ff !important; }
+  .jam-grid .color-2 { background: #fef3c7 !important; }
+  .jam-grid .color-3 { background: #dcfce7 !important; }
+  .jam-grid .color-4 { background: #fce7f3 !important; }
+  .jam-grid .color-5 { background: #ccfbf1 !important; }
+  .jam-grid .color-6 { background: #ede9fe !important; }
+  .jam-grid .color-7 { background: #ffedd5 !important; }
+
+  /* Square Region Outer Borders */
+  .jam-grid .border-top { border-top: 3px solid var(--jam-region-border) !important; }
+  .jam-grid .border-bottom { border-bottom: 3px solid var(--jam-region-border) !important; }
+  .jam-grid .border-left { border-left: 3px solid var(--jam-region-border) !important; }
+  .jam-grid .border-right { border-right: 3px solid var(--jam-region-border) !important; }
+
+  /* Selected Region Highlight */
+  .jam-grid .is-selected-square {
+    filter: brightness(0.92);
+  }
+  .jam-grid .is-selected-square.border-top { border-top-color: var(--jam-selected-border) !important; }
+  .jam-grid .is-selected-square.border-bottom { border-bottom-color: var(--jam-selected-border) !important; }
+  .jam-grid .is-selected-square.border-left { border-left-color: var(--jam-selected-border) !important; }
+  .jam-grid .is-selected-square.border-right { border-right-color: var(--jam-selected-border) !important; }
+
+  /* Drag Preview Box */
+  .jam-drag-preview {
+    position: absolute;
+    border: 3px dashed var(--blue);
+    background: rgba(49, 94, 232, 0.22);
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .05s ease-out;
+  }
+  .jam-drag-preview[hidden] {
+    display: none;
+  }
+  .jam-preview-badge {
+    background: var(--blue);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Error & Hint highlights */
+  .is-error-highlight {
+    animation: shakeError 0.4s ease-in-out;
+    background: #fee2e2 !important;
+  }
+  .is-hint-highlight {
+    animation: pulseHint 1s infinite alternate ease-in-out;
+  }
+
+  @keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-3px); }
+    40%, 80% { transform: translateX(3px); }
+  }
+  @keyframes pulseHint {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.2); }
+  }
+
+  /* Controls Toolbar */
+  .jam-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .jam-controls .btn {
+    min-height: 42px;
+    padding: 0 15px;
+    font-size: 13px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  /* Footer meta */
+  .jam-footer-meta {
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .jam-help-text, .jam-save-note {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* Overlays (Paused, Solution Modal & Victory) */
+  .jam-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 20;
+    border-radius: 16px;
+  }
+  .jam-overlay[hidden] {
+    display: none;
+  }
+  .jam-overlay-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px 24px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .jam-overlay-box h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--ink);
+  }
+  .jam-overlay-box p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--muted);
+  }
+  .jam-overlay-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+  .jam-overlay-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .victory-pill {
+    background: #edf2ff;
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+  .jam-pb-badge {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #fde68a;
+  }
+  .victory-stats-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .victory-stats-grid small {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .victory-stats-grid strong {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .victory-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+  .victory-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .jam-share-status {
+    font-size: 12px;
+    color: #16a34a;
+    margin: 0;
+    min-height: 16px;
+  }
+
+  /* Educational SEO Content */
+  .jam-article {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    line-height: 1.68;
+    color: var(--ink);
+  }
+  .jam-article h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin: 36px 0 14px;
+    color: var(--ink);
+  }
+  .jam-article h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 22px 0 10px;
+    color: var(--ink);
+  }
+  .jam-article p {
+    font-size: 15px;
+    margin: 0 0 16px;
+    color: var(--muted);
+  }
+  .jam-article ul, .jam-article ol {
+    margin: 0 0 18px 24px;
+    padding: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .jam-article li {
+    margin-bottom: 8px;
+  }
+  .jam-article strong {
+    color: var(--ink);
+  }
+  .jam-article a {
+    color: var(--blue);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .jam-article a:hover {
+    color: var(--blue);
+  }
+  .jam-faq-section {
+    padding-top: 14px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Dark Theme Styling */
+  html[data-theme="dark"] .jam-shell {
+    background: #141f3d;
+    border-color: #27375a;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+  }
+  html[data-theme="dark"] .jam-diff-btn {
+    background: #151f3d;
+    border-color: #293858;
+    color: #f1f5ff;
+  }
+  html[data-theme="dark"] .jam-diff-btn:hover {
+    border-color: #8ea8ff;
+  }
+  html[data-theme="dark"] .jam-diff-btn.is-active {
+    background: #263960;
+    border-color: #8ea8ff;
+    color: #d5dfff;
+  }
+  html[data-theme="dark"] .jam-diff-btn.is-active span {
+    color: #a9bcff;
+  }
+  html[data-theme="dark"] .jam-stats-bar {
+    background: #111b36;
+    border-color: #293858;
+  }
+  html[data-theme="dark"] .jam-stat-item strong {
+    color: #f1f5ff;
+  }
+  html[data-theme="dark"] .jam-board-wrapper {
+    background: #0b132b;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .jam-grid {
+    --jam-grid-border: #475569;
+    --jam-grid-line: #4a6296;
+    --jam-cell-bg: #151f3d;
+    --jam-cell-hover: #1f2d52;
+    --jam-clue-color: #f1f5ff;
+    --jam-region-border: #93c5fd;
+    --jam-selected-border: #f87171;
+    background: var(--jam-cell-bg);
+    border-color: var(--jam-grid-border);
+  }
+  html[data-theme="dark"] .jam-grid .jam-cell.is-anchor-start {
+    box-shadow: inset 0 0 0 3px #8ea8ff;
+    background: #1e294b;
+  }
+
+  /* Dark theme region colors */
+  html[data-theme="dark"] .jam-grid .color-0 { background: #1e3a8a !important; }
+  html[data-theme="dark"] .jam-grid .color-1 { background: #312e81 !important; }
+  html[data-theme="dark"] .jam-grid .color-2 { background: #713f12 !important; }
+  html[data-theme="dark"] .jam-grid .color-3 { background: #14532d !important; }
+  html[data-theme="dark"] .jam-grid .color-4 { background: #831843 !important; }
+  html[data-theme="dark"] .jam-grid .color-5 { background: #134e4a !important; }
+  html[data-theme="dark"] .jam-grid .color-6 { background: #4c1d95 !important; }
+  html[data-theme="dark"] .jam-grid .color-7 { background: #7c2d12 !important; }
+
+  html[data-theme="dark"] .jam-toast {
+    background: #1e294b;
+    border-color: #315ee8;
+    color: #93c5fd;
+  }
+  html[data-theme="dark"] .jam-overlay-box {
+    background: #141f3d;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .jam-overlay-box h2,
+  html[data-theme="dark"] .victory-stats-grid strong {
+    color: #f1f5ff;
+  }
+  html[data-theme="dark"] .victory-stats-grid {
+    background: #111b36;
+    border-color: #293858;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .jam-header-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .jam-diff-group {
+      width: 100%;
+    }
+    .jam-diff-btn {
+      flex: 1;
+      min-width: 70px;
+      padding: 8px 6px;
+      align-items: center;
+      text-align: center;
+    }
+    .jam-diff-btn strong { font-size: 12px; }
+    .jam-diff-btn span { font-size: 9px; }
+    .jam-header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .jam-sound-btn {
+      flex: 1;
+      justify-content: center;
+    }
+    .jam-stats-bar {
+      padding: 10px 8px;
+      gap: 6px;
+    }
+    .jam-stat-item strong {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .jam-shell {
+      padding: 16px 12px;
+      gap: 16px;
+    }
+    .jam-board-wrapper {
+      padding: 16px 8px;
+      min-height: 280px;
+    }
+    .jam-controls .btn {
+      flex: 1 1 calc(25% - 8px);
+      min-height: 38px;
+      padding: 0 8px;
+      font-size: 12px;
+    }
+  }
+</style>
+
+<script define:vars={{ rawPuzzles: SQUARE_JAM_PUZZLES }}>
+  // Web Audio Synthesizer
+  class SoundManager {
+    constructor() {
+      this.ctx = null;
+      this.enabled = true;
+    }
+    init() {
+      if (!this.ctx && typeof window !== 'undefined') {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) this.ctx = new AudioClass();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+    playTone(freq, type = 'sine', duration = 0.08, gainVal = 0.1) {
+      if (!this.enabled) return;
+      try {
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + duration);
+      } catch (e) {}
+    }
+    playClick() { this.playTone(180, 'triangle', 0.04, 0.06); }
+    playPlace(size = 1) {
+      const freqs = [330, 440, 550, 660, 770];
+      this.playTone(freqs[(size - 1) % freqs.length], 'sine', 0.09, 0.09);
+    }
+    playErase() { this.playTone(220, 'triangle', 0.06, 0.05); }
+    playError() {
+      this.playTone(180, 'sawtooth', 0.12, 0.1);
+      setTimeout(() => this.playTone(140, 'sawtooth', 0.14, 0.1), 100);
+    }
+    playHint() {
+      this.playTone(523.25, 'sine', 0.09, 0.1);
+      setTimeout(() => this.playTone(659.25, 'sine', 0.12, 0.12), 80);
+    }
+    playWin() {
+      if (!this.enabled) return;
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((f, i) => {
+        setTimeout(() => this.playTone(f, 'triangle', 0.25, 0.12), i * 110);
+      });
+    }
+  }
+
+  const sound = new SoundManager();
+
+  // Square Jam Game Controller
+  class SquareJamGame {
+    constructor(puzzles) {
+      this.puzzles = puzzles;
+      this.currentDiff = 'easy';
+      this.puzzleIndex = 0;
+      this.puzzle = null;
+      this.placedSquares = []; // array of { r0, c0, s, colorIdx }
+      this.history = []; // stack of actions for undo
+      this.redoStack = []; // stack of actions for redo
+      this.selectedSquareIdx = -1;
+      this.anchorStartCell = null; // for two-tap mode { r, c }
+      this.isDragging = false;
+      this.dragStart = null; // { r, c, clientX, clientY }
+      this.moves = 0;
+      this.hintsUsed = 0;
+      this.timerSeconds = 0;
+      this.timerInterval = null;
+      this.isTimerRunning = false;
+      this.isPaused = false;
+      this.isWon = false;
+      this.isAssisted = false;
+      this.storageKey = 'pf-square-jam-v1';
+
+      this.initElements();
+      this.bindEvents();
+      this.loadSettings();
+      this.startFromURLOrSaved();
+    }
+
+    initElements() {
+      this.gridContainerEl = document.querySelector('#jam-grid-container');
+      this.gridEl = document.querySelector('#jam-grid');
+      this.previewEl = document.querySelector('#jam-drag-preview');
+      this.previewBadgeEl = document.querySelector('#jam-preview-badge');
+      this.timerEl = document.querySelector('#jam-timer');
+      this.movesEl = document.querySelector('#jam-moves');
+      this.coverageEl = document.querySelector('#jam-coverage');
+      this.bestTimeEl = document.querySelector('#jam-best-time');
+      this.toastEl = document.querySelector('#jam-toast');
+      this.toastTextEl = document.querySelector('#jam-toast-text');
+      this.pausedEl = document.querySelector('#jam-paused');
+      this.solutionModalEl = document.querySelector('#jam-solution-modal');
+      this.victoryEl = document.querySelector('#jam-victory');
+      this.liveEl = document.querySelector('#jam-live');
+      this.diffButtons = Array.from(document.querySelectorAll('.jam-diff-btn'));
+      this.soundBtn = document.querySelector('#jam-sound-toggle');
+      this.soundLabel = document.querySelector('.sound-status-label');
+
+      this.newBtn = document.querySelector('#jam-new-btn');
+      this.restartBtn = document.querySelector('#jam-restart-btn');
+      this.undoBtn = document.querySelector('#jam-undo-btn');
+      this.redoBtn = document.querySelector('#jam-redo-btn');
+      this.eraseBtn = document.querySelector('#jam-erase-btn');
+      this.hintBtn = document.querySelector('#jam-hint-btn');
+      this.checkBtn = document.querySelector('#jam-check-btn');
+      this.solveBtn = document.querySelector('#jam-solve-btn');
+      this.pauseBtn = document.querySelector('#jam-pause-btn');
+      this.resumeBtn = document.querySelector('#jam-resume');
+      this.confirmSolutionBtn = document.querySelector('#jam-confirm-solution');
+      this.cancelSolutionBtn = document.querySelector('#jam-cancel-solution');
+      this.nextPuzzleBtn = document.querySelector('#jam-next-puzzle');
+      this.shareBtn = document.querySelector('#jam-share');
+      this.shareStatusEl = document.querySelector('#jam-share-status');
+      this.dailyLabelEl = document.querySelector('#jam-daily-label');
+    }
+
+    bindEvents() {
+      // Difficulty buttons
+      this.diffButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const diff = btn.dataset.difficulty;
+          if (diff) this.setDifficulty(diff);
+        });
+      });
+
+      // Controls
+      this.newBtn?.addEventListener('click', () => this.nextPuzzle());
+      this.restartBtn?.addEventListener('click', () => this.restartGame());
+      this.undoBtn?.addEventListener('click', () => this.undo());
+      this.redoBtn?.addEventListener('click', () => this.redo());
+      this.eraseBtn?.addEventListener('click', () => this.eraseSelectedSquare());
+      this.hintBtn?.addEventListener('click', () => this.giveHint());
+      this.checkBtn?.addEventListener('click', () => this.manualCheck());
+      this.solveBtn?.addEventListener('click', () => this.promptShowSolution());
+      this.pauseBtn?.addEventListener('click', () => this.togglePause());
+      this.resumeBtn?.addEventListener('click', () => this.togglePause());
+      this.confirmSolutionBtn?.addEventListener('click', () => this.revealSolution());
+      this.cancelSolutionBtn?.addEventListener('click', () => {
+        if (this.solutionModalEl) this.solutionModalEl.hidden = true;
+      });
+      this.nextPuzzleBtn?.addEventListener('click', () => {
+        if (this.victoryEl) this.victoryEl.hidden = true;
+        this.nextPuzzle();
+      });
+      this.shareBtn?.addEventListener('click', () => this.shareResult());
+
+      // Sound toggle
+      this.soundBtn?.addEventListener('click', () => {
+        sound.enabled = !sound.enabled;
+        this.updateSoundButton();
+        this.saveState();
+      });
+
+      // Pointer drag interaction on grid
+      if (this.gridContainerEl) {
+        this.gridContainerEl.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
+        window.addEventListener('pointermove', (e) => this.handlePointerMove(e));
+        window.addEventListener('pointerup', (e) => this.handlePointerUp(e));
+        window.addEventListener('pointercancel', (e) => this.handlePointerCancel(e));
+      }
+
+      // Keyboard
+      window.addEventListener('keydown', (e) => this.handleKeyDown(e));
+    }
+
+    updateSoundButton() {
+      if (this.soundLabel) {
+        this.soundLabel.textContent = sound.enabled ? 'Sound On' : 'Sound Off';
+      }
+      if (this.soundBtn) {
+        this.soundBtn.classList.toggle('is-muted', !sound.enabled);
+      }
+    }
+
+    startFromURLOrSaved() {
+      const params = new URLSearchParams(window.location.search);
+      const isDaily = params.get('daily') === '1' || params.get('mode') === 'daily' || params.get('daily') === 'today';
+      const urlDiff = params.get('diff');
+
+      if (isDaily) {
+        this.setDifficulty('daily');
+        return;
+      }
+
+      if (urlDiff && ['easy', 'medium', 'hard'].includes(urlDiff)) {
+        this.setDifficulty(urlDiff);
+        return;
+      }
+
+      const saved = this.loadState();
+      if (saved && saved.puzzleId) {
+        const found = this.puzzles.find(p => p.id === saved.puzzleId);
+        if (found) {
+          this.currentDiff = found.difficulty;
+          this.puzzle = found;
+          this.puzzleIndex = this.getDiffPuzzles(found.difficulty).findIndex(p => p.id === found.id);
+          this.initBoard(saved.placedSquares, saved.moves, saved.timerSeconds);
+          this.updateDiffButtons();
+          this.updateBestDisplay();
+          return;
+        }
+      }
+
+      this.setDifficulty('easy');
+    }
+
+    getDiffPuzzles(diff) {
+      if (diff === 'daily') {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        return [getDailyPuzzleClient(this.puzzles, todayStr)];
+      }
+      return this.puzzles.filter(p => p.difficulty === diff);
+    }
+
+    setDifficulty(diff) {
+      this.currentDiff = diff;
+      this.puzzleIndex = 0;
+      const list = this.getDiffPuzzles(diff);
+      this.puzzle = list[0] || this.puzzles[0];
+      this.updateDiffButtons();
+      this.initBoard();
+      this.updateBestDisplay();
+      this.saveState();
+    }
+
+    updateDiffButtons() {
+      this.diffButtons.forEach(btn => {
+        const active = btn.dataset.difficulty === this.currentDiff;
+        btn.classList.toggle('is-active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+    }
+
+    initBoard(savedSquares = null, savedMoves = 0, savedTimer = 0) {
+      this.stopTimer();
+      this.isWon = false;
+      this.isPaused = false;
+      this.isAssisted = false;
+      this.selectedSquareIdx = -1;
+      this.anchorStartCell = null;
+      if (this.pausedEl) this.pausedEl.hidden = true;
+      if (this.victoryEl) this.victoryEl.hidden = true;
+      if (this.solutionModalEl) this.solutionModalEl.hidden = true;
+      this.history = [];
+      this.redoStack = [];
+      this.hintsUsed = 0;
+      this.moves = savedMoves;
+      this.timerSeconds = savedTimer;
+      this.isTimerRunning = false;
+
+      if (savedSquares && Array.isArray(savedSquares)) {
+        this.placedSquares = savedSquares.map(s => ({ ...s }));
+      } else {
+        this.placedSquares = [];
+      }
+
+      this.renderGrid();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.hideToast();
+    }
+
+    renderGrid() {
+      if (!this.gridEl || !this.puzzle) return;
+      this.gridEl.innerHTML = '';
+      this.gridEl.style.setProperty('--grid-cols', this.puzzle.cols);
+      this.gridEl.style.setProperty('--grid-rows', this.puzzle.rows);
+
+      for (let r = 0; r < this.puzzle.rows; r++) {
+        for (let c = 0; c < this.puzzle.cols; c++) {
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.className = 'jam-cell';
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+          cell.setAttribute('role', 'gridcell');
+          cell.setAttribute('tabindex', '0');
+
+          const clue = this.puzzle.clues[r][c];
+          if (clue !== null) {
+            const badge = document.createElement('span');
+            badge.className = 'jam-clue-badge';
+            badge.textContent = clue;
+            cell.appendChild(badge);
+            cell.setAttribute('aria-label', `Cell (${r + 1}, ${c + 1}) with clue number ${clue}`);
+          } else {
+            cell.setAttribute('aria-label', `Empty cell (${r + 1}, ${c + 1})`);
+          }
+
+          // Right click erases square under cursor
+          cell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const sqIdx = this.getSquareAtCell(r, c);
+            if (sqIdx !== -1) {
+              this.removeSquareAt(sqIdx);
+            }
+          });
+
+          this.gridEl.appendChild(cell);
+        }
+      }
+
+      this.refreshBoardUI();
+    }
+
+    getCellEl(r, c) {
+      return this.gridEl?.querySelector(`button[data-r="${r}"][data-c="${c}"]`);
+    }
+
+    getCellFromPoint(clientX, clientY) {
+      const el = document.elementFromPoint(clientX, clientY);
+      const cell = el?.closest('.jam-cell');
+      if (cell) {
+        const r = parseInt(cell.dataset.r, 10);
+        const c = parseInt(cell.dataset.c, 10);
+        if (!isNaN(r) && !isNaN(c)) return { r, c };
+      }
+      return null;
+    }
+
+    getSquareAtCell(r, c) {
+      return this.placedSquares.findIndex(sq =>
+        r >= sq.r0 && r < sq.r0 + sq.s &&
+        c >= sq.c0 && c < sq.c0 + sq.s
+      );
+    }
+
+    refreshBoardUI() {
+      // Clear all cell region classes and borders
+      const cells = this.gridEl?.querySelectorAll('.jam-cell') || [];
+      cells.forEach(cell => {
+        cell.className = 'jam-cell';
+        if (cell.dataset.r && cell.dataset.c) {
+          const r = parseInt(cell.dataset.r, 10);
+          const c = parseInt(cell.dataset.c, 10);
+          if (this.anchorStartCell && this.anchorStartCell.r === r && this.anchorStartCell.c === c) {
+            cell.classList.add('is-anchor-start');
+          }
+        }
+      });
+
+      // Apply region colors and borders
+      this.placedSquares.forEach((sq, idx) => {
+        const colorClass = `color-${sq.colorIdx % 8}`;
+        const isSelected = (idx === this.selectedSquareIdx);
+
+        for (let r = sq.r0; r < sq.r0 + sq.s; r++) {
+          for (let c = sq.c0; c < sq.c0 + sq.s; c++) {
+            const cell = this.getCellEl(r, c);
+            if (cell) {
+              cell.classList.add('is-occupied', colorClass);
+              if (isSelected) cell.classList.add('is-selected-square');
+
+              if (r === sq.r0) cell.classList.add('border-top');
+              if (r === sq.r0 + sq.s - 1) cell.classList.add('border-bottom');
+              if (c === sq.c0) cell.classList.add('border-left');
+              if (c === sq.c0 + sq.s - 1) cell.classList.add('border-right');
+            }
+          }
+        }
+      });
+
+      this.updateCoverageStats();
+    }
+
+    updateCoverageStats() {
+      let covered = 0;
+      this.placedSquares.forEach(sq => {
+        covered += sq.s * sq.s;
+      });
+      const total = this.puzzle ? this.puzzle.rows * this.puzzle.cols : 0;
+      if (this.coverageEl) {
+        this.coverageEl.textContent = `${covered} / ${total}`;
+      }
+    }
+
+    // Pointer Events: Click, Drag, Preview
+    handlePointerDown(e) {
+      if (this.isWon || this.isPaused || e.button === 2) return;
+      const cell = this.getCellFromPoint(e.clientX, e.clientY);
+      if (!cell) return;
+
+      this.startTimer();
+
+      // Check if clicked on an existing square
+      const existingIdx = this.getSquareAtCell(cell.r, cell.c);
+
+      // Start drag / tap anchor
+      this.isDragging = true;
+      this.dragStart = { r: cell.r, c: cell.c, clientX: e.clientX, clientY: e.clientY };
+      this.dragCurrent = { r: cell.r, c: cell.c };
+
+      // Update preview
+      this.updatePreview(this.dragStart.r, this.dragStart.c, this.dragCurrent.r, this.dragCurrent.c);
+    }
+
+    handlePointerMove(e) {
+      if (!this.isDragging || !this.dragStart) return;
+      const cell = this.getCellFromPoint(e.clientX, e.clientY);
+      if (cell) {
+        this.dragCurrent = { r: cell.r, c: cell.c };
+        this.updatePreview(this.dragStart.r, this.dragStart.c, this.dragCurrent.r, this.dragCurrent.c);
+      }
+    }
+
+    handlePointerUp(e) {
+      if (!this.isDragging || !this.dragStart) return;
+      this.isDragging = false;
+      this.hidePreview();
+
+      const start = this.dragStart;
+      const end = this.dragCurrent || start;
+      this.dragStart = null;
+      this.dragCurrent = null;
+
+      const dr = Math.abs(end.r - start.r);
+      const dc = Math.abs(end.c - start.c);
+
+      // If dragged at least 1 cell:
+      if (dr > 0 || dc > 0) {
+        this.anchorStartCell = null;
+        const side = Math.max(dr, dc) + 1;
+        const r0 = Math.min(start.r, end.r);
+        const c0 = Math.min(start.c, end.c);
+
+        // Fit within grid
+        const adjR0 = Math.min(r0, this.puzzle.rows - side);
+        const adjC0 = Math.min(c0, this.puzzle.cols - side);
+        if (adjR0 >= 0 && adjC0 >= 0) {
+          this.placeSquare(adjR0, adjC0, side);
+        }
+        return;
+      }
+
+      // If clicked without dragging (Tap interaction):
+      const r = start.r;
+      const c = start.c;
+      const existingIdx = this.getSquareAtCell(r, c);
+
+      // Two-tap mode
+      if (this.anchorStartCell) {
+        const aR = this.anchorStartCell.r;
+        const aC = this.anchorStartCell.c;
+        this.anchorStartCell = null;
+
+        if (aR === r && aC === c) {
+          // Tapped same cell: deselect
+          this.refreshBoardUI();
+          return;
+        }
+
+        const tDr = Math.abs(r - aR);
+        const tDc = Math.abs(c - aC);
+        const side = Math.max(tDr, tDc) + 1;
+        const r0 = Math.min(aR, r);
+        const c0 = Math.min(aC, c);
+        const adjR0 = Math.min(r0, this.puzzle.rows - side);
+        const adjC0 = Math.min(c0, this.puzzle.cols - side);
+
+        if (adjR0 >= 0 && adjC0 >= 0) {
+          this.placeSquare(adjR0, adjC0, side);
+        }
+        return;
+      }
+
+      // If clicked on an existing square, select it
+      if (existingIdx !== -1) {
+        if (this.selectedSquareIdx === existingIdx) {
+          // Double tap: erase!
+          this.removeSquareAt(existingIdx);
+        } else {
+          this.selectedSquareIdx = existingIdx;
+          sound.playClick();
+          this.refreshBoardUI();
+        }
+        return;
+      }
+
+      // Otherwise, set as two-tap anchor start
+      this.selectedSquareIdx = -1;
+      this.anchorStartCell = { r, c };
+      sound.playClick();
+      this.refreshBoardUI();
+    }
+
+    handlePointerCancel() {
+      this.isDragging = false;
+      this.dragStart = null;
+      this.dragCurrent = null;
+      this.hidePreview();
+    }
+
+    updatePreview(r1, c1, r2, c2) {
+      if (!this.previewEl || !this.gridEl || !this.puzzle) return;
+      const dr = Math.abs(r2 - r1);
+      const dc = Math.abs(c2 - c1);
+      const side = Math.max(dr, dc) + 1;
+      const r0 = Math.max(0, Math.min(Math.min(r1, r2), this.puzzle.rows - side));
+      const c0 = Math.max(0, Math.min(Math.min(c1, c2), this.puzzle.cols - side));
+
+      const firstCell = this.getCellEl(r0, c0);
+      if (!firstCell) return;
+
+      const cellRect = firstCell.getBoundingClientRect();
+      const gridRect = this.gridEl.getBoundingClientRect();
+
+      const zoom = parseFloat(getComputedStyle(document.querySelector('#jam-board-zoom-target') || document.body).getPropertyValue('--zoom-scale')) || 1;
+
+      const left = (cellRect.left - gridRect.left) / zoom;
+      const top = (cellRect.top - gridRect.top) / zoom;
+      const sizePx = (cellRect.width / zoom) * side;
+
+      this.previewEl.style.left = `${left}px`;
+      this.previewEl.style.top = `${top}px`;
+      this.previewEl.style.width = `${sizePx}px`;
+      this.previewEl.style.height = `${sizePx}px`;
+
+      if (this.previewBadgeEl) {
+        this.previewBadgeEl.textContent = `${side}×${side}`;
+      }
+      this.previewEl.hidden = false;
+    }
+
+    hidePreview() {
+      if (this.previewEl) this.previewEl.hidden = true;
+    }
+
+    placeSquare(r0, c0, s) {
+      // Remove any squares that overlap with the new square
+      const removed = [];
+      const kept = [];
+      this.placedSquares.forEach(sq => {
+        const overlaps = !(
+          r0 + s <= sq.r0 ||
+          sq.r0 + sq.s <= r0 ||
+          c0 + s <= sq.c0 ||
+          sq.c0 + sq.s <= c0
+        );
+        if (overlaps) removed.push(sq);
+        else kept.push(sq);
+      });
+
+      const colorIdx = (this.placedSquares.length + Math.floor(Math.random() * 8)) % 8;
+      const newSquare = { r0, c0, s, colorIdx };
+      kept.push(newSquare);
+
+      // Record to undo stack
+      this.history.push({
+        type: 'place',
+        newSquare,
+        removedSquares: removed
+      });
+      this.redoStack = [];
+
+      this.placedSquares = kept;
+      this.selectedSquareIdx = -1;
+      this.anchorStartCell = null;
+      this.moves++;
+
+      sound.playPlace(s);
+      this.refreshBoardUI();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+
+      // Check win condition
+      this.checkWinCondition(false);
+    }
+
+    eraseSelectedSquare() {
+      if (this.selectedSquareIdx < 0 || this.selectedSquareIdx >= this.placedSquares.length) {
+        this.showToast('Tap or select a square first to erase it.', 'normal');
+        return;
+      }
+      this.removeSquareAt(this.selectedSquareIdx);
+    }
+
+    removeSquareAt(idx) {
+      const removed = this.placedSquares.splice(idx, 1)[0];
+      this.history.push({
+        type: 'remove',
+        removedSquare: removed
+      });
+      this.redoStack = [];
+      this.selectedSquareIdx = -1;
+      this.moves++;
+
+      sound.playErase();
+      this.refreshBoardUI();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+      this.showToast(`Erased ${removed.s}×${removed.s} square.`, 'normal');
+    }
+
+    undo() {
+      if (this.history.length === 0 || this.isWon || this.isPaused) return;
+      const action = this.history.pop();
+      this.redoStack.push(action);
+
+      if (action.type === 'place') {
+        // Remove the placed square
+        this.placedSquares = this.placedSquares.filter(s => s !== action.newSquare);
+        // Restore removed squares
+        if (action.removedSquares && action.removedSquares.length > 0) {
+          this.placedSquares.push(...action.removedSquares);
+        }
+      } else if (action.type === 'remove') {
+        // Re-add removed square
+        this.placedSquares.push(action.removedSquare);
+      }
+
+      this.selectedSquareIdx = -1;
+      this.anchorStartCell = null;
+      this.moves++;
+
+      sound.playClick();
+      this.refreshBoardUI();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+    }
+
+    redo() {
+      if (this.redoStack.length === 0 || this.isWon || this.isPaused) return;
+      const action = this.redoStack.pop();
+      this.history.push(action);
+
+      if (action.type === 'place') {
+        // Remove any overlapping with newSquare
+        if (action.removedSquares && action.removedSquares.length > 0) {
+          this.placedSquares = this.placedSquares.filter(s => !action.removedSquares.includes(s));
+        }
+        this.placedSquares.push(action.newSquare);
+      } else if (action.type === 'remove') {
+        this.placedSquares = this.placedSquares.filter(s => s !== action.removedSquare);
+      }
+
+      this.selectedSquareIdx = -1;
+      this.anchorStartCell = null;
+      this.moves++;
+
+      sound.playClick();
+      this.refreshBoardUI();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+      this.checkWinCondition(false);
+    }
+
+    updateUndoRedo() {
+      if (this.undoBtn) this.undoBtn.disabled = this.history.length === 0 || this.isWon;
+      if (this.redoBtn) this.redoBtn.disabled = this.redoStack.length === 0 || this.isWon;
+    }
+
+    checkWinCondition(isManual = false) {
+      if (this.isWon || !this.puzzle) return false;
+
+      // Validate full board
+      const res = this.validateCurrentBoard();
+      if (res.valid) {
+        this.handleVictory();
+        return true;
+      }
+
+      if (isManual) {
+        const partial = this.checkPartialBoard();
+        this.showToast(partial.message, partial.type);
+        if (partial.type === 'error') sound.playError();
+        else sound.playClick();
+      }
+      return false;
+    }
+
+    validateCurrentBoard() {
+      const rows = this.puzzle.rows;
+      const cols = this.puzzle.cols;
+      const board = Array.from({ length: rows }, () => new Array(cols).fill(-1));
+
+      for (let i = 0; i < this.placedSquares.length; i++) {
+        const sq = this.placedSquares[i];
+        if (sq.r0 < 0 || sq.r0 + sq.s > rows || sq.c0 < 0 || sq.c0 + sq.s > cols) {
+          return { valid: false, reason: 'Out of bounds' };
+        }
+
+        let clueVal = null;
+        for (let r = sq.r0; r < sq.r0 + sq.s; r++) {
+          for (let c = sq.c0; c < sq.c0 + sq.s; c++) {
+            if (board[r][c] !== -1) return { valid: false, reason: 'Overlapping squares' };
+            board[r][c] = i;
+
+            const cVal = this.puzzle.clues[r][c];
+            if (cVal !== null) {
+              if (cVal !== sq.s) return { valid: false, reason: 'Clue mismatch' };
+              if (clueVal === null) clueVal = cVal;
+              else if (clueVal !== cVal) return { valid: false, reason: 'Multiple conflicting clues' };
+            }
+          }
+        }
+      }
+
+      // Check all covered
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (board[r][c] === -1) return { valid: false, reason: 'Uncovered cells' };
+        }
+      }
+
+      // Check Tatami rule
+      for (let y = 1; y < rows; y++) {
+        for (let x = 1; x < cols; x++) {
+          const id0 = board[y - 1][x - 1];
+          const id1 = board[y - 1][x];
+          const id2 = board[y][x - 1];
+          const id3 = board[y][x];
+
+          if (id0 !== id1 && id0 !== id2 && id0 !== id3 &&
+              id1 !== id2 && id1 !== id3 && id2 !== id3) {
+            return { valid: false, reason: 'Tatami 4-way corner violation' };
+          }
+        }
+      }
+
+      return { valid: true };
+    }
+
+    checkPartialBoard() {
+      const rows = this.puzzle.rows;
+      const cols = this.puzzle.cols;
+      const board = Array.from({ length: rows }, () => new Array(cols).fill(-1));
+
+      if (this.placedSquares.length === 0) {
+        return { valid: true, message: 'Select and place squares to begin solving the puzzle.', type: 'normal' };
+      }
+
+      for (let i = 0; i < this.placedSquares.length; i++) {
+        const sq = this.placedSquares[i];
+        for (let r = sq.r0; r < sq.r0 + sq.s; r++) {
+          for (let c = sq.c0; c < sq.c0 + sq.s; c++) {
+            if (board[r][c] !== -1) {
+              return { valid: false, message: `Overlapping squares detected at cell (${r + 1}, ${c + 1}).`, type: 'error' };
+            }
+            board[r][c] = i;
+
+            const cVal = this.puzzle.clues[r][c];
+            if (cVal !== null && cVal !== sq.s) {
+              return {
+                valid: false,
+                message: `Clue ${cVal} at row ${r + 1}, column ${c + 1} requires a ${cVal}×${cVal} square, but is in a ${sq.s}×${sq.s} square.`,
+                type: 'error'
+              };
+            }
+          }
+        }
+      }
+
+      // Check Tatami at filled intersections
+      for (let y = 1; y < rows; y++) {
+        for (let x = 1; x < cols; x++) {
+          const id0 = board[y - 1][x - 1];
+          const id1 = board[y - 1][x];
+          const id2 = board[y][x - 1];
+          const id3 = board[y][x];
+
+          if (id0 !== -1 && id1 !== -1 && id2 !== -1 && id3 !== -1) {
+            if (id0 !== id1 && id0 !== id2 && id0 !== id3 &&
+                id1 !== id2 && id1 !== id3 && id2 !== id3) {
+              return {
+                valid: false,
+                message: `Tatami violation: 4 squares meet at intersection (${y}, ${x}). Stagger square boundaries.`,
+                type: 'error'
+              };
+            }
+          }
+        }
+      }
+
+      let covered = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (board[r][c] !== -1) covered++;
+        }
+      }
+
+      const total = rows * cols;
+      if (covered === total) {
+        return { valid: true, message: 'All cells covered and all rules satisfied! Congratulations!', type: 'success' };
+      }
+
+      return {
+        valid: true,
+        message: `Looking good! ${covered} of ${total} cells covered with valid squares. Keep going!`,
+        type: 'success'
+      };
+    }
+
+    giveHint() {
+      if (this.isWon || this.isPaused || !this.puzzle) return;
+      this.startTimer();
+
+      // 1. Check if user placed an incorrect square (not in solution)
+      let incorrectSquareIdx = -1;
+      for (let i = 0; i < this.placedSquares.length; i++) {
+        const sq = this.placedSquares[i];
+        const inSolution = this.puzzle.solution.some(s => s.r0 === sq.r0 && s.c0 === sq.c0 && s.s === sq.s);
+        if (!inSolution) {
+          incorrectSquareIdx = i;
+          break;
+        }
+      }
+
+      if (incorrectSquareIdx !== -1) {
+        this.selectedSquareIdx = incorrectSquareIdx;
+        const badSq = this.placedSquares[incorrectSquareIdx];
+        this.refreshBoardUI();
+        this.showToast(`Hint: The ${badSq.s}×${badSq.s} square at row ${badSq.r0 + 1}, col ${badSq.c0 + 1} does not belong in the solution.`, 'error');
+        sound.playError();
+        this.hintsUsed++;
+        return;
+      }
+
+      // 2. Find next required square from solution
+      const missingSquare = this.puzzle.solution.find(solSq =>
+        !this.placedSquares.some(ps => ps.r0 === solSq.r0 && ps.c0 === solSq.c0 && ps.s === solSq.s)
+      );
+
+      if (missingSquare) {
+        this.placeSquare(missingSquare.r0, missingSquare.c0, missingSquare.s);
+        
+        // Find hint step message or explain why
+        const hintIdx = Math.min(this.hintsUsed, this.puzzle.hintSteps.length - 1);
+        const explanation = this.puzzle.hintSteps[hintIdx] || `Placed ${missingSquare.s}×${missingSquare.s} square at row ${missingSquare.r0 + 1}, column ${missingSquare.c0 + 1}.`;
+        
+        this.showToast(`Hint: ${explanation}`, 'success');
+        sound.playHint();
+        this.hintsUsed++;
+        return;
+      }
+
+      this.showToast('All currently placed squares are correct! Complete the remaining spaces.', 'normal');
+      sound.playClick();
+    }
+
+    manualCheck() {
+      this.checkWinCondition(true);
+    }
+
+    promptShowSolution() {
+      if (this.isWon || this.isPaused) return;
+      if (this.solutionModalEl) this.solutionModalEl.hidden = false;
+    }
+
+    revealSolution() {
+      if (this.solutionModalEl) this.solutionModalEl.hidden = true;
+      if (!this.puzzle) return;
+
+      this.isAssisted = true;
+      this.stopTimer();
+
+      this.placedSquares = this.puzzle.solution.map((sq, i) => ({
+        ...sq,
+        colorIdx: i % 8
+      }));
+
+      sound.playPlace(3);
+      this.refreshBoardUI();
+      this.updateStats();
+      this.showToast('Solution revealed! Study the square layout and Tatami intersections.', 'normal');
+    }
+
+    handleVictory() {
+      this.isWon = true;
+      this.stopTimer();
+      sound.playWin();
+
+      // Personal Best
+      const bestKey = `pf-square-jam-best-${this.currentDiff}`;
+      let isNewPB = false;
+      if (!this.isAssisted) {
+        try {
+          const savedBest = JSON.parse(localStorage.getItem(bestKey) || 'null');
+          if (!savedBest || this.timerSeconds < savedBest.time || (this.timerSeconds === savedBest.time && this.moves < savedBest.moves)) {
+            isNewPB = true;
+            localStorage.setItem(bestKey, JSON.stringify({ time: this.timerSeconds, moves: this.moves }));
+          }
+        } catch (e) {}
+      }
+
+      // Record daily challenge completion
+      if (this.currentDiff === 'daily') {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        try {
+          localStorage.setItem(`pf-square-jam-daily-solved-${todayStr}`, 'true');
+        } catch (e) {}
+      }
+
+      // Show Victory Modal
+      const diffLabel = this.currentDiff === 'daily' ? 'Daily Challenge' : this.currentDiff.charAt(0).toUpperCase() + this.currentDiff.slice(1);
+      const diffEl = document.querySelector('#victory-diff-label');
+      const timeEl = document.querySelector('#victory-time');
+      const movesEl = document.querySelector('#victory-moves');
+      const hintsEl = document.querySelector('#victory-hints');
+      const pbBadge = document.querySelector('#jam-pb-badge');
+
+      if (diffEl) diffEl.textContent = diffLabel;
+      if (timeEl) timeEl.textContent = this.formatTime(this.timerSeconds);
+      if (movesEl) movesEl.textContent = this.moves;
+      if (hintsEl) hintsEl.textContent = this.hintsUsed;
+      if (pbBadge) pbBadge.hidden = !isNewPB;
+
+      if (this.victoryEl) this.victoryEl.hidden = false;
+      this.updateBestDisplay();
+      this.announce(`Puzzle Solved in ${this.formatTime(this.timerSeconds)} and ${this.moves} moves!`);
+    }
+
+    restartGame() {
+      this.initBoard();
+      sound.playClick();
+      this.showToast('Puzzle restarted.', 'normal');
+    }
+
+    nextPuzzle() {
+      const list = this.getDiffPuzzles(this.currentDiff);
+      this.puzzleIndex = (this.puzzleIndex + 1) % list.length;
+      this.puzzle = list[this.puzzleIndex];
+      this.initBoard();
+      sound.playClick();
+      this.showToast(`Loaded ${this.puzzle.title}.`, 'normal');
+    }
+
+    togglePause() {
+      if (this.isWon) return;
+      this.isPaused = !this.isPaused;
+      if (this.pausedEl) this.pausedEl.hidden = !this.isPaused;
+      if (this.isPaused) {
+        this.stopTimer();
+      } else {
+        this.startTimer();
+      }
+      sound.playClick();
+    }
+
+    startTimer() {
+      if (this.isTimerRunning || this.isPaused || this.isWon) return;
+      this.isTimerRunning = true;
+      this.timerInterval = setInterval(() => {
+        this.timerSeconds++;
+        this.updateTimerDisplay();
+      }, 1000);
+    }
+
+    stopTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+      this.isTimerRunning = false;
+    }
+
+    updateTimerDisplay() {
+      if (this.timerEl) this.timerEl.textContent = this.formatTime(this.timerSeconds);
+    }
+
+    updateStats() {
+      if (this.movesEl) this.movesEl.textContent = this.moves;
+      this.updateTimerDisplay();
+    }
+
+    formatTime(sec) {
+      const m = Math.floor(sec / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    updateBestDisplay() {
+      const bestKey = `pf-square-jam-best-${this.currentDiff}`;
+      try {
+        const saved = JSON.parse(localStorage.getItem(bestKey) || 'null');
+        if (saved && this.bestTimeEl) {
+          this.bestTimeEl.textContent = this.formatTime(saved.time);
+        } else if (this.bestTimeEl) {
+          this.bestTimeEl.textContent = '—';
+        }
+      } catch (e) {
+        if (this.bestTimeEl) this.bestTimeEl.textContent = '—';
+      }
+    }
+
+    showToast(msg, type = 'normal') {
+      if (!this.toastEl || !this.toastTextEl) return;
+      this.toastTextEl.textContent = msg;
+      this.toastEl.className = `jam-toast is-${type}`;
+      this.toastEl.hidden = false;
+      clearTimeout(this.toastTimer);
+      this.toastTimer = setTimeout(() => {
+        this.hideToast();
+      }, 3500);
+    }
+
+    hideToast() {
+      if (this.toastEl) this.toastEl.hidden = true;
+    }
+
+    announce(msg) {
+      if (this.liveEl) this.liveEl.textContent = msg;
+    }
+
+    shareResult() {
+      const timeStr = this.formatTime(this.timerSeconds);
+      const diffLabel = this.currentDiff === 'daily' ? 'Daily Challenge' : this.currentDiff.toUpperCase();
+      const text = `I solved Square Jam (${diffLabel}) on PuzzleFeels in ${timeStr} with ${this.moves} moves! 🟦\nhttps://puzzlefeels.com/square-jam-puzzle/`;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          if (this.shareStatusEl) {
+            this.shareStatusEl.textContent = 'Copied to clipboard!';
+            setTimeout(() => { if (this.shareStatusEl) this.shareStatusEl.textContent = ''; }, 2500);
+          }
+        }).catch(() => {});
+      }
+    }
+
+    handleKeyDown(e) {
+      if (this.isWon || this.isPaused) return;
+
+      const active = document.activeElement;
+      const isCell = active && active.classList.contains('jam-cell');
+
+      if (isCell) {
+        const r = parseInt(active.dataset.r, 10);
+        const c = parseInt(active.dataset.c, 10);
+
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+          e.preventDefault();
+          let nr = r;
+          let nc = c;
+          if (e.key === 'ArrowUp') nr = Math.max(0, r - 1);
+          if (e.key === 'ArrowDown') nr = Math.min(this.puzzle.rows - 1, r + 1);
+          if (e.key === 'ArrowLeft') nc = Math.max(0, c - 1);
+          if (e.key === 'ArrowRight') nc = Math.min(this.puzzle.cols - 1, c + 1);
+          const nextCell = this.getCellEl(nr, nc);
+          if (nextCell) nextCell.focus();
+          return;
+        }
+
+        // Direct size placement using numbers 1, 2, 3, 4, 5
+        if (['1', '2', '3', '4', '5'].includes(e.key)) {
+          e.preventDefault();
+          const s = parseInt(e.key, 10);
+          const adjR = Math.min(r, this.puzzle.rows - s);
+          const adjC = Math.min(c, this.puzzle.cols - s);
+          if (adjR >= 0 && adjC >= 0) {
+            this.placeSquare(adjR, adjC, s);
+          }
+          return;
+        }
+
+        // Space / Enter
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          const existingIdx = this.getSquareAtCell(r, c);
+          if (existingIdx !== -1) {
+            this.selectedSquareIdx = existingIdx;
+            this.refreshBoardUI();
+          } else {
+            // Place 1x1 or complete two-tap
+            if (this.anchorStartCell) {
+              const aR = this.anchorStartCell.r;
+              const aC = this.anchorStartCell.c;
+              this.anchorStartCell = null;
+              const side = Math.max(Math.abs(r - aR), Math.abs(c - aC)) + 1;
+              const r0 = Math.min(aR, r);
+              const c0 = Math.min(aC, c);
+              const adjR0 = Math.min(r0, this.puzzle.rows - side);
+              const adjC0 = Math.min(c0, this.puzzle.cols - side);
+              if (adjR0 >= 0 && adjC0 >= 0) this.placeSquare(adjR0, adjC0, side);
+            } else {
+              this.anchorStartCell = { r, c };
+              this.refreshBoardUI();
+            }
+          }
+          return;
+        }
+
+        // Delete / Backspace
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          e.preventDefault();
+          const existingIdx = this.getSquareAtCell(r, c);
+          if (existingIdx !== -1) {
+            this.removeSquareAt(existingIdx);
+          }
+          return;
+        }
+      }
+
+      // Undo / Redo
+      if (e.key === 'u' || e.key === 'U') {
+        e.preventDefault();
+        this.undo();
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        this.redo();
+      }
+    }
+
+    saveState() {
+      try {
+        const state = {
+          puzzleId: this.puzzle.id,
+          placedSquares: this.placedSquares,
+          moves: this.moves,
+          timerSeconds: this.timerSeconds,
+          soundEnabled: sound.enabled
+        };
+        localStorage.setItem(this.storageKey, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    loadState() {
+      try {
+        return JSON.parse(localStorage.getItem(this.storageKey) || 'null');
+      } catch (e) {
+        return null;
+      }
+    }
+
+    loadSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(this.storageKey) || 'null');
+        if (saved && typeof saved.soundEnabled === 'boolean') {
+          sound.enabled = saved.soundEnabled;
+        }
+      } catch (e) {}
+      this.updateSoundButton();
+    }
+  }
+
+  // Client daily puzzle selector helper
+  function getDailyPuzzleClient(puzzles, dateStr) {
+    let hash = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+      hash = (hash << 5) - hash + dateStr.charCodeAt(i);
+      hash |= 0;
+    }
+    const candidates = puzzles.filter(p => p.difficulty === 'medium');
+    const index = Math.abs(hash) % (candidates.length || puzzles.length);
+    return (candidates[index] || puzzles[0]);
+  }
+
+  // Bootstrap when DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    new SquareJamGame(rawPuzzles);
+  });
+</script>

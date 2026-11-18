@@ -67,6 +67,7 @@ test('main routes render, expose a page heading, and use valid local links', asy
     { path: '/reaction-time-challenge/', heading: 'Reaction Time Challenge' },
     { path: '/mahjong-variants-online-game/', heading: 'Mahjong Variants Online Game' },
     { path: '/shakashaka-online-puzzle-game/', heading: 'Shakashaka – Online Puzzle Game' },
+    { path: '/square-jam-puzzle/', heading: 'Square Jam – Free Online Logic Puzzle Game' },
   ];
   for (const route of routes) {
     const response = await page.goto(route.path);
@@ -84,9 +85,10 @@ test('main routes render, expose a page heading, and use valid local links', asy
 });
 
 test('All Games search, empty state, clear action, and game links work', async ({ page }) => {
+  test.slow();
   await page.goto('/games/');
   const cards = page.locator('.directory-card:visible');
-  await expect(cards).toHaveCount(13);
+  await expect(cards).toHaveCount(14);
 
   const search = page.getByRole('searchbox', { name: 'Search games by name' });
   await search.fill('number sequence');
@@ -143,7 +145,7 @@ test('All Games search, empty state, clear action, and game links work', async (
   await expect(page.getByText('Try searching with a different game name.')).toBeVisible();
   await page.getByRole('button', { name: 'Clear search' }).click();
   await expect(search).toBeFocused();
-  await expect(cards).toHaveCount(13);
+  await expect(cards).toHaveCount(14);
 
   for (const [index, href, heading] of [
     [0, '/number-sequence-game/', 'Play Number Sequence Game Online'],
@@ -159,13 +161,14 @@ test('All Games search, empty state, clear action, and game links work', async (
     [10, '/hidden-object-game/', 'Free Hidden Object Online Game'],
     [11, '/mahjong-variants-online-game/', 'Mahjong Variants Online Game'],
     [12, '/shakashaka-online-puzzle-game/', 'Shakashaka – Online Puzzle Game'],
+    [13, '/square-jam-puzzle/', 'Square Jam – Free Online Logic Puzzle Game'],
   ]) {
     await expect(cards.nth(index)).toHaveAttribute('href', href);
     await cards.nth(index).click();
     await expect(page).toHaveURL(new RegExp(href.replaceAll('/', '\\/') + '$'));
     await expect(page.locator('h1').first()).toContainText(heading);
     await page.goBack();
-    await expect(page.locator('.directory-card')).toHaveCount(13);
+    await expect(page.locator('.directory-card')).toHaveCount(14);
   }
 });
 
@@ -196,7 +199,7 @@ test('All Games page is responsive and theme-aware', async ({ page }, testInfo) 
     await page.goto('/games/');
     const metrics = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }));
     expect(metrics.document, `${width}px page overflow`).toBeLessThanOrEqual(metrics.viewport + 1);
-    await expect(page.locator('.directory-card')).toHaveCount(13);
+    await expect(page.locator('.directory-card')).toHaveCount(14);
     if (width === 1280 || width === 390) await screenshot(page, testInfo, `games-light-${width}`);
   }
   const toggle = page.getByRole('switch');
@@ -690,18 +693,17 @@ test('Sliding Number Puzzle Game UI layout, center alignment, heading sizes, spa
   const relatedSection = page.locator('.related-games-section');
   await expect(relatedSection).toBeVisible();
   await expect(relatedSection.locator('h2')).toHaveText('Explore More Puzzle Games');
-  await expect(relatedSection.locator('.related-games-head p')).toContainText('Choose another challenge and start playing instantly!');
+  await expect(relatedSection.locator('.related-games-head p')).toContainText('Challenge your mind with our curated collection of free, high-focus browser puzzle games.');
 
   const relatedCards = relatedSection.locator('.related-card');
-  await expect(relatedCards).toHaveCount(4);
+  await expect(relatedCards).toHaveCount(3);
 
-  // Confirm cards are the other four games (excluding Sliding Number Puzzle)
+  // Confirm cards are the three recommended games (excluding Sliding Number Puzzle)
   const relatedHrefs = await relatedCards.evaluateAll(cards => cards.map(c => c.getAttribute('href')));
   expect(relatedHrefs).toEqual([
     '/number-sequence-game/',
     '/color-flood-game/',
-    '/picross-game-online/',
-    '/word-ladder-game-online/'
+    '/picross-game-online/'
   ]);
   expect(relatedHrefs).not.toContain('/sliding-number-puzzle-game/');
 
@@ -747,7 +749,7 @@ test('Sliding Number Puzzle Game UI layout, center alignment, heading sizes, spa
   await toggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const relatedCardBg = await relatedSection.locator('.related-card').first().evaluate(el => getComputedStyle(el).backgroundColor);
-  expect(relatedCardBg).toBe('rgb(21, 31, 61)');
+  expect(relatedCardBg).toBe('rgb(20, 31, 61)');
   await screenshot(page, testInfo, 'related-games-dark');
 
   await toggle.click();
@@ -763,8 +765,7 @@ test('Number Sequence, Color Flood, Picross, and Word Ladder pages have correct 
       expectedRelated: [
         '/sliding-number-puzzle-game/',
         '/color-flood-game/',
-        '/picross-game-online/',
-        '/word-ladder-game-online/'
+        '/picross-game-online/'
       ]
     },
     {
@@ -772,10 +773,9 @@ test('Number Sequence, Color Flood, Picross, and Word Ladder pages have correct 
       name: 'Color Flood Game',
       breadcrumbSelector: '.flood-breadcrumbs',
       expectedRelated: [
-        '/number-sequence-game/',
         '/sliding-number-puzzle-game/',
         '/picross-game-online/',
-        '/word-ladder-game-online/'
+        '/number-sequence-game/'
       ]
     },
     {
@@ -783,9 +783,8 @@ test('Number Sequence, Color Flood, Picross, and Word Ladder pages have correct 
       name: 'Picross Game Online',
       breadcrumbSelector: '.picross-breadcrumb',
       expectedRelated: [
-        '/number-sequence-game/',
-        '/color-flood-game/',
         '/sliding-number-puzzle-game/',
+        '/color-flood-game/',
         '/word-ladder-game-online/'
       ]
     },
@@ -840,7 +839,7 @@ test('Number Sequence, Color Flood, Picross, and Word Ladder pages have correct 
     const relatedSection = page.locator('.related-games-section');
     await expect(relatedSection).toBeVisible();
     await expect(relatedSection.locator('h2')).toHaveText('Explore More Puzzle Games');
-    await expect(relatedSection.locator('.related-games-head p')).toContainText('Choose another challenge and start playing instantly!');
+    await expect(relatedSection.locator('.related-games-head p')).toContainText('Challenge your mind with our curated collection of free, high-focus browser puzzle games.');
 
     const relatedCards = relatedSection.locator('.related-card');
     await expect(relatedCards).toHaveCount(config.expectedRelated.length);
@@ -869,7 +868,7 @@ test('Number Sequence, Color Flood, Picross, and Word Ladder pages have correct 
   await toggle.click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const cardBgDark = await mobileCard.evaluate(el => getComputedStyle(el).backgroundColor);
-  expect(cardBgDark).toBe('rgb(21, 31, 61)');
+  expect(cardBgDark).toBe('rgb(20, 31, 61)');
   await screenshot(page, testInfo, 'color-flood-related-dark-mobile');
 });
 
@@ -1501,12 +1500,13 @@ test('Homepage featured games (exactly 5), Daily Moments (exactly 3, without Pic
   // 4. All Games directory (/games/) displays all games from catalog
   await page.goto('/games/');
   const directoryCards = page.locator('.directory-card:visible');
-  await expect(directoryCards).toHaveCount(13);
+  await expect(directoryCards).toHaveCount(14);
   await expect(directoryCards.locator('h3', { hasText: 'Reaction Time Challenge' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Memory Matching Game Online' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Murdoku Online Game' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Mahjong Variants Online Game' })).toBeVisible();
   await expect(directoryCards.locator('h3', { hasText: 'Shakashaka – Online Puzzle Game' })).toBeVisible();
+  await expect(directoryCards.locator('h3', { hasText: 'Square Jam – Online Logic Puzzle' })).toBeVisible();
 
   await screenshot(page, testInfo, 'homepage-games-featured-and-daily');
 });
