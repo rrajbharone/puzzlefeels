@@ -207,6 +207,19 @@ export const ALL_GAMES: GameCatalogItem[] = [
     iconClass: 'square-jam-icon',
     dailyHref: '/square-jam-puzzle/?daily=today',
   },
+  {
+    id: 'binairo',
+    title: 'Binairo – Online Puzzle Game',
+    shortTitle: 'Binairo',
+    href: '/binairo-online-puzzle-game/',
+    search: 'binairo online puzzle game takuzu binary puzzle game 0 and 1 logic puzzle free binary grid daily challenge',
+    pill: 'BINARY PUZZLE',
+    difficulty: 'Easy · Medium · Hard',
+    description: 'Fill the grid with 0s and 1s, balance every row and column, prevent trios, and solve classic Takuzu logic puzzles.',
+    visualClass: 'binairo-visual',
+    iconClass: 'binairo-icon',
+    dailyHref: '/binairo-online-puzzle-game/?daily=today',
+  },
 ];
 
 /**

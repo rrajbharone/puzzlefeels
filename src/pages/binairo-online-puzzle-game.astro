@@ -1,0 +1,1868 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FaqList from '../components/FaqList.astro';
+import ExploreMore from '../components/ExploreMore.astro';
+import ZoomControl from '../components/ZoomControl.astro';
+import {
+  BINAIRO_PUZZLES,
+  getDailyBinairoPuzzle,
+  getBinairoLogicalHint,
+  validateBinairoBoard
+} from '../data/binairoPuzzles';
+
+const title = 'Binairo – Online Puzzle Game | Play Free Binary Logic Puzzles | PuzzleFeels';
+const description = 'Play Binairo online puzzle game for free! Fill the grid with 0s and 1s, balance every row and column, prevent trios, and solve classic Takuzu logic puzzles.';
+
+const faqs = [
+  {
+    question: 'What is Binairo also called?',
+    answer: 'Binairo is widely known around the world by several different names, most notably Takuzu, Binary Puzzle, Tic-Tac-Logic, Binary Grid, and Zero-One Puzzle. Despite the different branding and translations, all of these variations share the exact same four foundational rules: equal balance of 0s and 1s, no trios, and unique rows and columns.'
+  },
+  {
+    question: 'How do you play Binairo online?',
+    answer: 'To play Binairo online on PuzzleFeels, select an empty cell and click or tap to cycle through states: Empty → 0 → 1 → Empty. You can also use the 0 and 1 buttons below the board or type 0 or 1 on your keyboard. Your goal is to fill every square so that each row and column contains an equal number of 0s and 1s, no three identical digits appear consecutively, and all lines are unique.'
+  },
+  {
+    question: 'What are the three main rules of Binairo?',
+    answer: 'Binairo is governed by three core principles: 1) Equal Balance: every row and column must contain an equal number of 0s and 1s. 2) No Trios: you cannot place three identical consecutive digits horizontally or vertically (no 000 or 111). 3) Uniqueness: no two completed rows can have the exact same sequence of digits, and no two completed columns can be identical.'
+  },
+  {
+    question: 'How many 0s and 1s should be in each row and column?',
+    answer: 'Because Binairo is always played on an even-sized square grid (N×N), each row and column must contain exactly N/2 zeros and N/2 ones. For example, on a 6×6 board, every line requires three 0s and three 1s. On an 8×8 board, each line requires four 0s and four 1s. On a 10×10 board, each line requires five 0s and five 1s.'
+  },
+  {
+    question: 'Can three identical numbers appear next to each other?',
+    answer: 'No. Having three identical digits in a row or column (such as 0-0-0 or 1-1-1) is strictly forbidden. This rule applies in both directions: across rows from left to right, and down columns from top to bottom. However, pairs of identical digits (such as 0-0 or 1-1) are completely valid and serve as primary clues for logical deduction.'
+  },
+  {
+    question: 'Why can\'t two completed rows or columns be identical?',
+    answer: 'The line uniqueness rule guarantees that every puzzle has a single, unambiguous mathematical solution. If two completed rows or columns were permitted to be identical, many boards would possess multiple valid solutions, creating guesswork. Comparing completed lines against partially filled lines allows advanced solvers to make crucial deductions.'
+  },
+  {
+    question: 'What is the difference between Binairo and Sudoku?',
+    answer: 'While both games are grid-based deduction puzzles that prohibit duplicate lines, Sudoku uses digits 1 through 9 placed across 3×3 regional subgrids, whereas Binairo uses only binary digits (0 and 1) across the entire grid. Binairo features specific trio restrictions (no 000 or 111) and direct row/column balance requirements that do not exist in Sudoku.'
+  },
+  {
+    question: 'Is Binairo the same game as Takuzu?',
+    answer: 'Yes. Takuzu and Binairo are identical games. The name Takuzu was popularized in Europe by Peter De Schepper and Frank Coussement, while Binairo is the trademarked title popularized by puzzle syndicates. Both feature the exact same binary grid, equal-parity rule, trio prohibition, and uniqueness constraints.'
+  },
+  {
+    question: 'Can I play Binairo on my smartphone or tablet?',
+    answer: 'Yes! PuzzleFeels Binairo is engineered mobile-first with touch-friendly controls, responsive cell scaling, tap-to-cycle cell toggling, and zero horizontal overflow. You can enjoy the full desktop and mobile experience without downloading apps or creating accounts.'
+  },
+  {
+    question: 'Is this online Binairo puzzle game completely free?',
+    answer: 'Yes, 100% free with no subscription, paywalls, or invasive ads. You can play unlimited Easy, Medium, and Hard puzzles, practice daily challenges, use hints, and track your best completion times freely.'
+  }
+];
+
+const gameSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoGame',
+  name: 'Binairo – Online Puzzle Game',
+  url: 'https://puzzlefeels.com/binairo-online-puzzle-game/',
+  description,
+  gamePlatform: 'Web browser',
+  applicationCategory: 'Game',
+  genre: ['Logic Puzzle', 'Binary Puzzle', 'Takuzu', 'Brain Game'],
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  publisher: { '@type': 'Organization', name: 'PuzzleFeels', url: 'https://puzzlefeels.com/' }
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://puzzlefeels.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Games', item: 'https://puzzlefeels.com/games/' },
+    { '@type': 'ListItem', position: 3, name: 'Binairo – Online Puzzle Game', item: 'https://puzzlefeels.com/binairo-online-puzzle-game/' }
+  ]
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(faq => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer
+    }
+  }))
+};
+---
+
+<Base {title} {description} path="/binairo-online-puzzle-game/">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(gameSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="binairo-page">
+    <!-- Breadcrumb Navigation -->
+    <nav class="wrap binairo-breadcrumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <span aria-hidden="true">›</span>
+      <a href="/games/">Games</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Binairo – Online Puzzle Game</span>
+    </nav>
+
+    <!-- Centered Game Introduction -->
+    <section class="wrap binairo-intro">
+      <span class="eyebrow">Binary Logic & Takuzu Puzzle</span>
+      <h1>Binairo – Online Puzzle Game</h1>
+      <p class="muted">Fill the grid with 0s and 1s, balance every row and column, prevent three consecutive identical digits, and ensure every line is completely unique.</p>
+    </section>
+
+    <!-- Main Game Shell Card -->
+    <section class="wrap binairo-shell card" data-binairo-game aria-label="Binairo Logic Puzzle Game">
+      
+      <!-- Top Bar: Difficulty Selector & Utility Buttons -->
+      <div class="binairo-header-bar">
+        <div class="binairo-diff-group" role="tablist" aria-label="Difficulty levels">
+          <button type="button" class="binairo-diff-btn is-active" data-difficulty="easy" role="tab" aria-selected="true">
+            <strong>Easy</strong>
+            <span>6×6 · Beginner</span>
+          </button>
+          <button type="button" class="binairo-diff-btn" data-difficulty="medium" role="tab" aria-selected="false">
+            <strong>Medium</strong>
+            <span>8×8 · Intermediate</span>
+          </button>
+          <button type="button" class="binairo-diff-btn" data-difficulty="hard" role="tab" aria-selected="false">
+            <strong>Hard</strong>
+            <span>10×10 · Master</span>
+          </button>
+          <button type="button" class="binairo-diff-btn daily-tab" data-difficulty="daily" role="tab" aria-selected="false">
+            <strong>Daily</strong>
+            <span id="binairo-daily-label">Challenge</span>
+          </button>
+        </div>
+
+        <div class="binairo-header-actions">
+          <button type="button" class="btn secondary binairo-sound-btn" id="binairo-sound-toggle" aria-label="Toggle Sound Effects" title="Sound Effects">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <span class="sound-status-label">Sound On</span>
+          </button>
+          <ZoomControl targetSelector="#binairo-board-zoom-target" label="Board Zoom" />
+        </div>
+      </div>
+
+      <!-- Stats Bar: Moves, Time, Filled Cells, Best -->
+      <div class="binairo-stats-bar" role="status" aria-label="Puzzle statistics">
+        <div class="binairo-stat-item">
+          <small>Time</small>
+          <strong id="binairo-timer">00:00</strong>
+        </div>
+        <div class="binairo-stat-item">
+          <small>Moves</small>
+          <strong id="binairo-moves">0</strong>
+        </div>
+        <div class="binairo-stat-item">
+          <small>Filled</small>
+          <strong id="binairo-filled">0 / 36</strong>
+        </div>
+        <div class="binairo-stat-item">
+          <small>Best Time</small>
+          <strong id="binairo-best-time">—</strong>
+        </div>
+      </div>
+
+      <!-- Live Feedback Toast Notification -->
+      <div id="binairo-toast" class="binairo-toast" role="alert" aria-live="polite" hidden>
+        <span id="binairo-toast-text"></span>
+      </div>
+
+      <!-- Board Area Wrapper with Zoom and Smooth Centering -->
+      <div class="binairo-board-wrapper" id="binairo-board-container">
+        <div class="binairo-board-zoom-target" id="binairo-board-zoom-target">
+          <div class="binairo-grid-container" id="binairo-grid-container">
+            <div class="binairo-grid" id="binairo-grid" role="grid" aria-label="Binairo puzzle grid">
+              <!-- Dynamically populated via client script -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Paused Overlay -->
+        <div id="binairo-paused" class="binairo-overlay" hidden>
+          <div class="binairo-overlay-box">
+            <span class="eyebrow">Puzzle Paused</span>
+            <h2>Take a Breather</h2>
+            <p class="muted">The timer is stopped and your board progress is safely preserved in LocalStorage. Resume whenever you are ready to continue.</p>
+            <button type="button" class="btn" id="binairo-resume">Resume Game <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- Victory / Solved Modal -->
+        <div id="binairo-victory" class="binairo-overlay" hidden>
+          <div class="binairo-overlay-box victory-box">
+            <span class="pill victory-pill">✦ PUZZLE SOLVED!</span>
+            <h2>Binary Grid Balanced!</h2>
+            <p class="muted">Every row and column is perfectly balanced with equal 0s and 1s, with no trios and unique lines throughout.</p>
+            
+            <div id="binairo-pb-badge" class="binairo-pb-badge" hidden>
+              <span>★ New Personal Best!</span>
+            </div>
+
+            <div class="victory-stats-grid">
+              <div>
+                <small>Difficulty</small>
+                <strong id="victory-diff-label">Easy</strong>
+              </div>
+              <div>
+                <small>Time</small>
+                <strong id="victory-time">00:00</strong>
+              </div>
+              <div>
+                <small>Moves</small>
+                <strong id="victory-moves">0</strong>
+              </div>
+              <div>
+                <small>Hints Used</small>
+                <strong id="victory-hints">0</strong>
+              </div>
+            </div>
+
+            <div class="victory-actions">
+              <button type="button" class="btn" id="binairo-next-puzzle">Next Puzzle <span>→</span></button>
+              <button type="button" class="btn secondary" id="binairo-share">Share Result</button>
+            </div>
+            <p id="binairo-share-status" class="binairo-share-status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick 0 / 1 / Clear Action Selector & Legend -->
+      <div class="binairo-input-bar" aria-label="Direct digit entry and legend">
+        <div class="binairo-token-selector">
+          <span class="selector-title">Place Token:</span>
+          <button type="button" class="token-btn token-0-btn" id="binairo-set-0" title="Set selected cell to 0 (Key: 0)">
+            <span class="token-circle token-circle-0">0</span>
+            <span>Zero (0)</span>
+          </button>
+          <button type="button" class="token-btn token-1-btn" id="binairo-set-1" title="Set selected cell to 1 (Key: 1)">
+            <span class="token-circle token-circle-1">1</span>
+            <span>One (1)</span>
+          </button>
+          <button type="button" class="token-btn token-clear-btn" id="binairo-set-clear" title="Clear cell (Key: Backspace / Del)">
+            <span class="token-circle token-circle-empty">✕</span>
+            <span>Erase</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Controls Toolbar -->
+      <div class="binairo-controls" role="group" aria-label="Game controls">
+        <button type="button" class="btn secondary" id="binairo-new-btn">New Game</button>
+        <button type="button" class="btn secondary" id="binairo-restart-btn">Restart</button>
+        <button type="button" class="btn secondary" id="binairo-undo-btn" disabled>Undo</button>
+        <button type="button" class="btn secondary" id="binairo-redo-btn" disabled>Redo</button>
+        <button type="button" class="btn secondary" id="binairo-hint-btn">Hint</button>
+        <button type="button" class="btn secondary" id="binairo-check-btn">Check</button>
+        <button type="button" class="btn secondary" id="binairo-clear-btn">Clear</button>
+        <button type="button" class="btn secondary" id="binairo-pause-btn">Pause</button>
+      </div>
+
+      <!-- Footer Metadata / Instructions -->
+      <div class="binairo-footer-meta">
+        <p class="binairo-help-text"><strong>How to play:</strong> Click or tap an empty cell to cycle between Empty → 0 → 1. Right-click cycles in reverse. Use Arrow keys to navigate, type 0 or 1 directly, and press Backspace or Delete to clear. All rows and columns must be balanced and unique!</p>
+        <p class="binairo-save-note">Puzzle progress, timer, personal best times, and sound settings save automatically on your device.</p>
+      </div>
+
+      <p id="binairo-live" class="sr-only" aria-live="polite"></p>
+    </section>
+
+    <!-- Comprehensive Educational SEO Content Section (1,200+ words) -->
+    <article class="wrap game-article-content binairo-article">
+      <h2>What Is Binairo?</h2>
+      <p>Binairo, also internationally celebrated under the name Takuzu, is an addictive, pure-logic binary grid puzzle. While classic logic games like Sudoku rely on nine distinct digits spread across compartmentalized subgrids, and picture-logic games like <a href="/picross-game-online/">Picross Game Online</a> translate clues into pixel art, Binairo strips the board down to the most fundamental elements in mathematics: <strong>0 and 1</strong>.</p>
+      <p>Played on an even-sized grid (such as 6×6, 8×8, or 10×10), the board begins with several fixed clues scattered throughout the cells. Your goal is to deduce the identity of every single remaining empty cell by placing either a 0 or a 1. There is zero arithmetic or calculation involved: you will never need to sum, multiply, or compute values. Instead, Binairo challenges your pattern recognition, line-parity deduction, and spatial vigilance through a clean set of logical rules.</p>
+
+      <h2>How to Play Binairo Online</h2>
+      <p>Playing Binairo online on PuzzleFeels has been engineered to feel smooth, responsive, and satisfying across mobile phones, tablets, and desktop computers. Here is the complete gameplay flow from start to finish:</p>
+      <ol>
+        <li><strong>Select Your Challenge:</strong> Choose your preferred difficulty above the board—Easy (6×6), Medium (8×8), Hard (10×10), or try the UTC synchronized Daily Challenge.</li>
+        <li><strong>Analyze the Given Clues:</strong> Every puzzle begins with locked clues displayed in crisp, circular tokens. Original clues cannot be edited or erased.</li>
+        <li><strong>Select and Fill Cells:</strong> Click or tap any empty white square to cycle its value: Empty → 0 → 1 → Empty. On desktop keyboards, navigate with Arrow keys and press <strong>0</strong> or <strong>1</strong> directly. Right-clicking reverses the cycle.</li>
+        <li><strong>Prevent Adjacent Trios:</strong> Inspect horizontal rows and vertical columns to ensure three identical digits never appear consecutively. If you see two identical numbers together (such as <code>0 0</code>), immediately cap both ends with the opposite digit (<code>1</code>).</li>
+        <li><strong>Balance Rows and Columns:</strong> Each row and column must contain an equal count of zeros and ones. If a row already contains its full quota of zeros, fill all remaining empty cells in that row with ones.</li>
+        <li><strong>Verify Line Uniqueness:</strong> Make sure no two completed rows share the exact same sequence of digits, and no two completed columns are identical.</li>
+        <li><strong>Validate and Celebrate:</strong> Once every cell is filled correctly according to all four rules, the board verifies your solution, freezes the timer, and saves your personal best score!</li>
+      </ol>
+
+      <h2>The Four Rules of Binairo Explained With Examples</h2>
+      <p>Every valid Binairo puzzle is governed by four clear, unambiguous mathematical rules. Understanding these rules is essential to solving even the most intricate boards without guessing:</p>
+
+      <h3>Rule 1: Equal Numbers of 0s and 1s in Every Row</h3>
+      <p>Because every Binairo board has an even number of columns, each horizontal row must contain an equal split of zeros and ones. On a 6×6 grid, each row requires exactly three 0s and three 1s. On an 8×8 grid, each row requires four 0s and four 1s. On a 10×10 grid, each row requires five 0s and five 1s. For example, in a 6-cell row containing <code>[0, 1, 0, 1, 0, ?]</code>, there are already three zeros present; the final cell must mathematically be a <code>1</code>.</p>
+
+      <h3>Rule 2: Equal Numbers of 0s and 1s in Every Column</h3>
+      <p>The balance rule applies vertically in the exact same manner. Every single column must have the same total number of zeros and ones. Beginners frequently get caught up focusing entirely on horizontal lines and forget to check column counts. Whenever you place a digit to satisfy a row, immediately glance down that column to see if it brings the column to its parity limit.</p>
+
+      <h3>Rule 3: Never Three Identical Digits in a Row or Column</h3>
+      <p>Three consecutive identical digits are strictly prohibited horizontally and vertically. You can never have <code>0 0 0</code> or <code>1 1 1</code> anywhere on the grid. This rule creates immediate, deterministic deductions:</p>
+      <ul>
+        <li><strong>The Adjacent Pair Pattern:</strong> If you see <code>0 0 _</code>, the empty space must be <code>1</code>. Similarly, <code>_ 1 1</code> forces the preceding cell to be <code>0</code>.</li>
+        <li><strong>The Split Pair (Gap) Pattern:</strong> If you see <code>0 _ 0</code>, the middle space cannot be <code>0</code> (which would create <code>0 0 0</code>), so it must be <code>1</code>. Likewise, <code>1 _ 1</code> forces the center cell to be <code>0</code>.</li>
+      </ul>
+
+      <h3>Rule 4: Every Completed Row and Column Must Be Unique</h3>
+      <p>No two rows can share the exact same combination of numbers from left to right, and no two columns can share the exact same combination from top to bottom. If Row 2 is already completely filled with <code>[0, 1, 1, 0, 0, 1]</code>, no other row on the board can ever match that exact sequence. This uniqueness rule provides crucial elimination logic on intermediate and master boards.</p>
+
+      <h2>How to Solve Binairo – Practical Beginner Strategies</h2>
+      <p>You never need to guess in Binairo. Every puzzle on PuzzleFeels is handcrafted and mathematically verified to possess exactly one unique solution achievable through deductive reasoning. Use these reliable techniques:</p>
+
+      <h3>1. Hunt for Immediate Pairs</h3>
+      <p>Scan the board for two identical numbers sitting side by side or one on top of the other. Because trios are illegal, whenever two identical numbers touch, place the opposite number at both ends. For instance, seeing <code>. 1 1 .</code> instantly gives you <code>0 1 1 0</code>. This is the fastest way to start any new puzzle.</p>
+
+      <h3>2. Look for the Sandwich Gap</h3>
+      <p>Search for two identical numbers separated by a single empty cell (the pattern <code>0 _ 0</code> or <code>1 _ 1</code>). Placing another identical number in the middle would immediately trigger three in a row. Therefore, the center cell must always take the opposite digit. In <code>1 _ 1</code>, the center is guaranteed to be <code>0</code>.</p>
+
+      <h3>3. Cash in on Line Parity Quotas</h3>
+      <p>Keep track of how many 0s and 1s you have placed in each line. On an 8×8 grid, as soon as you count four 1s in any row or column, every other empty cell in that entire line must be a 0! Solvers who master numerical parity solve puzzles twice as fast as those who only look for adjacent pairs, similar to counting clues in <a href="/shakashaka-online-puzzle-game/">Shakashaka Online Puzzle Game</a>.</p>
+
+      <h3>4. Apply Row and Column Uniqueness</h3>
+      <p>When you have a nearly completed row with only two empty cells left, determine what two digits are needed to balance the row (for example, one 0 and one 1). Before placing them, check whether one of the two arrangements would duplicate another fully completed row elsewhere on the grid. If arrangement A produces an identical row, arrangement B is mandatory!</p>
+
+      <h3>5. Avoid Trapped Duplicates</h3>
+      <p>Consider an empty row that needs two 1s and one 0. If placing the 0 in a specific position would create an exact replica of another row, that position cannot hold the 0. This form of elimination is one of the most rewarding moments in advanced Takuzu problem-solving, reminiscent of domino placement in <a href="/norinori-game/">Norinori Game</a>.</p>
+
+      <h2>Common Binairo Mistakes to Avoid</h2>
+      <p>Even seasoned puzzle enthusiasts occasionally make preventable errors. Keep these common pitfalls in mind:</p>
+      <ul>
+        <li><strong>Tunnel Vision on Rows:</strong> Getting so engrossed in filling horizontal rows that you accidentally place three consecutive identical numbers down a vertical column. Always inspect both axes after every move.</li>
+        <li><strong>Overfilling Line Quotas:</strong> Placing a fifth 1 in an 8×8 row because of a local pair deduction, without realizing the row had already reached its limit. Keep an eye on the filled cell count.</li>
+        <li><strong>Premature Guessing:</strong> Guessing when deductions feel slow. Guessing almost always leads to a contradiction deep into the grid, forcing you to restart. If you feel stuck, use the built-in <strong>Hint</strong> button to learn the exact deductive step you overlooked.</li>
+        <li><strong>Ignoring the Uniqueness Constraint:</strong> Forgetting that two identical completed lines are illegal. Uniqueness is often the intended key to breaking open Hard 10×10 boards.</li>
+        <li><strong>Confusing Givens with Player Moves:</strong> Trying to delete original clues. On PuzzleFeels, original clues are styled with distinct, locked circle badges so you always know which numbers are permanent.</li>
+      </ul>
+
+      <h2>Understanding the Row and Column Uniqueness Rule</h2>
+      <p>Why does Binairo require unique rows and columns? In binary math, an $N$-length sequence has $2^N$ possible configurations. Without the uniqueness rule, many symmetric puzzle layouts would have dual valid solutions where two lines could freely swap digits without violating the balance or trio constraints.</p>
+      <p>To see how this works in practice, imagine an 8×8 puzzle where Row 1 is completely solved: <code>[0, 1, 0, 1, 1, 0, 0, 1]</code>. Later in the puzzle, Row 7 has six cells filled: <code>[0, 1, 0, 1, 1, 0, _, _]</code>. The two remaining empty cells at columns 7 and 8 need one 0 and one 1 to satisfy parity. If you placed a <code>0</code> at column 7 and a <code>1</code> at column 8, Row 7 would be <code>[0, 1, 0, 1, 1, 0, 0, 1]</code>—an exact clone of Row 1! Because duplicate rows are strictly prohibited, column 7 must be <code>1</code> and column 8 must be <code>0</code>. Just like deducing number patterns in <a href="/number-sequence-game/">Number Sequence Game</a>, uniqueness gives you 100% certainty without guesswork.</p>
+
+      <h2>Binairo Difficulty Levels</h2>
+      <p>PuzzleFeels provides three carefully calibrated difficulty tiers to guide players from beginner concepts to master-level binary deduction:</p>
+      <ul>
+        <li><strong>Easy (6×6 Grid):</strong> 36 cells with generous starting clues. Perfect for beginners learning how to spot adjacent pairs, sandwiches, and simple 3-and-3 line balances. Most players complete an Easy board in 1 to 3 minutes.</li>
+        <li><strong>Medium (8×8 Grid):</strong> 64 cells with balanced clue distribution. Requires combining row and column parity and looking two steps ahead. Great for players looking to sharpen their focus during a work or study break.</li>
+        <li><strong>Hard (10×10 Grid):</strong> 100 cells featuring sparse starting clues. Demands thorough line-by-line quota tracking, vertical-horizontal cross-checks, and active application of line uniqueness.</li>
+        <li><strong>Daily Challenge:</strong> A fresh puzzle synchronized worldwide at midnight UTC. Challenge your friends, maintain your daily solving streak, and compare your completion times!</li>
+      </ul>
+
+      <h2>Binairo Controls and Features on PuzzleFeels</h2>
+      <p>Our implementation is tailored for focused, distraction-free puzzle enjoyment:</p>
+      <ul>
+        <li><strong>Intuitive Touch & Click:</strong> Tap cells to cycle, right-click to cycle backward, or use the dedicated 0/1/Clear buttons beneath the board.</li>
+        <li><strong>Full Keyboard Navigation:</strong> Move with Arrow keys, press 0 or 1 to enter digits, and press Backspace or Delete to clear.</li>
+        <li><strong>Smart Step-by-Step Hints:</strong> Unlike games that fill a random square, our Hint system explains the exact logical rule forcing the move before placing it.</li>
+        <li><strong>Check Progress:</strong> Instantly check your board for trios, line overflow, or duplicate lines without spoiling the rest of the puzzle.</li>
+        <li><strong>Undo & Redo:</strong> Step backward and forward through your move history seamlessly.</li>
+        <li><strong>Zoom Controls:</strong> Scale the board from 70% to 150% using our smooth zoom popover, ideal for small smartphone screens or large 4K monitors.</li>
+        <li><strong>Automatic Local Saving:</strong> Close your browser tab at any time—your puzzle state, timer, move counter, and sound preferences are safely saved in LocalStorage.</li>
+      </ul>
+
+      <!-- Standard FAQ Section -->
+      <section class="binairo-faq-section" aria-label="Frequently Asked Questions">
+        <h2>Frequently Asked Questions</h2>
+        <FaqList items={faqs} />
+      </section>
+    </article>
+
+    <!-- Explore More Puzzle Games Section (Spot the Difference Standard) -->
+    <ExploreMore currentGameId="binairo" />
+  </main>
+
+  <Footer />
+</Base>
+
+<style is:global>
+  /* Base page layout & typography */
+  .binairo-page {
+    padding-bottom: 70px;
+  }
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .binairo-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    padding-top: 16px;
+    padding-bottom: 8px;
+  }
+  .binairo-breadcrumbs a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .15s ease;
+  }
+  .binairo-breadcrumbs a:hover {
+    color: var(--blue);
+  }
+  .binairo-breadcrumbs span[aria-current="page"] {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Centered Intro Section */
+  .binairo-intro {
+    text-align: center;
+    padding: 24px 0 28px;
+  }
+  .binairo-intro .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .binairo-intro h1 {
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1.18;
+    margin: 0 0 12px;
+    color: var(--ink);
+  }
+  .binairo-intro p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 660px;
+    margin: 0 auto;
+  }
+
+  /* Game Shell Card */
+  .binairo-shell {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Header Bar with Difficulty and Utilities */
+  .binairo-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .binairo-diff-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .binairo-diff-btn {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    transition: all .16s ease;
+  }
+  .binairo-diff-btn strong { font-size: 13px; font-weight: 700; }
+  .binairo-diff-btn span { font-size: 10px; color: var(--muted); }
+  .binairo-diff-btn:hover { border-color: var(--blue); }
+  .binairo-diff-btn.is-active {
+    background: #edf2ff;
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 4px 12px rgba(49, 94, 232, 0.12);
+  }
+  .binairo-diff-btn.is-active span { color: var(--blue); opacity: .85; }
+
+  .binairo-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .binairo-sound-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 12px;
+    gap: 7px;
+    border-radius: 11px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .binairo-sound-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* Stats Bar */
+  .binairo-stats-bar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 18px;
+    text-align: center;
+  }
+  .binairo-stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .binairo-stat-item small {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+  }
+  .binairo-stat-item strong {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Toast notification */
+  .binairo-toast {
+    background: #edf2ff;
+    border: 1px solid #c7d7fe;
+    color: var(--blue);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    transition: all .2s ease;
+  }
+  .binairo-toast.is-error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
+  }
+  .binairo-toast.is-success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #16a34a;
+  }
+
+  /* Board Area */
+  .binairo-board-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 24px 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .binairo-board-zoom-target {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(var(--zoom-scale, 1));
+    transform-origin: center top;
+    transition: transform .2s ease;
+  }
+
+  .binairo-grid-container {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  /* Binairo Grid */
+  .binairo-grid {
+    --grid-cols: 6;
+    --grid-rows: 6;
+    --cell-size: min(50px, calc((100vw - 64px) / var(--grid-cols)));
+    --bin-grid-border: #334155;
+    --bin-grid-line: #94a3b8;
+    --bin-cell-bg: #ffffff;
+    --bin-cell-hover: #f1f5f9;
+
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), var(--cell-size));
+    grid-template-rows: repeat(var(--grid-rows), var(--cell-size));
+    gap: 0;
+    background: var(--bin-cell-bg);
+    border: 3px solid var(--bin-grid-border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  /* Individual Cell */
+  .binairo-grid .binairo-cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    position: relative;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: pointer;
+    background: var(--bin-cell-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--bin-grid-line);
+    box-sizing: border-box;
+    transition: background-color .12s ease;
+  }
+
+  .binairo-grid .binairo-cell:hover:not(.is-given) {
+    background: var(--bin-cell-hover);
+  }
+
+  .binairo-grid .binairo-cell.is-selected {
+    box-shadow: inset 0 0 0 2px var(--blue);
+    background: #edf2ff;
+    z-index: 2;
+  }
+
+  .binairo-grid .binairo-cell:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: -2px;
+    z-index: 5;
+  }
+
+  .binairo-grid .binairo-cell.is-given {
+    cursor: default;
+    background: #f8fafc;
+  }
+
+  .binairo-grid .binairo-cell.is-error-highlight {
+    animation: shakeError 0.4s ease-in-out;
+    background: #fee2e2 !important;
+  }
+
+  .binairo-grid .binairo-cell.is-hint-highlight {
+    animation: pulseHint 1s infinite alternate ease-in-out;
+  }
+
+  /* Circle Token Graphics */
+  .binairo-token {
+    width: calc(var(--cell-size) * 0.72);
+    height: calc(var(--cell-size) * 0.72);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(var(--cell-size) * 0.42);
+    font-weight: 800;
+    line-height: 1;
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    transition: transform .12s cubic-bezier(.2,.8,.3,1);
+  }
+
+  /* 0 Token: White / Light Circle */
+  .binairo-token.token-0 {
+    background: #ffffff;
+    border: 2.5px solid #2563eb;
+    color: #2563eb;
+  }
+
+  /* 1 Token: Dark Navy / Black Circle */
+  .binairo-token.token-1 {
+    background: #1e293b;
+    border: 2.5px solid #0f172a;
+    color: #ffffff;
+  }
+
+  /* Locked Given Clue Badges */
+  .binairo-cell.is-given .binairo-token.token-0 {
+    border-width: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  }
+  .binairo-cell.is-given .binairo-token.token-1 {
+    border-width: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Player entered token slight animation */
+  .binairo-cell:not(.is-given) .binairo-token {
+    transform: scale(0.96);
+  }
+
+  /* Input Action Bar */
+  .binairo-input-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 0;
+  }
+  .binairo-token-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 8px 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .selector-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+  }
+  .token-btn {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    padding: 6px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all .16s ease;
+  }
+  .token-btn:hover {
+    border-color: var(--blue);
+    transform: translateY(-1px);
+  }
+  .token-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .token-circle-0 {
+    background: #ffffff;
+    border: 2px solid #2563eb;
+    color: #2563eb;
+  }
+  .token-circle-1 {
+    background: #1e293b;
+    border: 2px solid #0f172a;
+    color: #ffffff;
+  }
+  .token-circle-empty {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+  }
+
+  /* Controls Toolbar */
+  .binairo-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .binairo-controls .btn {
+    min-height: 42px;
+    padding: 0 15px;
+    font-size: 13px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  /* Footer meta */
+  .binairo-footer-meta {
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .binairo-help-text, .binairo-save-note {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* Overlays (Paused & Victory) */
+  .binairo-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 20;
+    border-radius: 16px;
+  }
+  .binairo-overlay[hidden] {
+    display: none;
+  }
+  .binairo-overlay-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px 24px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .binairo-overlay-box h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--ink);
+  }
+  .binairo-overlay-box p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--muted);
+  }
+  .victory-pill {
+    background: #edf2ff;
+    color: var(--blue);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+  .binairo-pb-badge {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #fde68a;
+  }
+  .victory-stats-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    background: var(--wash);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .victory-stats-grid small {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .victory-stats-grid strong {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .victory-actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+  .victory-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .binairo-share-status {
+    font-size: 12px;
+    color: #16a34a;
+    margin: 0;
+    min-height: 16px;
+  }
+
+  /* Educational SEO Content */
+  .binairo-article {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    line-height: 1.68;
+    color: var(--ink);
+  }
+  .binairo-article h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    margin: 36px 0 14px;
+    color: var(--ink);
+  }
+  .binairo-article h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 22px 0 10px;
+    color: var(--ink);
+  }
+  .binairo-article p {
+    font-size: 15px;
+    margin: 0 0 16px;
+    color: var(--muted);
+  }
+  .binairo-article ul, .binairo-article ol {
+    margin: 0 0 18px 24px;
+    padding: 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .binairo-article li {
+    margin-bottom: 8px;
+  }
+  .binairo-article strong {
+    color: var(--ink);
+  }
+  .binairo-article a {
+    color: var(--blue);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .binairo-article a:hover {
+    color: var(--blue);
+  }
+  .binairo-faq-section {
+    padding-top: 14px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-3px); }
+    40%, 80% { transform: translateX(3px); }
+  }
+  @keyframes pulseHint {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.25); box-shadow: 0 0 12px rgba(49, 94, 232, 0.5); }
+  }
+
+  /* Dark Theme Styling */
+  html[data-theme="dark"] .binairo-shell {
+    background: #141f3d;
+    border-color: #27375a;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+  }
+  html[data-theme="dark"] .binairo-diff-btn {
+    background: #151f3d;
+    border-color: #293858;
+    color: #f1f5ff;
+  }
+  html[data-theme="dark"] .binairo-diff-btn:hover {
+    border-color: #8ea8ff;
+  }
+  html[data-theme="dark"] .binairo-diff-btn.is-active {
+    background: #263960;
+    border-color: #8ea8ff;
+    color: #d5dfff;
+  }
+  html[data-theme="dark"] .binairo-diff-btn.is-active span {
+    color: #a9bcff;
+  }
+  html[data-theme="dark"] .binairo-stats-bar {
+    background: #111b36;
+    border-color: #293858;
+  }
+  html[data-theme="dark"] .binairo-stat-item strong {
+    color: #f1f5ff;
+  }
+  html[data-theme="dark"] .binairo-board-wrapper {
+    background: #0b132b;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .binairo-grid {
+    --bin-grid-border: #475569;
+    --bin-grid-line: #4a6296;
+    --bin-cell-bg: #151f3d;
+    --bin-cell-hover: #1f2d52;
+    background: var(--bin-cell-bg);
+    border-color: var(--bin-grid-border);
+  }
+  html[data-theme="dark"] .binairo-grid .binairo-cell.is-given {
+    background: #101830;
+  }
+  html[data-theme="dark"] .binairo-grid .binairo-cell.is-selected {
+    box-shadow: inset 0 0 0 2px #8ea8ff;
+    background: #1e294b;
+  }
+  html[data-theme="dark"] .binairo-token.token-0 {
+    background: #e2e8f0;
+    border-color: #60a5fa;
+    color: #0f172a;
+  }
+  html[data-theme="dark"] .binairo-token.token-1 {
+    background: #090e1d;
+    border-color: #93c5fd;
+    color: #ffffff;
+  }
+  html[data-theme="dark"] .binairo-token-selector {
+    background: #111b36;
+    border-color: #293858;
+  }
+  html[data-theme="dark"] .token-btn {
+    background: #151f3d;
+    border-color: #293858;
+    color: #f1f5ff;
+  }
+  html[data-theme="dark"] .token-circle-0 {
+    background: #e2e8f0;
+    border-color: #60a5fa;
+    color: #0f172a;
+  }
+  html[data-theme="dark"] .token-circle-1 {
+    background: #090e1d;
+    border-color: #93c5fd;
+    color: #ffffff;
+  }
+  html[data-theme="dark"] .token-circle-empty {
+    background: #1e294b;
+    color: #94a3b8;
+  }
+  html[data-theme="dark"] .binairo-toast {
+    background: #1e294b;
+    border-color: #315ee8;
+    color: #93c5fd;
+  }
+  html[data-theme="dark"] .binairo-overlay-box {
+    background: #141f3d;
+    border-color: #27375a;
+  }
+  html[data-theme="dark"] .binairo-overlay-box h2,
+  html[data-theme="dark"] .victory-stats-grid strong {
+    color: #f1f5ff;
+  }
+  html[data-theme="dark"] .victory-stats-grid {
+    background: #111b36;
+    border-color: #293858;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .binairo-header-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .binairo-diff-group {
+      width: 100%;
+    }
+    .binairo-diff-btn {
+      flex: 1;
+      min-width: 70px;
+      padding: 8px 6px;
+      align-items: center;
+      text-align: center;
+    }
+    .binairo-diff-btn strong { font-size: 12px; }
+    .binairo-diff-btn span { font-size: 9px; }
+    .binairo-header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .binairo-sound-btn {
+      flex: 1;
+      justify-content: center;
+    }
+    .binairo-stats-bar {
+      padding: 10px 8px;
+      gap: 6px;
+    }
+    .binairo-stat-item strong {
+      font-size: 16px;
+    }
+    .binairo-token-selector {
+      width: 100%;
+      justify-content: space-between;
+      padding: 8px 10px;
+    }
+    .token-btn {
+      flex: 1;
+      justify-content: center;
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .binairo-shell {
+      padding: 16px 12px;
+      gap: 16px;
+    }
+    .binairo-board-wrapper {
+      padding: 16px 8px;
+      min-height: 280px;
+    }
+    .binairo-controls .btn {
+      flex: 1 1 calc(25% - 8px);
+      min-height: 38px;
+      padding: 0 8px;
+      font-size: 12px;
+    }
+  }
+</style>
+
+<script>
+  import {
+    BINAIRO_PUZZLES,
+    getDailyBinairoPuzzle,
+    getBinairoLogicalHint,
+    validateBinairoBoard,
+    type BinairoPuzzle
+  } from '../data/binairoPuzzles';
+
+  interface GameState {
+    difficulty: 'easy' | 'medium' | 'hard' | 'daily';
+    puzzleId: string;
+    board: (0 | 1 | null)[][];
+    moves: number;
+    timerSeconds: number;
+    hintsUsed: number;
+    isComplete: boolean;
+  }
+
+  interface MoveAction {
+    r: number;
+    c: number;
+    oldVal: 0 | 1 | null;
+    newVal: 0 | 1 | null;
+  }
+
+  const STORAGE_KEY = 'puzzlefeels_binairo_state_v1';
+  const SOUND_KEY = 'puzzlefeels_binairo_sound_v1';
+  const BEST_TIMES_KEY = 'puzzlefeels_binairo_best_times_v1';
+
+  class BinairoGame {
+    puzzle: BinairoPuzzle | null = null;
+    currentBoard: (0 | 1 | null)[][] = [];
+    selectedCell: { r: number; c: number } | null = null;
+
+    difficulty: 'easy' | 'medium' | 'hard' | 'daily' = 'easy';
+    puzzleIndex = 0;
+    moves = 0;
+    timerSeconds = 0;
+    hintsUsed = 0;
+    isPaused = false;
+    isComplete = false;
+    soundEnabled = true;
+
+    timerInterval: any = null;
+    undoStack: MoveAction[] = [];
+    redoStack: MoveAction[] = [];
+
+    // DOM Elements
+    gridEl!: HTMLElement;
+    timerEl!: HTMLElement;
+    movesEl!: HTMLElement;
+    filledEl!: HTMLElement;
+    bestTimeEl!: HTMLElement;
+    toastEl!: HTMLElement;
+    toastTextEl!: HTMLElement;
+    pausedModalEl!: HTMLElement;
+    victoryModalEl!: HTMLElement;
+    undoBtn!: HTMLButtonElement;
+    redoBtn!: HTMLButtonElement;
+    soundBtn!: HTMLElement;
+    liveEl!: HTMLElement;
+
+    constructor() {
+      this.initElements();
+      this.initSound();
+      this.initEventListeners();
+      this.loadOrCreateGame();
+    }
+
+    initElements() {
+      this.gridEl = document.querySelector('#binairo-grid')!;
+      this.timerEl = document.querySelector('#binairo-timer')!;
+      this.movesEl = document.querySelector('#binairo-moves')!;
+      this.filledEl = document.querySelector('#binairo-filled')!;
+      this.bestTimeEl = document.querySelector('#binairo-best-time')!;
+      this.toastEl = document.querySelector('#binairo-toast')!;
+      this.toastTextEl = document.querySelector('#binairo-toast-text')!;
+      this.pausedModalEl = document.querySelector('#binairo-paused')!;
+      this.victoryModalEl = document.querySelector('#binairo-victory')!;
+      this.undoBtn = document.querySelector('#binairo-undo-btn')!;
+      this.redoBtn = document.querySelector('#binairo-redo-btn')!;
+      this.soundBtn = document.querySelector('#binairo-sound-toggle')!;
+      this.liveEl = document.querySelector('#binairo-live')!;
+    }
+
+    initSound() {
+      const saved = localStorage.getItem(SOUND_KEY);
+      this.soundEnabled = saved !== 'false';
+      this.updateSoundButton();
+    }
+
+    updateSoundButton() {
+      const label = this.soundBtn.querySelector('.sound-status-label');
+      if (label) label.textContent = this.soundEnabled ? 'Sound On' : 'Sound Off';
+      this.soundBtn.setAttribute('aria-pressed', String(this.soundEnabled));
+    }
+
+    playSound(type: 'click' | 'place' | 'clear' | 'hint' | 'error' | 'victory') {
+      if (!this.soundEnabled) return;
+      try {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextClass) return;
+        const ctx = new AudioContextClass();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+        if (type === 'click') {
+          osc.frequency.setValueAtTime(420, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+          osc.start(now);
+          osc.stop(now + 0.04);
+        } else if (type === 'place') {
+          osc.frequency.setValueAtTime(540, now);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'clear') {
+          osc.frequency.setValueAtTime(280, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'hint') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(520, now);
+          osc.frequency.exponentialRampToValueAtTime(780, now + 0.18);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, now);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'victory') {
+          osc.type = 'sine';
+          const notes = [440, 554.37, 659.25, 880];
+          notes.forEach((freq, idx) => {
+            const oscN = ctx.createOscillator();
+            const gainN = ctx.createGain();
+            oscN.connect(gainN);
+            gainN.connect(ctx.destination);
+            oscN.frequency.setValueAtTime(freq, now + idx * 0.1);
+            gainN.gain.setValueAtTime(0.18, now + idx * 0.1);
+            gainN.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.35);
+            oscN.start(now + idx * 0.1);
+            oscN.stop(now + idx * 0.1 + 0.35);
+          });
+        }
+      } catch (e) {}
+    }
+
+    loadOrCreateGame() {
+      // Check for URL ?daily=today
+      const urlParams = new URLSearchParams(window.location.search);
+      const isDailyUrl = urlParams.get('daily') === 'today';
+
+      if (isDailyUrl) {
+        this.difficulty = 'daily';
+      }
+
+      const savedJson = localStorage.getItem(STORAGE_KEY);
+      if (savedJson && !isDailyUrl) {
+        try {
+          const saved: GameState = JSON.parse(savedJson);
+          this.difficulty = saved.difficulty || 'easy';
+          const puzzle = this.findPuzzleById(saved.puzzleId);
+          if (puzzle) {
+            this.puzzle = puzzle;
+            this.currentBoard = saved.board;
+            this.moves = saved.moves || 0;
+            this.timerSeconds = saved.timerSeconds || 0;
+            this.hintsUsed = saved.hintsUsed || 0;
+            this.isComplete = saved.isComplete || false;
+            this.updateDifficultyTabs();
+            this.renderBoard();
+            this.updateStats();
+            this.updateBestTime();
+            if (!this.isComplete) this.startTimer();
+            return;
+          }
+        } catch (e) {}
+      }
+
+      this.startNewPuzzle(this.difficulty, 0);
+    }
+
+    findPuzzleById(id: string): BinairoPuzzle | null {
+      if (id.startsWith('daily-')) return getDailyBinairoPuzzle();
+      return BINAIRO_PUZZLES.find(p => p.id === id) || null;
+    }
+
+    startNewPuzzle(difficulty: 'easy' | 'medium' | 'hard' | 'daily', indexOffset = 0) {
+      this.difficulty = difficulty;
+      this.updateDifficultyTabs();
+
+      if (difficulty === 'daily') {
+        this.puzzle = getDailyBinairoPuzzle();
+      } else {
+        const pool = BINAIRO_PUZZLES.filter(p => p.difficulty === difficulty);
+        this.puzzleIndex = (this.puzzleIndex + indexOffset + pool.length) % pool.length;
+        this.puzzle = pool[this.puzzleIndex];
+      }
+
+      // Initialize board from clues
+      this.currentBoard = this.puzzle.clues.map(r => [...r]);
+      this.selectedCell = null;
+      this.moves = 0;
+      this.timerSeconds = 0;
+      this.hintsUsed = 0;
+      this.isComplete = false;
+      this.undoStack = [];
+      this.redoStack = [];
+
+      this.stopTimer();
+      this.startTimer();
+      this.renderBoard();
+      this.updateStats();
+      this.updateBestTime();
+      this.updateUndoRedo();
+      this.pausedModalEl.hidden = true;
+      this.victoryModalEl.hidden = true;
+      this.hideToast();
+      this.saveState();
+    }
+
+    updateDifficultyTabs() {
+      document.querySelectorAll('.binairo-diff-btn').forEach(btn => {
+        const diff = btn.getAttribute('data-difficulty');
+        const isActive = diff === this.difficulty;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-selected', String(isActive));
+      });
+    }
+
+    startTimer() {
+      this.stopTimer();
+      this.timerInterval = setInterval(() => {
+        if (!this.isPaused && !this.isComplete) {
+          this.timerSeconds++;
+          this.updateTimerDisplay();
+          if (this.timerSeconds % 5 === 0) this.saveState();
+        }
+      }, 1000);
+    }
+
+    stopTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+    }
+
+    updateTimerDisplay() {
+      const mins = Math.floor(this.timerSeconds / 60);
+      const secs = this.timerSeconds % 60;
+      this.timerEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    renderBoard() {
+      if (!this.puzzle) return;
+      const N = this.puzzle.size;
+      this.gridEl.style.setProperty('--grid-cols', String(N));
+      this.gridEl.style.setProperty('--grid-rows', String(N));
+      this.gridEl.innerHTML = '';
+
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          const isGiven = this.puzzle.clues[r][c] !== null;
+          const val = this.currentBoard[r][c];
+
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.className = 'binairo-cell';
+          cell.setAttribute('data-r', String(r));
+          cell.setAttribute('data-c', String(c));
+          cell.setAttribute('role', 'gridcell');
+
+          if (isGiven) {
+            cell.classList.add('is-given');
+            cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}: given ${val}`);
+            cell.setAttribute('tabindex', '-1');
+          } else {
+            cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}: ${val === null ? 'empty' : val}`);
+            cell.setAttribute('tabindex', '0');
+          }
+
+          if (this.selectedCell && this.selectedCell.r === r && this.selectedCell.c === c) {
+            cell.classList.add('is-selected');
+          }
+
+          if (val !== null) {
+            const token = document.createElement('span');
+            token.className = `binairo-token token-${val}`;
+            token.textContent = String(val);
+            cell.appendChild(token);
+          }
+
+          cell.addEventListener('click', (e) => this.handleCellClick(r, c, e));
+          cell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.handleCellRightClick(r, c);
+          });
+
+          this.gridEl.appendChild(cell);
+        }
+      }
+    }
+
+    handleCellClick(r: number, c: number, event?: MouseEvent) {
+      if (this.isComplete || !this.puzzle) return;
+      this.selectCell(r, c);
+
+      // If cell is given clue, cannot cycle
+      if (this.puzzle.clues[r][c] !== null) {
+        this.playSound('click');
+        return;
+      }
+
+      // Cycle value: null -> 0 -> 1 -> null
+      const current = this.currentBoard[r][c];
+      const next: 0 | 1 | null = current === null ? 0 : current === 0 ? 1 : null;
+      this.setCellValue(r, c, next);
+    }
+
+    handleCellRightClick(r: number, c: number) {
+      if (this.isComplete || !this.puzzle) return;
+      this.selectCell(r, c);
+
+      if (this.puzzle.clues[r][c] !== null) return;
+
+      // Reverse cycle: null -> 1 -> 0 -> null
+      const current = this.currentBoard[r][c];
+      const prev: 0 | 1 | null = current === null ? 1 : current === 1 ? 0 : null;
+      this.setCellValue(r, c, prev);
+    }
+
+    selectCell(r: number, c: number) {
+      this.selectedCell = { r, c };
+      this.gridEl.querySelectorAll('.binairo-cell').forEach(el => {
+        const cellR = Number(el.getAttribute('data-r'));
+        const cellC = Number(el.getAttribute('data-c'));
+        el.classList.toggle('is-selected', cellR === r && cellC === c);
+      });
+    }
+
+    setCellValue(r: number, c: number, newVal: 0 | 1 | null, recordHistory = true) {
+      if (!this.puzzle || this.puzzle.clues[r][c] !== null) return;
+      const oldVal = this.currentBoard[r][c];
+      if (oldVal === newVal) return;
+
+      if (recordHistory) {
+        this.undoStack.push({ r, c, oldVal, newVal });
+        this.redoStack = [];
+        this.moves++;
+      }
+
+      this.currentBoard[r][c] = newVal;
+      this.playSound(newVal === null ? 'clear' : 'place');
+
+      this.updateCellDom(r, c);
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+
+      // Check for victory
+      this.checkAutoVictory();
+    }
+
+    updateCellDom(r: number, c: number) {
+      const cell = this.gridEl.querySelector(`.binairo-cell[data-r="${r}"][data-c="${c}"]`);
+      if (!cell) return;
+      const val = this.currentBoard[r][c];
+      cell.innerHTML = '';
+      cell.classList.remove('is-error-highlight', 'is-hint-highlight');
+
+      if (val !== null) {
+        const token = document.createElement('span');
+        token.className = `binairo-token token-${val}`;
+        token.textContent = String(val);
+        cell.appendChild(token);
+        cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}: ${val}`);
+      } else {
+        cell.setAttribute('aria-label', `Row ${r + 1}, Column ${c + 1}: empty`);
+      }
+    }
+
+    undo() {
+      if (this.undoStack.length === 0 || this.isComplete) return;
+      const action = this.undoStack.pop()!;
+      this.redoStack.push(action);
+      this.currentBoard[action.r][action.c] = action.oldVal;
+      this.updateCellDom(action.r, action.c);
+      this.selectCell(action.r, action.c);
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+      this.playSound('click');
+    }
+
+    redo() {
+      if (this.redoStack.length === 0 || this.isComplete) return;
+      const action = this.redoStack.pop()!;
+      this.undoStack.push(action);
+      this.currentBoard[action.r][action.c] = action.newVal;
+      this.updateCellDom(action.r, action.c);
+      this.selectCell(action.r, action.c);
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+      this.playSound('click');
+    }
+
+    updateUndoRedo() {
+      this.undoBtn.disabled = this.undoStack.length === 0 || this.isComplete;
+      this.redoBtn.disabled = this.redoStack.length === 0 || this.isComplete;
+    }
+
+    provideHint() {
+      if (this.isComplete || !this.puzzle) return;
+      const hint = getBinairoLogicalHint(this.currentBoard, this.puzzle.solution);
+      if (!hint) {
+        this.showToast('No obvious deduction found. All lines are in order!', 'success');
+        return;
+      }
+
+      this.hintsUsed++;
+      this.playSound('hint');
+      this.selectCell(hint.r, hint.c);
+
+      const cell = this.gridEl.querySelector(`.binairo-cell[data-r="${hint.r}"][data-c="${hint.c}"]`);
+      if (cell) {
+        cell.classList.add(hint.type === 'error' ? 'is-error-highlight' : 'is-hint-highlight');
+        setTimeout(() => {
+          cell.classList.remove('is-error-highlight', 'is-hint-highlight');
+        }, 3000);
+      }
+
+      if (hint.type === 'error') {
+        this.showToast(hint.message, 'error');
+      } else {
+        this.showToast(hint.message, 'success');
+        if (hint.val !== undefined) {
+          this.setCellValue(hint.r, hint.c, hint.val);
+        }
+      }
+    }
+
+    checkProgress() {
+      if (!this.puzzle) return;
+      const validation = validateBinairoBoard(this.currentBoard);
+
+      if (!validation.isValid && validation.violations) {
+        this.playSound('error');
+        validation.violations.forEach(({ r, c }) => {
+          const el = this.gridEl.querySelector(`.binairo-cell[data-r="${r}"][data-c="${c}"]`);
+          if (el) {
+            el.classList.add('is-error-highlight');
+            setTimeout(() => el.classList.remove('is-error-highlight'), 3000);
+          }
+        });
+        this.showToast('Rule violation detected! Highlighted cells violate trio, balance, or uniqueness rules.', 'error');
+      } else {
+        this.playSound('click');
+        let filled = 0;
+        const total = this.puzzle.size * this.puzzle.size;
+        for (let r = 0; r < this.puzzle.size; r++) {
+          for (let c = 0; c < this.puzzle.size; c++) {
+            if (this.currentBoard[r][c] !== null) filled++;
+          }
+        }
+        if (filled === total) {
+          this.checkAutoVictory();
+        } else {
+          this.showToast(`All ${filled} placed numbers follow the rules so far! ${total - filled} cells remaining.`, 'success');
+        }
+      }
+    }
+
+    clearPlayerEntries() {
+      if (this.isComplete || !this.puzzle) return;
+      if (!confirm('Clear all your entered numbers and reset to original clues?')) return;
+
+      this.currentBoard = this.puzzle.clues.map(r => [...r]);
+      this.undoStack = [];
+      this.redoStack = [];
+      this.renderBoard();
+      this.updateStats();
+      this.updateUndoRedo();
+      this.saveState();
+      this.playSound('clear');
+      this.showToast('Player entries cleared.', 'success');
+    }
+
+    checkAutoVictory() {
+      if (!this.puzzle || this.isComplete) return;
+      const validation = validateBinairoBoard(this.currentBoard);
+      if (validation.isValid && validation.isComplete) {
+        this.triggerVictory();
+      }
+    }
+
+    triggerVictory() {
+      this.isComplete = true;
+      this.stopTimer();
+      this.playSound('victory');
+      this.saveState();
+
+      // Check Personal Best
+      const isPB = this.recordBestTime();
+
+      // Populate victory modal
+      const diffLabelEl = document.querySelector('#victory-diff-label');
+      const timeEl = document.querySelector('#victory-time');
+      const movesEl = document.querySelector('#victory-moves');
+      const hintsEl = document.querySelector('#victory-hints');
+      const pbBadgeEl = document.querySelector('#binairo-pb-badge');
+
+      if (diffLabelEl) diffLabelEl.textContent = this.difficulty.toUpperCase();
+      if (timeEl) timeEl.textContent = this.timerEl.textContent;
+      if (movesEl) movesEl.textContent = String(this.moves);
+      if (hintsEl) hintsEl.textContent = String(this.hintsUsed);
+      if (pbBadgeEl) pbBadgeEl.removeAttribute('hidden');
+      if (pbBadgeEl && !isPB) pbBadgeEl.setAttribute('hidden', '');
+
+      this.victoryModalEl.removeAttribute('hidden');
+      this.updateBestTime();
+    }
+
+    recordBestTime(): boolean {
+      if (!this.puzzle) return false;
+      const key = `${BEST_TIMES_KEY}_${this.difficulty}`;
+      const savedBest = localStorage.getItem(key);
+      const current = this.timerSeconds;
+      if (!savedBest || current < Number(savedBest)) {
+        localStorage.setItem(key, String(current));
+        return true;
+      }
+      return false;
+    }
+
+    updateBestTime() {
+      const key = `${BEST_TIMES_KEY}_${this.difficulty}`;
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        const secs = Number(saved);
+        const mins = Math.floor(secs / 60);
+        const s = secs % 60;
+        this.bestTimeEl.textContent = `${String(mins).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      } else {
+        this.bestTimeEl.textContent = '—';
+      }
+    }
+
+    updateStats() {
+      if (!this.puzzle) return;
+      this.movesEl.textContent = String(this.moves);
+      this.updateTimerDisplay();
+
+      let filled = 0;
+      const total = this.puzzle.size * this.puzzle.size;
+      for (let r = 0; r < this.puzzle.size; r++) {
+        for (let c = 0; c < this.puzzle.size; c++) {
+          if (this.currentBoard[r][c] !== null) filled++;
+        }
+      }
+      this.filledEl.textContent = `${filled} / ${total}`;
+    }
+
+    showToast(message: string, type: 'success' | 'error' = 'success') {
+      this.toastTextEl.textContent = message;
+      this.toastEl.className = `binairo-toast is-${type}`;
+      this.toastEl.removeAttribute('hidden');
+      setTimeout(() => this.hideToast(), 4000);
+    }
+
+    hideToast() {
+      this.toastEl.setAttribute('hidden', '');
+    }
+
+    saveState() {
+      if (!this.puzzle) return;
+      const state: GameState = {
+        difficulty: this.difficulty,
+        puzzleId: this.puzzle.id,
+        board: this.currentBoard,
+        moves: this.moves,
+        timerSeconds: this.timerSeconds,
+        hintsUsed: this.hintsUsed,
+        isComplete: this.isComplete
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    initEventListeners() {
+      // Difficulty tabs
+      document.querySelectorAll('.binairo-diff-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const diff = btn.getAttribute('data-difficulty') as any;
+          if (diff) this.startNewPuzzle(diff, 0);
+        });
+      });
+
+      // Sound toggle
+      this.soundBtn.addEventListener('click', () => {
+        this.soundEnabled = !this.soundEnabled;
+        localStorage.setItem(SOUND_KEY, String(this.soundEnabled));
+        this.updateSoundButton();
+      });
+
+      // Buttons
+      document.querySelector('#binairo-new-btn')?.addEventListener('click', () => {
+        this.startNewPuzzle(this.difficulty, 1);
+      });
+      document.querySelector('#binairo-restart-btn')?.addEventListener('click', () => {
+        if (!confirm('Restart this puzzle from the beginning?')) return;
+        if (this.puzzle) {
+          this.currentBoard = this.puzzle.clues.map(r => [...r]);
+          this.moves = 0;
+          this.timerSeconds = 0;
+          this.hintsUsed = 0;
+          this.isComplete = false;
+          this.undoStack = [];
+          this.redoStack = [];
+          this.renderBoard();
+          this.updateStats();
+          this.updateUndoRedo();
+          this.saveState();
+        }
+      });
+      this.undoBtn.addEventListener('click', () => this.undo());
+      this.redoBtn.addEventListener('click', () => this.redo());
+      document.querySelector('#binairo-hint-btn')?.addEventListener('click', () => this.provideHint());
+      document.querySelector('#binairo-check-btn')?.addEventListener('click', () => this.checkProgress());
+      document.querySelector('#binairo-clear-btn')?.addEventListener('click', () => this.clearPlayerEntries());
+
+      // Pause & Resume
+      document.querySelector('#binairo-pause-btn')?.addEventListener('click', () => {
+        this.isPaused = true;
+        this.pausedModalEl.removeAttribute('hidden');
+      });
+      document.querySelector('#binairo-resume')?.addEventListener('click', () => {
+        this.isPaused = false;
+        this.pausedModalEl.setAttribute('hidden', '');
+      });
+
+      // Victory actions
+      document.querySelector('#binairo-next-puzzle')?.addEventListener('click', () => {
+        this.victoryModalEl.setAttribute('hidden', '');
+        this.startNewPuzzle(this.difficulty, 1);
+      });
+
+      // Share button
+      document.querySelector('#binairo-share')?.addEventListener('click', () => {
+        const text = `I solved the ${this.difficulty.toUpperCase()} Binairo puzzle on PuzzleFeels in ${this.timerEl.textContent} with ${this.moves} moves! Play free: https://puzzlefeels.com/binairo-online-puzzle-game/`;
+        navigator.clipboard.writeText(text).then(() => {
+          const statusEl = document.querySelector('#binairo-share-status');
+          if (statusEl) statusEl.textContent = '✓ Result copied to clipboard!';
+        });
+      });
+
+      // Quick digit selector buttons (0, 1, Clear)
+      document.querySelector('#binairo-set-0')?.addEventListener('click', () => {
+        if (this.selectedCell) this.setCellValue(this.selectedCell.r, this.selectedCell.c, 0);
+      });
+      document.querySelector('#binairo-set-1')?.addEventListener('click', () => {
+        if (this.selectedCell) this.setCellValue(this.selectedCell.r, this.selectedCell.c, 1);
+      });
+      document.querySelector('#binairo-set-clear')?.addEventListener('click', () => {
+        if (this.selectedCell) this.setCellValue(this.selectedCell.r, this.selectedCell.c, null);
+      });
+
+      // Keyboard Controls
+      window.addEventListener('keydown', (e) => {
+        if (!this.selectedCell || !this.puzzle || this.isComplete) return;
+        const { r, c } = this.selectedCell;
+        const N = this.puzzle.size;
+
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          this.selectCell((r - 1 + N) % N, c);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          this.selectCell((r + 1) % N, c);
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          this.selectCell(r, (c - 1 + N) % N);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          this.selectCell(r, (c + 1) % N);
+        } else if (e.key === '0') {
+          e.preventDefault();
+          this.setCellValue(r, c, 0);
+        } else if (e.key === '1') {
+          e.preventDefault();
+          this.setCellValue(r, c, 1);
+        } else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === 'x' || e.key === 'X') {
+          e.preventDefault();
+          this.setCellValue(r, c, null);
+        } else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          if (e.shiftKey) this.redo();
+          else this.undo();
+        } else if (e.key === 'y' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          this.redo();
+        }
+      });
+    }
+  }
+
+  // Initialize on DOM load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new BinairoGame());
+  } else {
+    new BinairoGame();
+  }
+</script>
